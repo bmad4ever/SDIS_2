@@ -1,7 +1,6 @@
 package communication;
 
 public class MessageHeader implements Comparable<MessageHeader> {
-
 	private static final boolean DEBUG = false;
 
 	public enum MessageType {
@@ -36,7 +35,7 @@ public class MessageHeader implements Comparable<MessageHeader> {
 				&& this.senderId.equals(that.senderId) 
 				&& this.fileId.equals(that.fileId) 
 				&& this.chunkNo.equals(that.chunkNo) 
-				&& this.replicationDegree==that.replicationDegree)?0:1
+				&& this.replicationDegree == that.replicationDegree)?0:1
 				;		
 	}
 	

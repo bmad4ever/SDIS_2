@@ -8,7 +8,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class TCP_Thread extends Thread {
-
 	protected ServerSocket testSer;
 	protected Socket testSocket;
 	protected ObjectOutputStream socketWrite;
@@ -20,14 +19,14 @@ public class TCP_Thread extends Thread {
 	protected boolean failed_init = false;
 
 	public void sendMessage(Object obj) throws IOException{
-		if (socketWrite == null) socketWrite = new ObjectOutputStream(testSocket.getOutputStream());
+		if(socketWrite == null) socketWrite = new ObjectOutputStream(testSocket.getOutputStream());
 		if(!failed_init){
 			socketWrite.writeObject(obj);
 		}
 	}
 
 	public Object receiveMessage() throws IOException, ClassNotFoundException{
-		if (socketRead==null) socketRead = new ObjectInputStream(testSocket.getInputStream());
+		if (socketRead == null) socketRead = new ObjectInputStream(testSocket.getInputStream());
 		if(!failed_init){
 			return socketRead.readObject();
 		}
