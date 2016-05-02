@@ -68,7 +68,8 @@ public class TCP_Server extends TCP_Thread{
 		MessageHeader header = new MessageHeader(
 				MessageHeader.MessageType.cred_pubkey
 				,"CRED"	,null,null,0,1);
-		MessageKeyPacket msg = new MessageKeyPacket(header, AsymmetricKey.pubk);
+		byte[] body = AsymmetricKey.pubk.getEncoded();
+		MessagePacket msg = new MessagePacket(header, body);
 	
 		sendMessage(msg);
 		
