@@ -16,7 +16,6 @@ public class Test_Port_Dispatcher_Server {
 		try {
 			System.out.println("Server " + InetAddress.getLocalHost().getHostName() + ": " + InetAddress.getLocalHost().getHostAddress() + " on port " + 50001);
 		} catch (UnknownHostException e1) {e1.printStackTrace();}
-		System.out.println("Waiting....");
 		
 		try {System.in.read();} 
 		catch (IOException e) {e.printStackTrace();}

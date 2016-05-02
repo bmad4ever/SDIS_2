@@ -25,8 +25,6 @@ public class Test_Port_Dispatcher_Client {
 		try {
 			socket = new Socket(address, Integer.parseInt(port));
 			System.out.println("CONNECTED!!");
-			Thread.sleep(50);
-			ObjectInputStream socketRead = new ObjectInputStream(socket.getInputStream());
 			ObjectOutputStream socketWrite = new ObjectOutputStream(socket.getOutputStream());
 			
 			System.out.println("Got the streams");
@@ -36,6 +34,8 @@ public class Test_Port_Dispatcher_Client {
 			
 			socketWrite.writeObject(request);
 			
+
+			ObjectInputStream socketRead = new ObjectInputStream(socket.getInputStream());
 			MessagePacket response = (MessagePacket) socketRead.readObject();
 			
 			int newport = (int) new BigInteger(response.body).intValue();
@@ -52,7 +52,7 @@ public class Test_Port_Dispatcher_Client {
 			
 			socket.close();
 			
-		} catch (NumberFormatException | IOException | ClassNotFoundException | InterruptedException e1) {e1.printStackTrace();}
+		} catch (NumberFormatException | IOException | ClassNotFoundException e1) {e1.printStackTrace();}
 		
 		
 	}

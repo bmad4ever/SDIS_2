@@ -25,6 +25,11 @@ public class TCP_Port_Dispatcher extends TCP_Thread{
 		port = p;
 	}
 	
+	public void bail() throws IOException{
+		testSocket.close();
+		testSer.close();
+	}
+	
 	public void print_info()
 	{
 		try {
@@ -37,22 +42,24 @@ public class TCP_Port_Dispatcher extends TCP_Thread{
 		while(true)
 		{
 			try {
+				System.out.println("Waiting....");
 				testSer = new ServerSocket(port);
 				testSocket = testSer.accept();
+				System.out.println("Someone connected...")
 				failed_init = false;
 			} catch (IOException e)
 			{e.printStackTrace();failed_init = true;}	
 			
-			while(true)
+			while(!failed_init)
 			{
 				try {
 					MessagePacket request = (MessagePacket)receiveMessage();
 					System.out.println("Got a message!");
 					if(!(request.header.MessageType() == MessageHeader.MessageType.port_request))
-						continue;
+						{	bail(); continue;}
 					// ---- Other? Check if it's a known peer?
 					
-					ServerSocket newService = new ServerSocket();
+					ServerSocket newService = new ServerSocket(0);
 					service_list.add(newService);
 						// ---- Change to TCP_Server once constructor is changed
 					
@@ -68,9 +75,8 @@ public class TCP_Port_Dispatcher extends TCP_Thread{
 					sendMessage(response);	
 					
 					
-					//Close and brea into outer while(true)
-					testSocket.close();
-					testSer.close();
+					//Close sockets and break into outer while(true)
+					bail();
 					break;
 					
 				} catch (ClassNotFoundException | IOException e) 

@@ -1,6 +1,6 @@
 package communication;
 
-public class MessageHeader implements Comparable<MessageHeader> {
+public class MessageHeader implements Comparable<MessageHeader>, java.io.Serializable{
 	private static final boolean DEBUG = false;
 
 	public enum MessageType {
