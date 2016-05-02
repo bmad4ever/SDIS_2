@@ -6,17 +6,17 @@ import java.io.PrintWriter;
 	import java.net.Socket;
 	import java.net.UnknownHostException;
 
-import protocols.Protocol;
+import protocols.PUTCHUNK;
 
 	public class Test_Client {
 		 
-		Protocol test;
+		PUTCHUNK test;
 		
 	    public static void main(String[] args) throws UnknownHostException, InterruptedException {
 	    	
 	    	System.out.println("TEST CLIENT");
 	    	 	
-	    	Protocol client = new Protocol(50001, args[0]);
+	    	PUTCHUNK client = new PUTCHUNK(50001, args[0]);
 	    	client.start();
 	    	
 	    	

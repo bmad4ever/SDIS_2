@@ -8,11 +8,11 @@ import java.net.ServerSocket;
 	import java.net.UnknownHostException;
 
 import communication.TCP_Server;
-import protocols.Protocol;
+import protocols.PUTCHUNK;
 
 	public class Test_Server {
 		 
-		Protocol test;
+		PUTCHUNK test;
 		
 	    public static void main(String[] args) throws UnknownHostException, InterruptedException {
 	    		
