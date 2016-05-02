@@ -1,7 +1,6 @@
 package protocols;
 
 import java.io.IOException;
-import java.net.InetAddress;
 
 import communication.MessagePacket;
 import communication.TCP_Client;
@@ -16,7 +15,6 @@ public class PUTCHUNK extends TCP_Client{
 	public void run(){
 		System.out.println("Protocol run");
 		super.baserun();	
-		System.out.println("2");
 		if(failed_init)
 			return;
 		String wwww = "Hello, World!";
@@ -26,7 +24,5 @@ public class PUTCHUNK extends TCP_Client{
 			MessagePacket n = new MessagePacket(null, null);
 			sendMessage(n);
 		} catch (IOException e) {e.printStackTrace();}
-		
 	}
-	
 }

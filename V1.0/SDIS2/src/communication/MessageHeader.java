@@ -13,8 +13,6 @@ public class MessageHeader implements Comparable<MessageHeader> {
 	
 	private MessageType messageType;
 	public MessageType MessageType(){return messageType;}
-	//private String version;
-	//public String Version(){return version;}
 	private String senderId;
 	public String senderId(){return senderId;}
 	private String fileId;//64 ASCII character sequence
@@ -24,21 +22,17 @@ public class MessageHeader implements Comparable<MessageHeader> {
 	private int replicationDegree; //It takes one byte, 
 	public int ReplicationDegree(){return replicationDegree;}
 	
-	MessageHeader(MessageType messageType/*, String version*/, String senderId, String fileId, String chunkNo, int replicationDegree)
-	{
+	MessageHeader(MessageType messageType, String senderId, String fileId, String chunkNo, int replicationDegree){
 		this.messageType = messageType;
-		//this.version = version;
 		this.senderId = senderId;
 		this.fileId = fileId;
 		this.chunkNo = chunkNo;
 		this.replicationDegree = replicationDegree;
 	}
-	
 
 	@Override
 	public int compareTo(MessageHeader that) {
 		return (this.messageType.equals(that.messageType)
-				//&& this.version.equals(that.version) 
 				&& this.senderId.equals(that.senderId) 
 				&& this.fileId.equals(that.fileId) 
 				&& this.chunkNo.equals(that.chunkNo) 
@@ -46,16 +40,13 @@ public class MessageHeader implements Comparable<MessageHeader> {
 				;		
 	}
 	
-	public String toString()
-	{
+	public String toString(){
 		return
 			messageType.toString()
-			//+" -> VER:"+version
 			+" > SID:"+senderId
 			+" | FID:"+fileId
 			+" | NO:"+chunkNo
 			+" | RD:"+replicationDegree
-				;
+			;
 	}
-	
 }

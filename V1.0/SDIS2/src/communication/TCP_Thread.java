@@ -16,26 +16,22 @@ public class TCP_Thread extends Thread {
 
 	protected InetAddress adress;
 	protected int port;
-	
+
 	protected boolean failed_init = false;
-	
+
 	public void sendMessage(Object obj) throws IOException{
 		if (socketWrite == null) socketWrite = new ObjectOutputStream(testSocket.getOutputStream());
-		if(!failed_init)
-			{
-				socketWrite.writeObject(obj);
-			}
+		if(!failed_init){
+			socketWrite.writeObject(obj);
+		}
 	}
 
 	public Object receiveMessage() throws IOException, ClassNotFoundException{
 		if (socketRead==null) socketRead = new ObjectInputStream(testSocket.getInputStream());
-		if(!failed_init)
-			{
+		if(!failed_init){
 			return socketRead.readObject();
-			}
+		}
 		else
 			return null;
 	}
-	
-	
 }
