@@ -1,7 +1,6 @@
 package protocols;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import communication.TCP_Client;
 
 public class Protocol extends TCP_Client{

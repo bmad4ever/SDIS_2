@@ -11,16 +11,15 @@ public class TCP_Server extends Thread{
 	Socket testSocket;
 	ObjectOutputStream socketWrite;
 	ObjectInputStream socketRead;
-		
+
 	boolean failed_init = false;
-	
+
 	int port;
-	
-	
+
 	public TCP_Server(int p) {
 		port = p;
 	}
-	
+
 	@Override
 	public void run() {
 		try {
@@ -28,20 +27,16 @@ public class TCP_Server extends Thread{
 			testSocket = testSer.accept();
 			System.out.println("Estou aqui");
 			System.out.flush();	
-			
 
-			
-		} catch (IOException e) 
-		{
+		} catch (IOException e) {
 			System.out.println("FDS");	
 			System.out.flush();	
 			e.printStackTrace();
 			failed_init = true;
 		}
-		
+
 		try {	
-			while(true)
-			{
+			while(true){
 				System.out.println("Estou aqui");	
 				System.out.flush();	
 				System.out.println((String) receiveMessage());			
@@ -53,9 +48,9 @@ public class TCP_Server extends Thread{
 		}	
 		System.out.println("XXX aqui");	
 		System.out.flush();	
-		
+
 	}
-	
+
 	public void sendMessage(byte[] buf) throws IOException{
 		socketWrite = new ObjectOutputStream(testSocket.getOutputStream());
 		if(failed_init)
@@ -69,5 +64,5 @@ public class TCP_Server extends Thread{
 		else
 			return null;
 	}
-	
+
 }

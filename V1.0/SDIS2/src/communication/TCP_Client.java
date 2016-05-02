@@ -19,7 +19,6 @@ public class TCP_Client extends Thread{
 	protected InetAddress adress;
 	protected int port;
 	
-	
 	public TCP_Client(int p, String a) {
 		port = p;
 		try {
@@ -38,7 +37,6 @@ public class TCP_Client extends Thread{
 			
 			testSocket = new Socket(adress, port);
 			System.out.println("baserun()");
-
 
 			//i+=3;
 		} catch (IOException e) 
@@ -61,6 +59,5 @@ public class TCP_Client extends Thread{
 			return socketRead.readObject();
 		else
 			return null;
-	}
-	
+	}	
 }
