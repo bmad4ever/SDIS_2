@@ -34,5 +34,7 @@ public class AsymmetricKey {
 	    System.out.println(new String(ecryptedData));
 	    System.out.println("\nDecrypted Data:");
 	    System.out.println(new String(decryptedData));
+	    System.out.println("\nD:");
+	    System.out.println(new String(prvk.getEncoded()));
 	}
 }
