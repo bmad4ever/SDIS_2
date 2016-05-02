@@ -9,7 +9,8 @@ public class MessageHeader implements Comparable<MessageHeader>,java.io.Serializ
 		putchunk, stored,			/*backup*/
 		getchunk, chunk,			/*restore*/
 		requestdelete, delete, 		/*deleted*/
-		removed 					/*space reclaim*/
+		removed, 					/*space reclaim*/
+		deny						/*deny service*/
 	};
 	
 	private MessageType messageType;
