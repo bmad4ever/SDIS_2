@@ -7,7 +7,9 @@ public class MessageHeader implements Comparable<MessageHeader> {
 		putchunk, stored,	/*backup*/
 		getchunk, chunk,	/*restore*/
 		delete, 			/*deleted*/
-		removed 			/*space reclaim*/
+		removed, 			/*space reclaim*/
+		
+		port_request		/*Used by the port dispatcher in requests and responses*/
 	};
 	
 	private MessageType messageType;
@@ -21,7 +23,7 @@ public class MessageHeader implements Comparable<MessageHeader> {
 	private int replicationDegree; //It takes one byte, 
 	public int ReplicationDegree(){return replicationDegree;}
 	
-	MessageHeader(MessageType messageType, String senderId, String fileId, String chunkNo, int replicationDegree){
+	public MessageHeader(MessageType messageType, String senderId, String fileId, String chunkNo, int replicationDegree){
 		this.messageType = messageType;
 		this.senderId = senderId;
 		this.fileId = fileId;
