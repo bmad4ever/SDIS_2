@@ -7,6 +7,7 @@ public class MessageHeader implements Comparable<MessageHeader>,java.io.Serializ
 	public enum MessageType {
 		hello,cred_pubkey,peer_privkey,/*hello, tell control that u exist*/
 		getpeeraddr,peeraddr,		/*ask control peer addr*/
+		
 		putchunk, stored,			/*backup*/
 		getchunk, chunk,			/*restore*/
 		requestdelete, delete, 		/*deleted*/

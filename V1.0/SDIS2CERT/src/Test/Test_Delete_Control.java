@@ -8,9 +8,10 @@ import Utilities.ProgramDefinitions;
 import Utilities.SymmetricKey;
 import communication.TCP_Server;
 import funtionalities.PeerData;
+import protocols.DELETE_request_to_control;
 import protocols.HELLO;
 
-public class PeerApp {
+public class Test_Delete_Control {
 	public static void main(String[] args) {
 		
 		if(args.length!=4)
@@ -19,19 +20,27 @@ public class PeerApp {
 		}
 		
 		SymmetricKey.generate_key(args[0]+args[1]);
-		
+				
 		try {
 			ProgramDefinitions.mydata = new PeerData(SymmetricKey.key, InetAddress.getLocalHost().getHostAddress(), Integer.parseInt(args[2]), args[0]);
 		} catch (NumberFormatException | UnknownHostException e) {	e.printStackTrace();}
 		
-	//start server
+		//start server
 		TCP_Server server = new TCP_Server(Integer.parseInt(args[2]));
 		server.start();
 		
 		
-	//Send HELLO to Control
+		//Send HELLO to Control
 		HELLO client = new HELLO(ProgramDefinitions.CONTROL_PORT, args[3]);
     	client.start();
+    	
+    	
+    	try {
+    		Thread.sleep(5000);
+		} catch (InterruptedException e1) {	e1.printStackTrace();}
+    	
+    	DELETE_request_to_control deleteclient = new DELETE_request_to_control(ProgramDefinitions.CONTROL_PORT, args[3], "FileID");
+    	deleteclient.start();
 		
     	
     

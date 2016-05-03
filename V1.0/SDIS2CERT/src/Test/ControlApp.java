@@ -14,7 +14,7 @@ public class ControlApp {
 	public static void main(String[] args) {
 		
 		try {
-			System.out.println("Control Server runing on " + InetAddress.getLocalHost().getHostAddress() + ":" + ProgramDefinitions.CONTROL_PORT);
+			System.out.println("Control Server running on " + InetAddress.getLocalHost().getHostAddress() + ":" + ProgramDefinitions.CONTROL_PORT);
 		} catch (UnknownHostException e1) {e1.printStackTrace();}
 	
 	//initialize stuff 

@@ -49,8 +49,8 @@ public class SymmetricKey {
 	}
 	
 	
-	static public byte[] encryptData(byte[] key,byte[] dataToSend){
-		SecretKeySpec sk =  new SecretKeySpec(key, ProgramDefinitions.SYMM_KEY_ALGORITHM);
+	static public byte[] encryptData(byte[] skb,byte[] dataToSend){
+		SecretKeySpec sk =  new SecretKeySpec(skb, ProgramDefinitions.SYMM_KEY_ALGORITHM);
 		byte[] encryptedData = null;
 		try {
 			cipher.init(Cipher.ENCRYPT_MODE, sk);
@@ -63,8 +63,8 @@ public class SymmetricKey {
 		return encryptedData;
 	}
 	
-	static public byte[] decryptData(byte[] key,byte[] dataToDecrypt){
-		SecretKeySpec sk =  new SecretKeySpec(key, ProgramDefinitions.SYMM_KEY_ALGORITHM);
+	static public byte[] decryptData(byte[] skb,byte[] dataToDecrypt){
+		SecretKeySpec sk =  new SecretKeySpec(skb, ProgramDefinitions.SYMM_KEY_ALGORITHM);
 		byte[] decryptedData = null;
 		try {
 			cipher.init(Cipher.DECRYPT_MODE, sk);

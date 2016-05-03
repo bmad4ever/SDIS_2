@@ -4,6 +4,8 @@ import java.net.Socket;
 
 import Utilities.AsymmetricKey;
 import Utilities.SerialU;
+import Utilities.SymmetricKey;
+import funtionalities.DeleteRequestBody;
 import funtionalities.Metadata;
 import funtionalities.PeerData;
 
@@ -37,7 +39,10 @@ public class CentralServiceThread extends TCP_Thread{
 		case hello:
 			process_hello();
 			break;
-
+		case requestdelete:
+			process_delete(receivedMSG);
+			break;
+			
 		default:
 			break;
 		}
@@ -62,7 +67,17 @@ public class CentralServiceThread extends TCP_Thread{
 		{
 			Metadata.data.add(new_pd);
 		}
+	}
+	
+	void process_delete(MessagePacket receivedMSG)
+	{
+		String sender = receivedMSG.header.senderId();
+		byte[] senderKey = Metadata.getPeerData(sender).priv_key;
+		byte[] unencryptBody = SymmetricKey.decryptData(senderKey, receivedMSG.body);
+		DeleteRequestBody msgBody = (DeleteRequestBody) SerialU.deserialize(unencryptBody);
 		
+		for(int i = 0; i < msgBody.PeerIDs.size(); i++)
+			System.out.println(msgBody.PeerIDs.get(i));
 		
 	}
 }
