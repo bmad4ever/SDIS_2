@@ -7,7 +7,7 @@ import java.net.ServerSocket;
 	import java.net.Socket;
 	import java.net.UnknownHostException;
 
-import communication.TCP_Server;
+import communication.TCP_ServerCentral;
 import protocols.PUTCHUNK;
 
 	public class Test_Server {
@@ -18,7 +18,7 @@ import protocols.PUTCHUNK;
 	    		
 	    	System.out.println("TEST SERVER: " + InetAddress.getLocalHost().getHostName() + " : " + InetAddress.getLocalHost().getHostAddress());
 	    	
-	    	TCP_Server server = new TCP_Server(50001);
+	    	TCP_ServerCentral server = new TCP_ServerCentral(50001);
 	    	server.start();
 	    	
 	    	

@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
-import communication.AsymmetricKey;
-import communication.TCP_Server;
+import Utilities.AsymmetricKey;
+import communication.TCP_ServerCentral;
 import funtionalities.Metadata;
 import funtionalities.PeerData;
 
@@ -24,7 +24,7 @@ public class Main {
 		} catch (Exception e) {e.printStackTrace(); return;}
 		
 	//start server
-		TCP_Server server = new TCP_Server(Integer.parseInt(args[0]));
+		TCP_ServerCentral server = new TCP_ServerCentral(Integer.parseInt(args[0]));
 		
 	}
 }
