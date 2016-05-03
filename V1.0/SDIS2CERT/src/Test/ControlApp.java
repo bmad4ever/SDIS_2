@@ -6,6 +6,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import Utilities.AsymmetricKey;
 import Utilities.ProgramDefinitions;
+import Utilities.SymmetricKey;
 import communication.TCP_Server;
 import funtionalities.Metadata;
 import funtionalities.PeerData;
@@ -23,6 +24,7 @@ public class ControlApp {
 			//else 
 			Metadata.data = new ArrayList<PeerData>();
 		AsymmetricKey.generate_key();
+		SymmetricKey.generate_cipher();
 		ProgramDefinitions.is_control = true;
 		
 		} catch (Exception e) {e.printStackTrace(); return;}

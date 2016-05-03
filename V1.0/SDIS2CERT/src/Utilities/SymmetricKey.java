@@ -48,6 +48,16 @@ public class SymmetricKey {
 		secretKey = new SecretKeySpec(key, ProgramDefinitions.SYMM_KEY_ALGORITHM);
 	}
 	
+	static public void generate_cipher(){
+		try {
+			cipher = Cipher.getInstance(ProgramDefinitions.SYMM_KEY_ALGORITHM);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (NoSuchPaddingException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 	static public byte[] encryptData(byte[] skb,byte[] dataToSend){
 		SecretKeySpec sk =  new SecretKeySpec(skb, ProgramDefinitions.SYMM_KEY_ALGORITHM);
