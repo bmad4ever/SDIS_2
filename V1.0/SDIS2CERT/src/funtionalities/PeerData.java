@@ -10,9 +10,9 @@ package funtionalities;
 
 public class PeerData implements java.io.Serializable{
 
-	String peerID;
-	byte[] priv_key;
-	PeerAddress addr;
+	public String peerID;
+	public byte[] priv_key;
+	public PeerAddress addr;
 	
 	public PeerData(byte[] priv_key,String ip,int port, String peerID)
 	{
