@@ -7,13 +7,12 @@ import java.util.*;
 
 public class Metadata {
 
-
 	static public List<PeerData> data;
 
 	/**
 	 * @return true if saved everything ok and deleted previous metadata
 	 */
-	static boolean save(){
+	public static boolean save(){
 
 		//serialize data to a new file (keeps old data so far)
 		try (
@@ -42,15 +41,14 @@ public class Metadata {
 
 	}
 
-	static void load() {
-		//deserialize the quarks.ser file
+	public static void load() {
 		try(
-				InputStream file = new FileInputStream("quarks.ser");
+				InputStream file = new FileInputStream("metadata.ser");
 				InputStream buffer = new BufferedInputStream(file);
 				ObjectInput input = new ObjectInputStream (buffer);
 				){
 			//deserialize the List
-			List<PeerData> recoveredData = (List<PeerData>)input.readObject();
+			List<PeerData> recoveredData = (List<PeerData>) input.readObject();
 			data = recoveredData;
 		}
 		catch(ClassNotFoundException ex){
@@ -61,7 +59,7 @@ public class Metadata {
 		}
 	}
 
-	static PeerData getPeerData(String peerid)
+	public static PeerData getPeerData(String peerid)
 	{
 		for (PeerData peerData : data) {
 			if(peerData.peerID.equals(peerid)) return peerData;
@@ -69,12 +67,16 @@ public class Metadata {
 		return null;
 	}
 	
-	static PeerAddress getPeerAddr(String peerid)
+	public static PeerAddress getPeerAddr(String peerid)
 	{
 		PeerData pd = getPeerData(peerid);
 		if (pd == null) return null;
 		return pd.addr;
 	}
 	
-	
+	public static boolean exists_metadata_file()
+	{
+		File f = new File("metadata.ser");
+		return !f.exists() && !f.isDirectory();
+	}
 }
