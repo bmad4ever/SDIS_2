@@ -3,7 +3,7 @@ package Test;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import communication.TCP_ServerPeer;
+import communication.TCP_Server;
 import protocols.PUTCHUNK;
 
 	public class Test_Server {
@@ -14,7 +14,7 @@ import protocols.PUTCHUNK;
 	    		
 	    	System.out.println("TEST SERVER: " + InetAddress.getLocalHost().getHostName() + " : " + InetAddress.getLocalHost().getHostAddress());
 	    	
-	    	TCP_ServerPeer server = new TCP_ServerPeer(50001);
+	    	TCP_Server server = new TCP_Server(50001);
 	    	server.start();
 	    	
 	    	

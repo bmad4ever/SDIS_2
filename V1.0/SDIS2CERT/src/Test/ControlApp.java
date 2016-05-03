@@ -2,7 +2,7 @@ package Test;
 
 import java.util.ArrayList;
 import Utilities.AsymmetricKey;
-import communication.TCP_ServerCentral;
+import communication.TCP_Server;
 import funtionalities.Metadata;
 import funtionalities.PeerData;
 
@@ -24,7 +24,7 @@ public class ControlApp {
 		} catch (Exception e) {e.printStackTrace(); return;}
 		
 	//start server
-		TCP_ServerCentral server = new TCP_ServerCentral(Integer.parseInt(args[0]));
+		TCP_Server server = new TCP_Server(Integer.parseInt(args[0]));
 		
 	}
 }
