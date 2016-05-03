@@ -3,6 +3,7 @@ package funtionalities;
 import java.io.*;
 import java.util.*;
 //import java.util.logging.*;
+//import java.util.stream.Collectors;
 
 public class Metadata {
 
@@ -60,4 +61,20 @@ public class Metadata {
 		}
 	}
 
+	static PeerData getPeerData(String peerid)
+	{
+		for (PeerData peerData : data) {
+			if(peerData.peerID.equals(peerid)) return peerData;
+		}
+		return null;
+	}
+	
+	static PeerAddress getPeerAddr(String peerid)
+	{
+		PeerData pd = getPeerData(peerid);
+		if (pd == null) return null;
+		return pd.addr;
+	}
+	
+	
 }
