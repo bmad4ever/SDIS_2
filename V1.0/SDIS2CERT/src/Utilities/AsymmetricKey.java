@@ -43,7 +43,13 @@ import javax.crypto.Cipher;
 	{
 	    // Generate a key-pair
 	    KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-	    kpg.initialize(512); // 512 is the keysize.
+	    kpg.initialize(2048); // 512 is the keysize.
+	    
+	    /*
+	     * The RSA algorithm can only encrypt data that has a maximum byte length of the 
+	     * RSA key length in bits divided with eight minus eleven padding bytes, i.e. number 
+	     * of maximum bytes = key length in bits / 8 - 11. 
+	     */
 	    
 	    KeyPair kp = kpg.generateKeyPair();
 	    pubk = kp.getPublic();

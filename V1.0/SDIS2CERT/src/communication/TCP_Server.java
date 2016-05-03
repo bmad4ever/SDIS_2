@@ -18,7 +18,13 @@ public class TCP_Server extends Thread{
 	Socket peerSocket;
 
 	volatile protected boolean stop = false;
-	public void STOP() { stop=true;}
+	public void STOP() 
+	{ 
+		stop=true;
+		try {
+			peerServerSocket.close();
+		} catch (IOException e) {e.printStackTrace();} 
+	}
 
 	public TCP_Server(int p) {
 		try {

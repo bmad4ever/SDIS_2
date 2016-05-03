@@ -55,13 +55,13 @@ public class CentralServiceThread extends TCP_Thread{
 		sendMessage(msg);
 		
 		MessagePacket msgPack = (MessagePacket) receiveMessage();
-		PeerData new_pd = (PeerData) SerialU.deserialize(msgPack.body);
+		msgPack.print();
+		byte[] msgContent = AsymmetricKey.decrypt(AsymmetricKey.prvk, msgPack.body);
+		PeerData new_pd = (PeerData) SerialU.deserialize(msgContent);
 		if (new_pd!=null) 
 		{
 			Metadata.data.add(new_pd);
 		}
-		
-		
 		
 		
 	}
