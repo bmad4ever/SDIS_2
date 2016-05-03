@@ -2,7 +2,7 @@ package communication;
 
 public class MessageHeader implements Comparable<MessageHeader>,java.io.Serializable {
 
-	private static final boolean DEBUG = false;
+	//private static final boolean DEBUG = false;
 
 	public enum MessageType {
 		hello,cred_pubkey,peer_privkey,/*hello, tell control that u exist*/
@@ -16,8 +16,6 @@ public class MessageHeader implements Comparable<MessageHeader>,java.io.Serializ
 	
 	private MessageType messageType;
 	public MessageType MessageType(){return messageType;}
-	//private String version;
-	//public String Version(){return version;}
 	private String senderId;
 	public String senderId(){return senderId;}
 	private String fileId;//64 ASCII character sequence
@@ -29,10 +27,9 @@ public class MessageHeader implements Comparable<MessageHeader>,java.io.Serializ
 	private long timestamp; //It takes one byte, 
 	public long TimeStamp(){return timestamp;}
 	
-	public MessageHeader(MessageType messageType/*, String version*/, String senderId, String fileId, String chunkNo, int replicationDegree,int timestamp)
+	public MessageHeader(MessageType messageType, String senderId, String fileId, String chunkNo, int replicationDegree,int timestamp)
 	{
 		this.messageType = messageType;
-		//this.version = version;
 		this.senderId = senderId;
 		this.fileId = fileId;
 		this.chunkNo = chunkNo;
