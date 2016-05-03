@@ -22,7 +22,7 @@ public class TCP_Client extends TCP_Thread{
 	public void baserun() {
 		try {
 			
-			testSocket = new Socket(adress, port);
+			socket = new Socket(adress, port);
 		} catch (IOException e) 
 		{
 			e.printStackTrace();

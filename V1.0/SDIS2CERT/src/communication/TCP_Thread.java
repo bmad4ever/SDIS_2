@@ -8,8 +8,8 @@ import java.net.Socket;
 
 public class TCP_Thread extends Thread {
 
-	protected ServerSocket testSer;
-	protected Socket testSocket;
+	protected ServerSocket serverSocket;
+	protected Socket socket;
 	protected ObjectOutputStream socketWrite;
 	protected ObjectInputStream socketRead;
 
@@ -20,7 +20,7 @@ public class TCP_Thread extends Thread {
 	
 	public void sendMessage(Object obj){
 		try{
-		if (socketWrite == null) socketWrite = new ObjectOutputStream(testSocket.getOutputStream());
+		if (socketWrite == null) socketWrite = new ObjectOutputStream(socket.getOutputStream());
 		if(!failed_init)
 			{
 				socketWrite.writeObject(obj);
@@ -31,7 +31,7 @@ public class TCP_Thread extends Thread {
 
 	public Object receiveMessage() {
 		try{
-		if (socketRead==null) socketRead = new ObjectInputStream(testSocket.getInputStream());
+		if (socketRead==null) socketRead = new ObjectInputStream(socket.getInputStream());
 		if(!failed_init)
 			{
 			return socketRead.readObject();

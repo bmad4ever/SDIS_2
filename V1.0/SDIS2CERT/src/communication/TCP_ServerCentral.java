@@ -21,8 +21,8 @@ public class TCP_ServerCentral extends TCP_Thread{
 	@Override
 	public void run() {
 		try {
-			testSer = new ServerSocket(port);
-			testSocket = testSer.accept();
+			serverSocket = new ServerSocket(port);
+			socket = serverSocket.accept();
 			System.out.println("Estou aqui");
 			System.out.flush();	
 
