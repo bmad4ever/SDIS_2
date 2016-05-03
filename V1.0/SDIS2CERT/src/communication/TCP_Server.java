@@ -48,7 +48,8 @@ public class TCP_Server extends Thread{
 				newService.start();
 				
 
-			} catch (IOException e) {e.printStackTrace();}
+			} catch (IOException e) 
+			{if(DEBUG) System.out.println("Server Thread Closing"); }
 		}
 		
 	}
