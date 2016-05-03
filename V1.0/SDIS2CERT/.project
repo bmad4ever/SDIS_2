@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>SDIS2_CERTEFIER</name>
+	<name>SDIS2</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -14,16 +14,4 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>.classpath</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Documents/repositories/SDIS_2/trunk/V1.0/SDIS2/.classpath</locationURI>
-		</link>
-		<link>
-			<name>.project</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Documents/repositories/SDIS_2/trunk/V1.0/SDIS2/.project</locationURI>
-		</link>
-	</linkedResources>
 </projectDescription>
