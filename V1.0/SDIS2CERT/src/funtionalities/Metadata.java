@@ -79,4 +79,15 @@ public class Metadata {
 		File f = new File("metadata.ser");
 		return !f.exists() && !f.isDirectory();
 	}
+	
+	public static List<PeerData> getMetadata2send2peer()
+	{
+		if(data==null) return null;
+		List<PeerData> result = new ArrayList<PeerData>();
+		for (PeerData peerData : data) {
+			PeerData peerDataWithoutKey = new PeerData(null,peerData.addr.ip,peerData.addr.port,peerData.peerID);
+			result.add( peerDataWithoutKey);
+		}
+		return result;
+	}
 }
