@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import Utilities.AsymmetricKey;
 import Utilities.ProgramDefinitions;
+import Utilities.SymmetricKey;
 import communication.TCP_Server;
 import funtionalities.PeerData;
 import protocols.HELLO;
@@ -12,22 +14,24 @@ import protocols.HELLO;
 public class PeerApp {
 	public static void main(String[] args) {
 		
-		if(args.length!=3)
+		if(args.length!=4)
 		{
-			System.out.println("cred <ID> <port number> <Control IP Address>");
+			System.out.println("cred <ID> <password> <port number> <Control IP Address> ");
 		}
 		
+		SymmetricKey.generate_key(args[0]+args[1]);
+		
 		try {
-			ProgramDefinitions.mydata = new PeerData(null, InetAddress.getLocalHost().getHostAddress(), Integer.parseInt(args[1]), args[0]);
+			ProgramDefinitions.mydata = new PeerData(SymmetricKey.key, InetAddress.getLocalHost().getHostAddress(), Integer.parseInt(args[2]), args[0]);
 		} catch (NumberFormatException | UnknownHostException e) {	e.printStackTrace();}
 		
 	//start server
-		TCP_Server server = new TCP_Server(Integer.parseInt(args[1]));
+		TCP_Server server = new TCP_Server(Integer.parseInt(args[2]));
 		server.start();
 		
 		
 	//Send HELLO to Control
-		HELLO client = new HELLO(ProgramDefinitions.CONTROL_PORT, args[2]);
+		HELLO client = new HELLO(ProgramDefinitions.CONTROL_PORT, args[3]);
     	client.start();
 		
     	

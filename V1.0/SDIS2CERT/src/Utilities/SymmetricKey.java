@@ -22,38 +22,38 @@ import javax.crypto.spec.SecretKeySpec;
 	//Easy :) 
 */
 public class SymmetricKey {
-	private final String id;
-	private Cipher cipher;
-	private byte[] key;
-	private SecretKeySpec secretKey;
-	private final String algorithm;
+	//private final String id;
+	static private Cipher cipher;
+	static public byte[] key;
+	static public SecretKeySpec secretKey;
+	//private final String algorithm;
 	
-	public SymmetricKey(String i, String algo){
-		id = i;
-		algorithm = algo;
+	static public void generate_key(String seed){
+		//algorithm = algo;
 		MessageDigest md;
 		key = null;
 		try {
 			md = MessageDigest.getInstance("MD5");
-			key = md.digest(id.getBytes("UTF-8"));
+			key = md.digest(seed.getBytes("UTF-8"));
 		} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 		try {
-			cipher = Cipher.getInstance(algorithm);
+			cipher = Cipher.getInstance(ProgramDefinitions.SYMM_KEY_ALGORITHM);
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		} catch (NoSuchPaddingException e) {
 			e.printStackTrace();
 		}
-		secretKey = new SecretKeySpec(key, algorithm);
+		secretKey = new SecretKeySpec(key, ProgramDefinitions.SYMM_KEY_ALGORITHM);
 	}
 	
 	
-	public byte[] encryptData(byte[] dataToSend){
+	static public byte[] encryptData(byte[] key,byte[] dataToSend){
+		SecretKeySpec sk =  new SecretKeySpec(key, ProgramDefinitions.SYMM_KEY_ALGORITHM);
 		byte[] encryptedData = null;
 		try {
-			cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+			cipher.init(Cipher.ENCRYPT_MODE, sk);
 			encryptedData = cipher.doFinal(dataToSend);
 		} catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
 			e.printStackTrace();
@@ -63,10 +63,11 @@ public class SymmetricKey {
 		return encryptedData;
 	}
 	
-	public byte[] decryptData(byte[] dataToDecrypt){
+	static public byte[] decryptData(byte[] key,byte[] dataToDecrypt){
+		SecretKeySpec sk =  new SecretKeySpec(key, ProgramDefinitions.SYMM_KEY_ALGORITHM);
 		byte[] decryptedData = null;
 		try {
-			cipher.init(Cipher.DECRYPT_MODE, secretKey);
+			cipher.init(Cipher.DECRYPT_MODE, sk);
 			decryptedData = cipher.doFinal(dataToDecrypt);
 		} catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
 			e.printStackTrace();
