@@ -1,13 +1,9 @@
 package Test;
-	import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+	import java.io.IOException;
 import java.net.InetAddress;
-import java.net.ServerSocket;
-	import java.net.Socket;
-	import java.net.UnknownHostException;
+import java.net.UnknownHostException;
 
-import communication.TCP_ServerCentral;
+import communication.TCP_ServerPeer;
 import protocols.PUTCHUNK;
 
 	public class Test_Server {
@@ -18,7 +14,7 @@ import protocols.PUTCHUNK;
 	    		
 	    	System.out.println("TEST SERVER: " + InetAddress.getLocalHost().getHostName() + " : " + InetAddress.getLocalHost().getHostAddress());
 	    	
-	    	TCP_ServerCentral server = new TCP_ServerCentral(50001);
+	    	TCP_ServerPeer server = new TCP_ServerPeer(50001);
 	    	server.start();
 	    	
 	    	

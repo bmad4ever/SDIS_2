@@ -1,6 +1,5 @@
 package communication;
 
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
@@ -15,7 +14,7 @@ public class TCP_Thread extends Thread {
 	protected ObjectInputStream socketRead;
 
 	protected InetAddress adress;
-	protected int port;
+	public int port;
 	
 	protected boolean failed_init = false;
 	
