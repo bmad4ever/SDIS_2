@@ -7,9 +7,7 @@ import communication.TCP_Server;
 import protocols.PUTCHUNK;
 
 	public class Test_Server {
-		 
-		PUTCHUNK test;
-		
+
 	    public static void main(String[] args) throws UnknownHostException, InterruptedException {
 	    		
 	    	System.out.println("TEST SERVER: " + InetAddress.getLocalHost().getHostName() + " : " + InetAddress.getLocalHost().getHostAddress());
