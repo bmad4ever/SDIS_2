@@ -11,7 +11,7 @@ import javax.crypto.Cipher;
 	public static PublicKey pubk;
 	public static PrivateKey prvk;
 	
-	public static void test() throws Exception
+	/*public static void test() throws Exception
 	{
 	    // Generate a key-pair
 		generate_key();
@@ -37,7 +37,7 @@ import javax.crypto.Cipher;
 	    System.out.println(new String(decryptedData));
 	    System.out.println("\nD:");
 	    System.out.println(new String(prvk.getEncoded()));
-	}
+	}*/
 	
 	public static void generate_key() throws Exception
 	{
@@ -50,6 +50,23 @@ import javax.crypto.Cipher;
 	    prvk = kp.getPrivate();
 	}
 	
+	public static byte[] encrypt(PublicKey pub_key, byte[] data)
+	{
+		try{
+	    Cipher cipherEncrypt = Cipher.getInstance("RSA/ECB/PKCS1PADDING");
+	    cipherEncrypt.init(Cipher.ENCRYPT_MODE, pub_key);
+	    return cipherEncrypt.doFinal(data);
+		} catch (Exception e) { e.printStackTrace(); return null;}
+	}
+	
+	public static byte[] decrypt(PrivateKey priv_key, byte[] data)
+	{
+		try{
+	    Cipher cipherDecrypt = Cipher.getInstance("RSA/ECB/PKCS1PADDING");
+	    cipherDecrypt.init(Cipher.DECRYPT_MODE, priv_key);
+	    return cipherDecrypt.doFinal(data);
+		} catch (Exception e) { e.printStackTrace(); return null;}
+	}
 	
 	
 }
