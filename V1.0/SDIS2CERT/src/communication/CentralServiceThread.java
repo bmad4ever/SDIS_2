@@ -35,7 +35,7 @@ public class CentralServiceThread extends TCP_Thread{
 	
 	void state_machine(MessagePacket receivedMSG)
 	{
-		switch (receivedMSG.header.MessageType()) {
+		switch (receivedMSG.header.getMessageType()) {
 		case hello:
 			process_hello();
 			break;
@@ -71,7 +71,7 @@ public class CentralServiceThread extends TCP_Thread{
 	
 	void process_delete(MessagePacket receivedMSG)
 	{
-		String sender = receivedMSG.header.senderId();
+		String sender = receivedMSG.header.getSenderId();
 		byte[] senderKey = Metadata.getPeerData(sender).priv_key;
 		byte[] unencryptBody = SymmetricKey.decryptData(senderKey, receivedMSG.body);
 		DeleteRequestBody msgBody = (DeleteRequestBody) SerialU.deserialize(unencryptBody);

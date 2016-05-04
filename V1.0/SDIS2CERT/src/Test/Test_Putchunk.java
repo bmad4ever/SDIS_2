@@ -10,9 +10,8 @@ import protocols.PUTCHUNK;
 	    	
 	    	System.out.println("TEST CLIENT");
 	    	 	
-	    	PUTCHUNK client = new PUTCHUNK(50001, args[0]);
+	    	PUTCHUNK client = new PUTCHUNK(50001, args[0], null, null, null, 0, null);
 	    	client.start();
-	    	
 	    	
 	    	try {System.in.read();} 
 			catch (IOException e) {e.printStackTrace();}

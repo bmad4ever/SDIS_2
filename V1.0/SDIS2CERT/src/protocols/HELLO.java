@@ -29,7 +29,8 @@ public class HELLO extends TCP_Client{
 		if(failed_init)
 			return;
 		
-		MessagePacket n = new MessagePacket(MessageHeader.MessageType.hello,null,null,null,0,0,null);
+		MessageHeader nHeader = new MessageHeader(MessageHeader.MessageType.hello, null, null, null, 0, 0);
+		MessagePacket n = new MessagePacket(nHeader, null);
 		sendMessage(n);
 		
 		MessagePacket response = (MessagePacket) receiveMessage();
@@ -41,8 +42,9 @@ public class HELLO extends TCP_Client{
 			e.printStackTrace();
 		}
 		
-		byte[] raw = SerialU.serialize(ProgramDefinitions.mydata);		
-		MessagePacket m = new MessagePacket(MessageHeader.MessageType.peer_privkey,null,null,null,0,0, AsymmetricKey.encrypt(AsymmetricKey.pubk, raw));
+		byte[] raw = SerialU.serialize(ProgramDefinitions.mydata);
+		MessageHeader mHeader = new MessageHeader(MessageHeader.MessageType.peer_privkey, null, null, null, 0, 0);
+		MessagePacket m = new MessagePacket(mHeader, AsymmetricKey.encrypt(AsymmetricKey.pubk, raw));
 		sendMessage(m);
 		
 		

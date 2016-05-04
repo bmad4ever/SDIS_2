@@ -24,7 +24,7 @@ public class PeerServiceThread extends TCP_Thread{
 	
 	void state_machine(MessagePacket receivedMSG)
 	{
-		switch (receivedMSG.header.MessageType()) {
+		switch (receivedMSG.header.getMessageType()) {
 		case hello:
 		
 			break;
