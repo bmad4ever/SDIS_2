@@ -1,7 +1,5 @@
 package protocols;
 
-import communication.MessageHeader;
-import communication.MessagePacket;
 import communication.TCP_Client;
 
 public class DELETE_protocol extends TCP_Client{
