@@ -1,7 +1,5 @@
 package Utilities;
 
-import funtionalities.PeerData;
-
 public class ProgramDefinitions {
 
 	static final public int MAX_SERVICE_THREADS = 10;

@@ -6,6 +6,9 @@ import java.util.concurrent.Semaphore;
 //import java.util.logging.*;
 //import java.util.stream.Collectors;
 
+import Utilities.PeerAddress;
+import Utilities.PeerData;
+
 public class Metadata implements Runnable{
 
 	static public List<PeerData> data;

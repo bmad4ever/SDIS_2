@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Utilities.ProgramDefinitions;
-import Utilities.SerialU;
-import Utilities.SymmetricKey;
-import communication.MessageHeader;
-import communication.MessagePacket;
 import communication.TCP_Client;
-import funtionalities.DeleteRequestBody;
+import communication.messages.DeleteRequestBody;
+import communication.messages.MessageHeader;
+import communication.messages.MessagePacket;
+import funtionalities.SerialU;
+import funtionalities.SymmetricKey;
 
 public class DELETE_request_to_control extends TCP_Client{
 

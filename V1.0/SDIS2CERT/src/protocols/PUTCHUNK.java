@@ -1,8 +1,8 @@
 package protocols;
 
-import communication.MessageHeader;
-import communication.MessagePacket;
 import communication.TCP_Client;
+import communication.messages.MessageHeader;
+import communication.messages.MessagePacket;
 
 public class PUTCHUNK extends TCP_Client{
 	private String senderId;

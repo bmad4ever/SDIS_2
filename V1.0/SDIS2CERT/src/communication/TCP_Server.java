@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import Utilities.ProgramDefinitions;
+import communication.service.ControlServiceThread;
+import communication.service.PeerServiceThread;
 
 
 /**
@@ -43,7 +45,7 @@ public class TCP_Server extends Thread{
 				
 				TCP_Thread newService;
 				if(ProgramDefinitions.is_control)
-					newService = new CentralServiceThread(peerSocket);
+					newService = new ControlServiceThread(peerSocket);
 				else
 					newService = new PeerServiceThread(peerSocket);
 				newService.start();

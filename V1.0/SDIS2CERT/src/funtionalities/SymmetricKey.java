@@ -1,4 +1,4 @@
-package Utilities;
+package funtionalities;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
@@ -10,6 +10,8 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
+
+import Utilities.ProgramDefinitions;
 
 /* EXAMPLE
 	//create new object

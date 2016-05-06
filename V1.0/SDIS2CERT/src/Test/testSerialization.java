@@ -6,12 +6,12 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 
-import Utilities.AsymmetricKey;
-import Utilities.SerialU;
-import communication.MessageHeader;
-import communication.MessagePacket;
-import funtionalities.PeerData;
-import communication.MessageHeader.MessageType;
+import Utilities.PeerData;
+import communication.messages.MessageHeader;
+import communication.messages.MessagePacket;
+import communication.messages.MessageHeader.MessageType;
+import funtionalities.AsymmetricKey;
+import funtionalities.SerialU;
 
 public class testSerialization {
 

@@ -1,6 +1,9 @@
-package communication;
+package communication.service;
 
 import java.net.Socket;
+
+import communication.TCP_Thread;
+import communication.messages.MessagePacket;
 
 
 /**

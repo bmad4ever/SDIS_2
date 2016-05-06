@@ -1,4 +1,4 @@
-package Utilities;
+package funtionalities;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PrivateKey;

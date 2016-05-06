@@ -1,14 +1,14 @@
-package Test;
+package main;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import Utilities.PeerData;
 import Utilities.ProgramDefinitions;
-import Utilities.SymmetricKey;
+import Utilities.RefValue;
 import communication.TCP_Server;
-import funtionalities.PeerData;
-import funtionalities.RefValue;
+import funtionalities.SymmetricKey;
 import protocols.HELLO;
 
 public class PeerApp {

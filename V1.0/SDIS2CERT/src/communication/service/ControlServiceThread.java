@@ -1,14 +1,18 @@
-package communication;
+package communication.service;
 
 import java.net.Socket;
 import java.util.Arrays;
 
-import Utilities.AsymmetricKey;
-import Utilities.SerialU;
-import Utilities.SymmetricKey;
-import funtionalities.DeleteRequestBody;
+import Utilities.PeerData;
+import communication.TCP_Thread;
+import communication.messages.DeleteRequestBody;
+import communication.messages.MessageHeader;
+import communication.messages.MessagePacket;
+import communication.messages.MessageHeader.MessageType;
+import funtionalities.AsymmetricKey;
 import funtionalities.Metadata;
-import funtionalities.PeerData;
+import funtionalities.SerialU;
+import funtionalities.SymmetricKey;
 
 
 /**
@@ -16,9 +20,9 @@ import funtionalities.PeerData;
  * Received messages are handled by state_machine(message)
  *
  */
-public class CentralServiceThread extends TCP_Thread{
+public class ControlServiceThread extends TCP_Thread{
 	
-	public CentralServiceThread(Socket clientSocket)
+	public ControlServiceThread(Socket clientSocket)
 	{
 		socket = clientSocket;
 	}	

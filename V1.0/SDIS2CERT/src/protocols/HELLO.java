@@ -5,13 +5,13 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 
-import Utilities.AsymmetricKey;
 import Utilities.ProgramDefinitions;
-import Utilities.SerialU;
-import communication.MessageHeader;
-import communication.MessagePacket;
+import Utilities.RefValue;
 import communication.TCP_Client;
-import funtionalities.RefValue;
+import communication.messages.MessageHeader;
+import communication.messages.MessagePacket;
+import funtionalities.AsymmetricKey;
+import funtionalities.SerialU;
 
 
 /**

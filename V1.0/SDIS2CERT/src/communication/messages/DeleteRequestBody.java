@@ -1,4 +1,4 @@
-package funtionalities;
+package communication.messages;
 
 import java.util.List;
 
