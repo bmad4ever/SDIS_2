@@ -125,7 +125,6 @@ public class ControlServiceThread extends TCP_Thread{
 		byte[] unencryptBody = SymmetricKey.decryptData(senderKey, receivedMSG.body);
 		DeleteRequestBody msgBody = (DeleteRequestBody) SerialU.deserialize(unencryptBody);
 		
-		
 		MessageHeader responseheader = new MessageHeader(
 				MessageHeader.MessageType.confirm
 				,"CRED",null,null,0);
@@ -134,9 +133,16 @@ public class ControlServiceThread extends TCP_Thread{
 		MessagePacket m = new MessagePacket(responseheader,responsebody);
 		sendMessage(m);
 		
+		byte[] deleteBody = SerialU.serialize(msgBody.FileID);
+		MessagePacket deleteMessage = new MessagePacket(receivedMSG.header , deleteBody);
+		
 		for(int i = 0; i < msgBody.PeerIDs.size(); i++)
 		{
 			System.out.println(msgBody.PeerIDs.get(i));
+			
+			//O control deve, aqui, para cada peer identificado na lista:
+			// - Verificar se existe peer com esse nome na metadata
+			// - Se existir, fazer uma nova thread DELETE_protocol a cada um, na qual o corpo da mensagem a enviar é a variavel deleteMessage
 		}
 		
 		
