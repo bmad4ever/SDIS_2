@@ -6,7 +6,7 @@ import java.util.concurrent.Semaphore;
 //import java.util.logging.*;
 //import java.util.stream.Collectors;
 
-public class Metadata {
+public class Metadata implements Runnable{
 
 	static public List<PeerData> data;
 	static private final Semaphore lock = new Semaphore(1, true);
