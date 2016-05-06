@@ -1,8 +1,9 @@
 package Test;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 import Utilities.PeerData;
 import Utilities.ProgramDefinitions;
@@ -38,25 +39,25 @@ public class Test_Delete_Control {
     	try {
 			client.join();
 		} catch (InterruptedException e2) {e2.printStackTrace();}
-    	
     	if(!accept.value)
     	{
     		System.out.println("Service denied by control");
     		return;
     	}
-    	
-    	
     	try {
-    		Thread.sleep(5000);
-		} catch (InterruptedException e1) {	e1.printStackTrace();}
+			client.join();
+		} catch (InterruptedException e1) {e1.printStackTrace();}
     	
-    	DELETE_request_to_control deleteclient = new DELETE_request_to_control(ProgramDefinitions.CONTROL_PORT, args[3], "FileID");
+    	List<String> PeerIDs = new ArrayList<String>();
+    	PeerIDs.add("Peer1");	PeerIDs.add("Peer2");	PeerIDs.add("Peer3");
+    	
+    	DELETE_request_to_control deleteclient = new DELETE_request_to_control(ProgramDefinitions.CONTROL_PORT, args[3], "FileID", PeerIDs);
     	deleteclient.start();
 		
+    	try {
+    		deleteclient.join();
+		} catch (InterruptedException e1) {e1.printStackTrace();}
     	
-    
-    	try {System.in.read();} 
-		catch (IOException e) {e.printStackTrace();}
 		System.out.println("Closing down.");
 		System.exit(0);
 	}

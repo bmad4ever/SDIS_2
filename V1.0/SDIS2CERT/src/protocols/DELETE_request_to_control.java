@@ -1,6 +1,5 @@
 package protocols;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import Utilities.ProgramDefinitions;
@@ -14,10 +13,12 @@ import funtionalities.SymmetricKey;
 public class DELETE_request_to_control extends TCP_Client{
 
 	String FileID;
+	List<String> PeerIDs;
 
-	public DELETE_request_to_control(int p, String a, String FileID ) {
+	public DELETE_request_to_control(int p, String a, String FileID, List<String> PeerIDs) {
 		super(p,a);
 		this.FileID = FileID;
+		this.PeerIDs = PeerIDs;
 	}
 
 	@Override
@@ -26,10 +27,6 @@ public class DELETE_request_to_control extends TCP_Client{
 		if(failed_init)
 			return;
 
-		List<String> PeerIDs = new ArrayList<String>();
-		PeerIDs.add("Peer1");
-		PeerIDs.add("Peer2");
-		PeerIDs.add("Peer3");
 		DeleteRequestBody msgBody = new DeleteRequestBody(FileID,PeerIDs);
 		byte[] encMsgBody = SymmetricKey.encryptData(ProgramDefinitions.mydata.priv_key,SerialU.serialize(msgBody));
 

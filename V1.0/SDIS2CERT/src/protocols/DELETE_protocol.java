@@ -14,8 +14,7 @@ public class DELETE_protocol extends TCP_Client{
 		if(failed_init)
 			return;
 		
-			//MessagePacket n = new MessagePacket(MessageHeader.MessageType.requestdelete, );
-			//sendMessage(n);
+			
 			
 			
 	}

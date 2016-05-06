@@ -14,12 +14,9 @@ import funtionalities.SymmetricKey;
 
 public class ControlApp {
 	public static void main(String[] args) {
-		
-		try {
-			System.out.println("Control Server running on " + InetAddress.getLocalHost().getHostAddress() + ":" + ProgramDefinitions.CONTROL_PORT);
-		} catch (UnknownHostException e1) {e1.printStackTrace();}
 	
 	//initialize stuff 
+		System.out.println("Server setting up...");
 		try{
 			if(Metadata.exists_metadata_file()) 
 				Metadata.load();
@@ -33,6 +30,9 @@ public class ControlApp {
 		
 	//start server
 		TCP_Server server = new TCP_Server(ProgramDefinitions.CONTROL_PORT);
+		try {
+			System.out.println("Control Server running on " + InetAddress.getLocalHost().getHostAddress() + ":" + ProgramDefinitions.CONTROL_PORT);
+		} catch (UnknownHostException e1) {e1.printStackTrace();}
 		server.start();
 		
 		try {System.in.read();} 

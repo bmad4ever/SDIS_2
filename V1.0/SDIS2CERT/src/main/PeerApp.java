@@ -1,6 +1,5 @@
 package main;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -45,9 +44,6 @@ public class PeerApp {
     		return;
     	}
     	
-    
-    	try {System.in.read();} 
-		catch (IOException e) {e.printStackTrace();}
 		System.out.println("Closing down.");
 		System.exit(0);
 	}
