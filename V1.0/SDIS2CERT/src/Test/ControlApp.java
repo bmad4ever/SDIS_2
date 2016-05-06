@@ -20,9 +20,10 @@ public class ControlApp {
 	
 	//initialize stuff 
 		try{
-			//if(Metadata.exists_metadata_file()) Metadata.load();
-			//else 
-			Metadata.data = new ArrayList<PeerData>();
+			if(Metadata.exists_metadata_file()) 
+				Metadata.load();
+			else 
+				Metadata.data = new ArrayList<PeerData>();
 		AsymmetricKey.generate_key();
 		SymmetricKey.generate_cipher();
 		ProgramDefinitions.is_control = true;

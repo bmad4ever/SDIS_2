@@ -84,7 +84,7 @@ public class CentralServiceThread extends TCP_Thread{
 		{
 			if(Arrays.equals(new_pd.priv_key,existingData.priv_key))
 			{
-				existingData = new_pd;
+				Metadata.updatePeerData(existingData, new_pd);
 			}
 			else
 			{
@@ -97,7 +97,7 @@ public class CentralServiceThread extends TCP_Thread{
 			}
 		}
 		else
-			Metadata.data.add(new_pd);
+			Metadata.addNewPeerData(new_pd);
 		
 		MessageHeader h = new MessageHeader(
 				MessageHeader.MessageType.confirm

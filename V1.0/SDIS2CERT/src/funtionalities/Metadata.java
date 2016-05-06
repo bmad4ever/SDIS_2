@@ -2,13 +2,16 @@ package funtionalities;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.Semaphore;
 //import java.util.logging.*;
 //import java.util.stream.Collectors;
 
 public class Metadata {
 
 	static public List<PeerData> data;
-
+	static private final Semaphore lock = new Semaphore(1, true);
+	
+	
 	/**
 	 * @return true if saved everything ok and deleted previous metadata
 	 */
@@ -20,7 +23,11 @@ public class Metadata {
 				OutputStream buffer = new BufferedOutputStream(file);
 				ObjectOutput output = new ObjectOutputStream(buffer);
 				){
-			output.writeObject(data);
+			try {
+				lock.acquire();
+				output.writeObject(data);
+				lock.release();
+			} catch (InterruptedException e) {e.printStackTrace();}
 		}  
 		catch(IOException ex){
 			//fLogger.log(Level.SEVERE, "Cannot perform output.", ex);
@@ -59,12 +66,33 @@ public class Metadata {
 		}
 	}
 
+	static public void addNewPeerData(PeerData newData){
+		try {
+			lock.acquire();
+			data.add(newData);
+			lock.release();
+		} catch (InterruptedException e) {e.printStackTrace();}
+	}
+	
 	public static PeerData getPeerData(String peerid)
 	{
-		for (PeerData peerData : data) {
-			if(peerData.peerID.equals(peerid)) return peerData;
-		}
+		try {
+			lock.acquire();
+			for (PeerData peerData : data) {
+				if(peerData.peerID.equals(peerid)) return peerData;
+			}
+			lock.release();
+		} catch (InterruptedException e) {e.printStackTrace();}
 		return null;
+	}
+	
+	public static void updatePeerData(PeerData original, PeerData newdata)
+	{
+		try {
+			lock.acquire();
+			original = newdata;
+			lock.release();
+		} catch (InterruptedException e) {e.printStackTrace();}
 	}
 	
 	public static PeerAddress getPeerAddr(String peerid)
@@ -77,7 +105,7 @@ public class Metadata {
 	public static boolean exists_metadata_file()
 	{
 		File f = new File("metadata.ser");
-		return !f.exists() && !f.isDirectory();
+		return f.exists() && !f.isDirectory();
 	}
 	
 	public static List<PeerData> getMetadata2send2peer()
