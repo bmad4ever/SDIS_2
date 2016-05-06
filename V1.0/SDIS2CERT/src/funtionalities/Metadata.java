@@ -125,5 +125,32 @@ public class Metadata {
 			System.out.println(data.toString());
 		}
 	}
+	
+	
+	
+	
+	
+	
+	static boolean stop=false;
+	void STOP(){stop=true;}
+	/**time between nonvolatile metadata updates in miliseconds*/
+	static final int wait_time = 10000;
+	@Override
+	public void run() {
+				while(!stop)
+				{
+					try {
+						Thread.sleep(wait_time);
+						save();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+		
+	}
+	
+	
+	
+	
 
 }
