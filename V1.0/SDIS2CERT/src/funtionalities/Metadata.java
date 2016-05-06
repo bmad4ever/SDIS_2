@@ -120,18 +120,35 @@ public class Metadata implements Runnable{
 	{
 		if(data==null) return null;
 		List<PeerData> result = new ArrayList<PeerData>();
-		for (PeerData peerData : data) {
-			PeerData peerDataWithoutKey = new PeerData(null,peerData.addr.ip,peerData.addr.port,peerData.peerID);
-			result.add( peerDataWithoutKey);
-		}
+		try {
+			lock.acquire();
+			for (PeerData peerData : data) {
+				PeerData peerDataWithoutKey = new PeerData(null,peerData.addr.ip,peerData.addr.port,peerData.peerID);
+				result.add( peerDataWithoutKey);
+			}
+			lock.release();
+		} catch (InterruptedException e) {e.printStackTrace();}
 		return result;
 	}
 
+	public static void setPeerMetadataList(List<PeerData> newData){
+		try {
+			lock.acquire();
+			data = newData;
+			lock.release();
+		} catch (InterruptedException e) {e.printStackTrace();}
+		return;
+	}
+	
+
 	public static void printData()
 	{
-		for (PeerData peerData : data) {
-			System.out.println(data.toString());
-		}
+		if (data != null)
+			for (PeerData peerData : data) {
+				System.out.println(peerData.toString());
+			}
+		else
+			System.out.println("Data is empty");
 	}
 	
 	

@@ -17,7 +17,12 @@ public class PeerData implements java.io.Serializable{
 
 	public String toString()
 	{
-		SecretKeySpec sk =  new SecretKeySpec(priv_key, ProgramDefinitions.SYMM_KEY_ALGORITHM);
-		return "data{id:" + peerID + ",key:"+sk.toString()+ ","+  addr.toString() + "}";
+		if(priv_key != null)
+		{
+			SecretKeySpec sk =  new SecretKeySpec(priv_key, ProgramDefinitions.SYMM_KEY_ALGORITHM);
+			return "data{id:" + peerID + ",key:"+sk.toString()+ ","+  addr.toString() + "}";
+		}
+		else 
+			return "data{id:" + peerID + "," +  addr.toString() + "}";
 	}
 }

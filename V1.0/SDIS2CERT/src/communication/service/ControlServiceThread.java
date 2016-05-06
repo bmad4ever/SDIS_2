@@ -2,6 +2,7 @@ package communication.service;
 
 import java.net.Socket;
 import java.util.Arrays;
+import java.util.List;
 
 import Utilities.PeerData;
 import communication.TCP_Thread;
@@ -107,7 +108,11 @@ public class ControlServiceThread extends TCP_Thread{
 		MessageHeader h = new MessageHeader(
 				MessageHeader.MessageType.confirm
 				,"CRED",null,null,0);
-		MessagePacket m = new MessagePacket(h, null);
+	
+		List<PeerData> peerMetadata = Metadata.getMetadata2send2peer();
+		byte[] tmp =  SerialU.serialize(peerMetadata);
+		byte[] peerMbody = SymmetricKey.encryptData(new_pd.priv_key, tmp);
+		MessagePacket m = new MessagePacket(h,peerMbody);
 		sendMessage(m);
 		
 		
@@ -121,7 +126,10 @@ public class ControlServiceThread extends TCP_Thread{
 		DeleteRequestBody msgBody = (DeleteRequestBody) SerialU.deserialize(unencryptBody);
 		
 		for(int i = 0; i < msgBody.PeerIDs.size(); i++)
+		{
+
 			System.out.println(msgBody.PeerIDs.get(i));
+		}
 		
 	}
 }
