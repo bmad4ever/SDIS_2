@@ -125,11 +125,20 @@ public class ControlServiceThread extends TCP_Thread{
 		byte[] unencryptBody = SymmetricKey.decryptData(senderKey, receivedMSG.body);
 		DeleteRequestBody msgBody = (DeleteRequestBody) SerialU.deserialize(unencryptBody);
 		
+		
+		MessageHeader responseheader = new MessageHeader(
+				MessageHeader.MessageType.confirm
+				,"CRED",null,null,0);
+		byte[] tmp =  SerialU.serialize(msgBody.PeerIDs.size());
+		byte[] responsebody = SymmetricKey.encryptData(senderKey, tmp);
+		MessagePacket m = new MessagePacket(responseheader,responsebody);
+		sendMessage(m);
+		
 		for(int i = 0; i < msgBody.PeerIDs.size(); i++)
 		{
-
 			System.out.println(msgBody.PeerIDs.get(i));
 		}
+		
 		
 	}
 }

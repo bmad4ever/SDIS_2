@@ -31,7 +31,19 @@ public class DELETE_request_to_control extends TCP_Client{
 		byte[] encMsgBody = SymmetricKey.encryptData(ProgramDefinitions.mydata.priv_key,SerialU.serialize(msgBody));
 
 		MessageHeader header = new MessageHeader(MessageHeader.MessageType.requestdelete, ProgramDefinitions.mydata.peerID,null,null,0);
-		MessagePacket packet = new MessagePacket(header, encMsgBody);
-		sendMessage(packet);
+		MessagePacket message = new MessagePacket(header, encMsgBody);
+		sendMessage(message);
+		
+		MessagePacket response = (MessagePacket) receiveMessage();
+		if(DEBUG)
+			response.print();
+		byte[] tmp = SymmetricKey.decryptData(ProgramDefinitions.mydata.priv_key, response.body);
+		int confirmResult = (int) SerialU.deserialize(tmp);
+		
+		if(response.header.getMessageType() == MessageHeader.MessageType.confirm  && PeerIDs.size() == confirmResult)
+			System.out.println("The DELETE request was successfully sent to control");
+		
+		
+		
 	}
 }

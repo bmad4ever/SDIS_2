@@ -10,7 +10,6 @@ public class ProgramDefinitions {
 	static final public int CONTROL_PORT = 50123;
 	static final public String SYMM_KEY_ALGORITHM = "AES";
 	
-	Hashtable<String, Integer> timestamp_table = new Hashtable<String, Integer>();
 	static public long timestamp = 0;
 	static public boolean is_control = false;
 	static public PeerData mydata;
