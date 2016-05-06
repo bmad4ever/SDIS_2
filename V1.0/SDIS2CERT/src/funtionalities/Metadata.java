@@ -90,4 +90,12 @@ public class Metadata {
 		}
 		return result;
 	}
+
+	public static void printData()
+	{
+		for (PeerData peerData : data) {
+			System.out.println(data.toString());
+		}
+	}
+
 }

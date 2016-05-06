@@ -11,4 +11,9 @@ public class PeerAddress implements java.io.Serializable{
 		this.port = port;
 	}
 	
+	public String toString()
+	{
+		return "addr{" + ip + ":" + port + "}";
+	}
+	
 }

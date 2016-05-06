@@ -1,5 +1,9 @@
 package funtionalities;
 
+import javax.crypto.spec.SecretKeySpec;
+
+import Utilities.ProgramDefinitions;
+
 //import java.io.ByteArrayInputStream;
 //import java.io.ByteArrayOutputStream;
 //import java.io.IOException;
@@ -19,5 +23,11 @@ public class PeerData implements java.io.Serializable{
 		this.addr = new PeerAddress(ip, port);
 		this.priv_key=priv_key;
 		this.peerID=peerID;
+	}
+
+	public String toString()
+	{
+		SecretKeySpec sk =  new SecretKeySpec(priv_key, ProgramDefinitions.SYMM_KEY_ALGORITHM);
+		return "data{id:" + peerID + ",key:"+sk.toString()+ ","+  addr.toString() + "}";
 	}
 }
