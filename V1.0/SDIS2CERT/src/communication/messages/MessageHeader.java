@@ -1,6 +1,9 @@
 package communication.messages;
 
+import Utilities.ProgramDefinitions;
+
 public class MessageHeader implements Comparable<MessageHeader>,java.io.Serializable {
+
 	//private static final boolean DEBUG = false;
 
 	public enum MessageType {
@@ -18,39 +21,26 @@ public class MessageHeader implements Comparable<MessageHeader>,java.io.Serializ
 
 	private MessageType messageType;
 	private String senderId;
-	private String fileId;//64 ASCII character sequence
-	private String chunkNo;//should not be larger than 6 chars
-	private int replicationDegree; //It takes one byte, 
-	private long timestamp; //It takes one byte, 
+	private String fileId;
+	private String chunkNo;
+	private int replicationDegree;
+	private long timestamp;
 
 	public MessageHeader(MessageType messageType, String senderId, String fileId){
 		this.messageType = messageType;
 		this.senderId = senderId;
 		this.fileId = fileId;
+		this.timestamp = ++ProgramDefinitions.timestamp;
 	}
 
 	public MessageHeader(MessageType messageType, String senderId, String fileId, String chunkNo){
-		this.messageType = messageType;
-		this.senderId = senderId;
-		this.fileId = fileId;
+		this(messageType,  senderId,  fileId);
 		this.chunkNo = chunkNo;
 	}
 
 	public MessageHeader(MessageType messageType, String senderId, String fileId, String chunkNo, int replicationDegree){
-		this.messageType = messageType;
-		this.senderId = senderId;
-		this.fileId = fileId;
-		this.chunkNo = chunkNo;
+		this(messageType,  senderId,  fileId, chunkNo);
 		this.replicationDegree = replicationDegree;
-	}
-
-	public MessageHeader(MessageType messageType, String senderId, String fileId, String chunkNo, int replicationDegree,int timestamp){
-		this.messageType = messageType;
-		this.senderId = senderId;
-		this.fileId = fileId;
-		this.chunkNo = chunkNo;
-		this.replicationDegree = replicationDegree;
-		this.timestamp = timestamp;
 	}
 
 	// getters
@@ -92,11 +82,11 @@ public class MessageHeader implements Comparable<MessageHeader>,java.io.Serializ
 	public String toString(){
 		return
 				messageType.toString()
-				//+" -> VER:"+version
 				+" > SID:"+senderId
 				+" | FID:"+fileId
 				+" | NO:"+chunkNo
 				+" | RD:"+replicationDegree
+				+" | TS:"+timestamp
 				;
 	}
 }

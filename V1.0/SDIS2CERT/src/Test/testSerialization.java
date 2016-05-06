@@ -29,8 +29,7 @@ public class testSerialization {
     	
     	MessageHeader head = new MessageHeader(
     			MessageType.hello,
-    			"","","",0,1
-    			);
+    			"","","",0);
     	
     	System.out.println(AsymmetricKey.pubk);
     	PeerData pd = new PeerData(AsymmetricKey.pubk.getEncoded(), "192.12.1.1", 32544, "monkey XP");

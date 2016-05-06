@@ -8,7 +8,6 @@ import communication.TCP_Thread;
 import communication.messages.DeleteRequestBody;
 import communication.messages.MessageHeader;
 import communication.messages.MessagePacket;
-import communication.messages.MessageHeader.MessageType;
 import funtionalities.AsymmetricKey;
 import funtionalities.Metadata;
 import funtionalities.SerialU;
@@ -60,7 +59,7 @@ public class ControlServiceThread extends TCP_Thread{
 	{
 		MessageHeader header = new MessageHeader(
 				MessageHeader.MessageType.cred_pubkey
-				,"CRED"	,null,null,0,1);
+				,"CRED"	,null,null,0);
 		byte[] body = AsymmetricKey.pubk.getEncoded();
 		MessagePacket msg = new MessagePacket(header, body);
 		sendMessage(msg);
@@ -78,9 +77,10 @@ public class ControlServiceThread extends TCP_Thread{
 		{
 			MessageHeader h = new MessageHeader(
 					MessageHeader.MessageType.deny
-					,"CRED",null,null,0,1);
+					,"CRED",null,null,0);
 			MessagePacket m = new MessagePacket(h, null);
 			sendMessage(m);
+			
 			return;
 		}
 		
@@ -94,9 +94,10 @@ public class ControlServiceThread extends TCP_Thread{
 			{
 				MessageHeader h = new MessageHeader(
 						MessageHeader.MessageType.deny
-						,"CRED",null,null,0,1);
+						,"CRED",null,null,0);
 				MessagePacket m = new MessagePacket(h, null);
 				sendMessage(m);
+				
 				return;
 			}
 		}
@@ -105,7 +106,7 @@ public class ControlServiceThread extends TCP_Thread{
 		
 		MessageHeader h = new MessageHeader(
 				MessageHeader.MessageType.confirm
-				,"CRED",null,null,0,1);
+				,"CRED",null,null,0);
 		MessagePacket m = new MessagePacket(h, null);
 		sendMessage(m);
 		

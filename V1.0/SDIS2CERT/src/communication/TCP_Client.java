@@ -3,15 +3,20 @@ package communication;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+
+import Utilities.ProgramDefinitions;
+
 import java.net.InetAddress;
 
 public class TCP_Client extends TCP_Thread{
+	
+	
 	
 	public TCP_Client(int p, String a) {
 		port = p;
 		try {
 			adress = InetAddress.getByName(a);
-		} catch (UnknownHostException e) {e.printStackTrace();}	
+		} catch (UnknownHostException e) {e.printStackTrace();}
 	}
 	
 	@Override

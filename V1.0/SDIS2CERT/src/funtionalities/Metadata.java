@@ -82,7 +82,11 @@ public class Metadata implements Runnable{
 		try {
 			lock.acquire();
 			for (PeerData peerData : data) {
-				if(peerData.peerID.equals(peerid)) return peerData;
+				if(peerData.peerID.equals(peerid)) 
+				{
+					lock.release();
+					return peerData;
+				}
 			}
 			lock.release();
 		} catch (InterruptedException e) {e.printStackTrace();}
@@ -96,6 +100,7 @@ public class Metadata implements Runnable{
 			original = newdata;
 			lock.release();
 		} catch (InterruptedException e) {e.printStackTrace();}
+		return;
 	}
 	
 	public static PeerAddress getPeerAddr(String peerid)

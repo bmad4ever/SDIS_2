@@ -33,7 +33,7 @@ public class DELETE_request_to_control extends TCP_Client{
 		DeleteRequestBody msgBody = new DeleteRequestBody(FileID,PeerIDs);
 		byte[] encMsgBody = SymmetricKey.encryptData(ProgramDefinitions.mydata.priv_key,SerialU.serialize(msgBody));
 
-		MessageHeader header = new MessageHeader(MessageHeader.MessageType.requestdelete, ProgramDefinitions.mydata.peerID,null,null,0,0);
+		MessageHeader header = new MessageHeader(MessageHeader.MessageType.requestdelete, ProgramDefinitions.mydata.peerID,null,null,0);
 		MessagePacket packet = new MessagePacket(header, encMsgBody);
 		sendMessage(packet);
 	}

@@ -2,14 +2,6 @@ package Utilities;
 
 import javax.crypto.spec.SecretKeySpec;
 
-//import java.io.ByteArrayInputStream;
-//import java.io.ByteArrayOutputStream;
-//import java.io.IOException;
-//import java.io.ObjectInputStream;
-//import java.io.ObjectOutputStream;
-//import java.util.Arrays;
-//import java.util.List;
-
 public class PeerData implements java.io.Serializable{
 	private static final long serialVersionUID = -2293181236755152514L;
 	
