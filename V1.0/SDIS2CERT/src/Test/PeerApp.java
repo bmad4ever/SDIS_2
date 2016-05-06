@@ -8,6 +8,7 @@ import Utilities.ProgramDefinitions;
 import Utilities.SymmetricKey;
 import communication.TCP_Server;
 import funtionalities.PeerData;
+import funtionalities.RefValue;
 import protocols.HELLO;
 
 public class PeerApp {
@@ -30,9 +31,19 @@ public class PeerApp {
 		
 		
 	//Send HELLO to Control
-		HELLO client = new HELLO(ProgramDefinitions.CONTROL_PORT, args[3]);
-    	client.start();
 		
+		RefValue<Boolean> accept = new RefValue<Boolean>();
+		accept.value = false;
+		HELLO client = new HELLO(ProgramDefinitions.CONTROL_PORT, args[3], accept);
+    	client.start();
+    	try {client.join();	} 
+    	catch (InterruptedException e1) {	e1.printStackTrace();}
+		
+    	if(!accept.value)
+    	{
+    		System.out.println("Service denied by control");
+    		return;
+    	}
     	
     
     	try {System.in.read();} 

@@ -11,7 +11,9 @@ public class MessageHeader implements Comparable<MessageHeader>,java.io.Serializ
 		getchunk, chunk,			/*restore*/
 		requestdelete, delete, 		/*deleted*/
 		removed, 					/*space reclaim*/
-		deny						/*deny service*/
+		
+		deny,						/*deny service*/
+		confirm						/*confirm service*/
 	};
 
 	private MessageType messageType;

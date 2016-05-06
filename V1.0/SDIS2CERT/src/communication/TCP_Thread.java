@@ -18,6 +18,8 @@ public class TCP_Thread extends Thread {
 	
 	protected boolean failed_init = false;
 	
+	protected final boolean DEBUG = false;
+	
 	public void sendMessage(Object obj){
 		try{
 		if (socketWrite == null) socketWrite = new ObjectOutputStream(socket.getOutputStream());

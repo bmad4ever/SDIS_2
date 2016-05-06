@@ -8,6 +8,7 @@ import Utilities.ProgramDefinitions;
 import Utilities.SymmetricKey;
 import communication.TCP_Server;
 import funtionalities.PeerData;
+import funtionalities.RefValue;
 import protocols.DELETE_request_to_control;
 import protocols.HELLO;
 
@@ -31,8 +32,18 @@ public class Test_Delete_Control {
 		
 		
 		//Send HELLO to Control
-		HELLO client = new HELLO(ProgramDefinitions.CONTROL_PORT, args[3]);
+		RefValue<Boolean> accept = new RefValue<Boolean>();
+		HELLO client = new HELLO(ProgramDefinitions.CONTROL_PORT, args[3], accept);
     	client.start();
+    	try {
+			client.join();
+		} catch (InterruptedException e2) {e2.printStackTrace();}
+    	
+    	if(!accept.value)
+    	{
+    		System.out.println("Service denied by control");
+    		return;
+    	}
     	
     	
     	try {

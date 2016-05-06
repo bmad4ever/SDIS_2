@@ -1,6 +1,7 @@
 package communication;
 
 import java.net.Socket;
+import java.util.Arrays;
 
 import Utilities.AsymmetricKey;
 import Utilities.SerialU;
@@ -17,8 +18,6 @@ import funtionalities.PeerData;
  */
 public class CentralServiceThread extends TCP_Thread{
 	
-	static final boolean DEBUG = true;
-
 	public CentralServiceThread(Socket clientSocket)
 	{
 		socket = clientSocket;
@@ -37,9 +36,13 @@ public class CentralServiceThread extends TCP_Thread{
 	{
 		switch (receivedMSG.header.getMessageType()) {
 		case hello:
-			process_hello();
+			if(DEBUG)
+				System.out.println("Service type: HELLO");
+			process_hello(receivedMSG);
 			break;
 		case requestdelete:
+			if(DEBUG)
+				System.out.println("Service type: DELETE");
 			process_delete(receivedMSG);
 			break;
 			
@@ -49,24 +52,60 @@ public class CentralServiceThread extends TCP_Thread{
 	}
 	
 	
-	void process_hello()
-	{		
+	void process_hello(MessagePacket receivedMSG)
+	{
 		MessageHeader header = new MessageHeader(
 				MessageHeader.MessageType.cred_pubkey
 				,"CRED"	,null,null,0,1);
 		byte[] body = AsymmetricKey.pubk.getEncoded();
 		MessagePacket msg = new MessagePacket(header, body);
-		
 		sendMessage(msg);
 		
 		MessagePacket msgPack = (MessagePacket) receiveMessage();
-		msgPack.print();
+		if(DEBUG)
+			msgPack.print();
 		byte[] msgContent = AsymmetricKey.decrypt(AsymmetricKey.prvk, msgPack.body);
 		PeerData new_pd = (PeerData) SerialU.deserialize(msgContent);
-		if (new_pd!=null) 
+		
+		PeerData existingData = Metadata.getPeerData(receivedMSG.header.getSenderId());
+		
+		
+		if(new_pd==null)
 		{
-			Metadata.data.add(new_pd);
+			MessageHeader h = new MessageHeader(
+					MessageHeader.MessageType.deny
+					,"CRED",null,null,0,1);
+			MessagePacket m = new MessagePacket(h, null);
+			sendMessage(m);
+			return;
 		}
+		
+		if (existingData != null)
+		{
+			if(Arrays.equals(new_pd.priv_key,existingData.priv_key))
+			{
+				existingData = new_pd;
+			}
+			else
+			{
+				MessageHeader h = new MessageHeader(
+						MessageHeader.MessageType.deny
+						,"CRED",null,null,0,1);
+				MessagePacket m = new MessagePacket(h, null);
+				sendMessage(m);
+				return;
+			}
+		}
+		else
+			Metadata.data.add(new_pd);
+		
+		MessageHeader h = new MessageHeader(
+				MessageHeader.MessageType.confirm
+				,"CRED",null,null,0,1);
+		MessagePacket m = new MessagePacket(h, null);
+		sendMessage(m);
+		
+		
 	}
 	
 	void process_delete(MessagePacket receivedMSG)

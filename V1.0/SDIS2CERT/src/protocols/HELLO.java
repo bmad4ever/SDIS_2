@@ -11,6 +11,7 @@ import Utilities.SerialU;
 import communication.MessageHeader;
 import communication.MessagePacket;
 import communication.TCP_Client;
+import funtionalities.RefValue;
 
 
 /**
@@ -18,9 +19,12 @@ import communication.TCP_Client;
  *
  */
 public class HELLO extends TCP_Client{
-
-	public HELLO(int p, String a) {
+	
+	RefValue<Boolean> accept;
+	
+	public HELLO(int p, String a, RefValue<Boolean> accept) {
 		super(p,a);
+		this.accept = accept;
 	}
 
 	@Override
@@ -29,12 +33,13 @@ public class HELLO extends TCP_Client{
 		if(failed_init)
 			return;
 		
-		MessageHeader nHeader = new MessageHeader(MessageHeader.MessageType.hello, null, null, null, 0, 0);
+		MessageHeader nHeader = new MessageHeader(MessageHeader.MessageType.hello, ProgramDefinitions.mydata.peerID, null, null, 0, 0);
 		MessagePacket n = new MessagePacket(nHeader, null);
 		sendMessage(n);
 		
 		MessagePacket response = (MessagePacket) receiveMessage();
-		response.print();
+		if(DEBUG)
+			response.print();
 				
 		try {
 			AsymmetricKey.pubk = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(response.body));
@@ -46,6 +51,11 @@ public class HELLO extends TCP_Client{
 		MessageHeader mHeader = new MessageHeader(MessageHeader.MessageType.peer_privkey, null, null, null, 0, 0);
 		MessagePacket m = new MessagePacket(mHeader, AsymmetricKey.encrypt(AsymmetricKey.pubk, raw));
 		sendMessage(m);
+		
+		response = (MessagePacket) receiveMessage();
+		response.print();
+		
+		this.accept.value = (response.header.getMessageType() == MessageHeader.MessageType.confirm);
 		
 		
 	}

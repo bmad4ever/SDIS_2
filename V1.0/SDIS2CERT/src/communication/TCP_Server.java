@@ -38,7 +38,8 @@ public class TCP_Server extends Thread{
 		{
 			try {
 				peerSocket = peerServerSocket.accept();
-				System.out.println("Got a new client, servicing on a new thread");
+				if(DEBUG)
+					System.out.println("Got a new client, servicing on a new thread");
 				
 				TCP_Thread newService;
 				if(ProgramDefinitions.is_control)
