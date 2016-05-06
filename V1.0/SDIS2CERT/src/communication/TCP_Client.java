@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import Utilities.ProgramDefinitions;
-
 import java.net.InetAddress;
 
 public class TCP_Client extends TCP_Thread{
