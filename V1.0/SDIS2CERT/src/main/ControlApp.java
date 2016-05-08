@@ -25,7 +25,7 @@ public class ControlApp {
 		AsymmetricKey.generate_key();
 		SymmetricKey.generate_cipher();
 		ProgramDefinitions.is_control = true;
-		
+		Metadata.printData();
 		} catch (Exception e) {e.printStackTrace(); return;}
 		
 	//start server
@@ -34,6 +34,9 @@ public class ControlApp {
 			System.out.println("Control Server running on " + InetAddress.getLocalHost().getHostAddress() + ":" + ProgramDefinitions.CONTROL_PORT);
 		} catch (UnknownHostException e1) {e1.printStackTrace();}
 		server.start();
+		
+		(new Thread(new Metadata())).start();//will save metadata on nonvolatile memory from time to time
+		
 		
 		try {System.in.read();} 
 		catch (IOException e) {e.printStackTrace();}

@@ -7,6 +7,7 @@ import Utilities.PeerData;
 import Utilities.ProgramDefinitions;
 import Utilities.RefValue;
 import communication.TCP_Server;
+import funtionalities.Metadata;
 import funtionalities.SymmetricKey;
 import protocols.HELLO;
 
@@ -28,7 +29,6 @@ public class PeerApp {
 		TCP_Server server = new TCP_Server(Integer.parseInt(args[2]));
 		server.start();
 		
-		
 	//Send HELLO to Control
 		
 		RefValue<Boolean> accept = new RefValue<Boolean>();
@@ -43,6 +43,8 @@ public class PeerApp {
     		System.out.println("Service denied by control");
     		return;
     	}
+    	
+    	(new Thread(new Metadata())).start();//will save metadata on nonvolatile memory from time to time
     	
 		System.out.println("Closing down.");
 		System.exit(0);
