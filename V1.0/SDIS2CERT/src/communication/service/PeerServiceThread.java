@@ -44,11 +44,6 @@ public class PeerServiceThread extends TCP_Thread{
 				System.out.println("Service type: PUTCHUNK");
 			process_putchunk(receivedMSG);
 			break;
-		case removed:
-			if(DEBUG)
-				System.out.println("Service type: REMOVED");
-			process_removed(receivedMSG);
-			break;
 		case stored:
 			if(DEBUG)
 				System.out.println("Service type: STORED");
@@ -60,13 +55,18 @@ public class PeerServiceThread extends TCP_Thread{
 	}
 
 	private void process_stored(MessagePacket receivedMSG) {
-		// TODO Auto-generated method stub
+		// Id of the STORED sender
+		String storedSenderId = receivedMSG.header.getSenderId();
 
-	}
+		// Id of the STORED chunk file
+		String chunkStoredFileId = receivedMSG.header.getFileId();
 
-	private void process_removed(MessagePacket receivedMSG) {
-		// TODO Auto-generated method stub
+		// Num of the STORED chunk
+		int numOfChunkStored = receivedMSG.header.getChunkNo();
 
+		// Saves the chunk storer id
+		if(db.getDatabase().isChunkStored(chunkStoredFileId, numOfChunkStored))
+			db.getDatabase().getStoredChunkData(chunkStoredFileId, numOfChunkStored).addPeerSaved(storedSenderId);
 	}
 	
 	private void process_getchunk(MessagePacket receivedMSG) {
@@ -79,7 +79,7 @@ public class PeerServiceThread extends TCP_Thread{
 
 	}
 	
-	private void process_putchunk(MessagePacket receivedMSG) {
+	private void process_putchunk(MessagePacket receivedMSG) {		
 		// Id of the PUTCHUNK sender
 		String backupSenderId = receivedMSG.header.getSenderId();
 
@@ -97,11 +97,12 @@ public class PeerServiceThread extends TCP_Thread{
 		System.out.println("[PUTCHUNK] " + chunkData.length);
 		
 		// writes the file if it is not already stored
-		if(!db.getDatabase().isChunkStored(chunkFileId)){
-			db.getDatabase().addStoredChunkFile(chunkFileId, chunkReplicationDegree); // registers the storing
+		if(!db.getDatabase().isChunkStored(chunkFileId, numOfChunkToStore)){
+			db.getDatabase().addStoredChunkFile(chunkFileId, numOfChunkToStore, chunkReplicationDegree); // registers the storing
 		}
 
-		fm.writeInStoreFolderFile(chunkFileId, numOfChunkToStore, chunkData);
+		// write chunk file
+		db.getDatabase().getStoredChunkData(chunkFileId, numOfChunkToStore).writeChunkFile(chunkData);
 
 		// send stored
 		// TODO

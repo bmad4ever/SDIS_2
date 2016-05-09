@@ -69,9 +69,7 @@ public class ControlServiceThread extends TCP_Thread{
 
 		PeerData existingData = Metadata.getPeerData(receivedMSG.header.getSenderId());
 
-
-		if(new_pd==null)
-		{
+		if(new_pd==null){
 			MessageHeader h = new MessageHeader(
 					MessageHeader.MessageType.deny,"CRED");
 			MessagePacket m = new MessagePacket(h, null);
@@ -80,14 +78,10 @@ public class ControlServiceThread extends TCP_Thread{
 			return;
 		}
 
-		if (existingData != null)
-		{
-			if(Arrays.equals(new_pd.priv_key,existingData.priv_key))
-			{
+		if (existingData != null){
+			if(Arrays.equals(new_pd.priv_key,existingData.priv_key)){
 				Metadata.updatePeerData(existingData, new_pd);
-			}
-			else
-			{
+			}else{
 				MessageHeader h = new MessageHeader(
 						MessageHeader.MessageType.deny,"CRED");
 				MessagePacket m = new MessagePacket(h, null);
@@ -95,8 +89,7 @@ public class ControlServiceThread extends TCP_Thread{
 
 				return;
 			}
-		}
-		else
+		}else
 			Metadata.addNewPeerData(new_pd);
 
 		MessageHeader h = new MessageHeader(
@@ -125,15 +118,12 @@ public class ControlServiceThread extends TCP_Thread{
 		byte[] deleteBody = SerialU.serialize(msgBody.FileID);
 		MessagePacket deleteMessage = new MessagePacket(receivedMSG.header , deleteBody);
 
-		for(int i = 0; i < msgBody.PeerIDs.size(); i++)
-		{
+		for(int i = 0; i < msgBody.PeerIDs.size(); i++){
 			System.out.println(msgBody.PeerIDs.get(i));
 
 			//O control deve, aqui, para cada peer identificado na lista:
 			// - Verificar se existe peer com esse nome na metadata
 			// - Se existir, fazer uma nova thread DELETE_protocol a cada um, na qual o corpo da mensagem a enviar é a variavel deleteMessage
 		}
-
-
 	}
 }

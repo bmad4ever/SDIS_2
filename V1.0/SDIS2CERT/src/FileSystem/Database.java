@@ -4,17 +4,18 @@ import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 public class Database implements Serializable {
 	private static final long serialVersionUID = 2933521614615136756L;
 	
 	private HashMap<String, String> myOriginalFiles; // original file name : fileId generated
-	private HashMap<String, Chunk> storedChunkFiles; // fileId : chunk data
+	private HashSet<Chunk> storedChunkFiles; // fileId : chunk data
 	
 	public Database () {
 		myOriginalFiles = new HashMap<>();
-		storedChunkFiles = new HashMap<>();
+		storedChunkFiles = new HashSet<>();
 	}
 	
 	public void addOriginalFile(String originalFileName) {
@@ -38,8 +39,9 @@ public class Database implements Serializable {
 		}
 	}
 	
-	public void addStoredChunkFile(String chunkFileId, int replicationDegree) {
-		storedChunkFiles.put(chunkFileId, new Chunk(chunkFileId, replicationDegree));
+	public void addStoredChunkFile(String chunkFileId, int chunkNum, int replicationDegree) {
+		Chunk tempChunk = new Chunk(chunkFileId, chunkNum, replicationDegree);
+		if(!storedChunkFiles.contains(tempChunk)) storedChunkFiles.add(tempChunk);
 	}
 	
 	//getters
@@ -59,12 +61,16 @@ public class Database implements Serializable {
 		return null;
 	}
 	
-	public boolean isChunkStored(String chunkFileId){
-		return storedChunkFiles.containsKey(chunkFileId);
+	public boolean isChunkStored(String chunkFileId, int chunkNum){
+		return storedChunkFiles.contains(new Chunk(chunkFileId, chunkNum, -1));
 	}
 	
-	public Chunk getStoredChunkData(String chunkFileId){
-		if(storedChunkFiles.containsKey(chunkFileId)) return storedChunkFiles.get(chunkFileId);
+	public Chunk getStoredChunkData(String chunkFileId, int chunkNum){
+		if(isChunkStored(chunkFileId, chunkNum)){
+			Chunk tempChunk = new Chunk(chunkFileId, chunkNum, -1);
+			for(Chunk chunk : storedChunkFiles)
+				if(chunk.equals(tempChunk)) return chunk;
+		}
 		
 		return null;
 	}

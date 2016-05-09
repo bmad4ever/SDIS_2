@@ -37,6 +37,10 @@ public class TCP_Server extends Thread{
 			peerServerSocket = new ServerSocket(p);
 		} catch (IOException e) {e.printStackTrace();}
 		
+		File chunkFolder = new File(ProgramDefinitions.mydata.peerID);
+		if(!chunkFolder.exists())
+			chunkFolder.mkdir();
+		
 		db = new DatabaseManager(ProgramDefinitions.mydata.peerID + File.separator + databaseFileName);
 	}
 
