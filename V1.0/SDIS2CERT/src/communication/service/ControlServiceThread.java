@@ -108,11 +108,11 @@ public class ControlServiceThread extends TCP_Thread{
 		MessageHeader h = new MessageHeader(
 				MessageHeader.MessageType.confirm
 				,"CRED",null,null,0);
-	
 		List<PeerData> peerMetadata = Metadata.getMetadata2send2peer();
 		byte[] tmp =  SerialU.serialize(peerMetadata);
 		byte[] peerMbody = SymmetricKey.encryptData(new_pd.priv_key, tmp);
 		MessagePacket m = new MessagePacket(h,peerMbody);
+		Metadata.updateActivePeer(new_pd.peerID); 
 		sendMessage(m);
 		
 		

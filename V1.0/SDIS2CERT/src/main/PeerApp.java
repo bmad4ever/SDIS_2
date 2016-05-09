@@ -1,5 +1,6 @@
 package main;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -7,6 +8,8 @@ import Utilities.PeerData;
 import Utilities.ProgramDefinitions;
 import Utilities.RefValue;
 import communication.TCP_Server;
+import funtionalities.Metadata;
+import funtionalities.PeerRenewService;
 import funtionalities.SymmetricKey;
 import protocols.HELLO;
 
@@ -28,12 +31,11 @@ public class PeerApp {
 		TCP_Server server = new TCP_Server(Integer.parseInt(args[2]));
 		server.start();
 		
-		
 	//Send HELLO to Control
-		
 		RefValue<Boolean> accept = new RefValue<Boolean>();
 		accept.value = false;
-		HELLO client = new HELLO(ProgramDefinitions.CONTROL_PORT, args[3], accept);
+		ProgramDefinitions.CONTROL_ADDRESS = args[3];
+		HELLO client = new HELLO(ProgramDefinitions.CONTROL_PORT, ProgramDefinitions.CONTROL_ADDRESS, accept);
     	client.start();
     	try {client.join();	} 
     	catch (InterruptedException e1) {	e1.printStackTrace();}
@@ -44,6 +46,12 @@ public class PeerApp {
     		return;
     	}
     	
+    	(new Thread(new Metadata())).start();//will save metadata on nonvolatile memory from time to time
+    	(new Thread(new PeerRenewService())).start();
+    	
+    	
+    	try {System.in.read();} 
+		catch (IOException e) {e.printStackTrace();}
 		System.out.println("Closing down.");
 		System.exit(0);
 	}
