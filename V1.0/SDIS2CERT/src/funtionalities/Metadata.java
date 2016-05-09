@@ -255,6 +255,14 @@ public class Metadata implements Runnable{
 		return true;
 	}
 	
+	static public void updateActivePeer(String peerid){
+		try {
+			lock.acquire();
+			if(ProgramDefinitions.is_control) active_peers.put(peerid, peer_renewed_service_this_round);
+			lock.release();
+		} catch (InterruptedException e) {e.printStackTrace();}
+	}
+	
 	public static void printData()
 	{
 		if (data != null)
@@ -272,7 +280,7 @@ public class Metadata implements Runnable{
 	static boolean stop=false;
 	public static void STOP(){stop=true;}
 	/**time between nonvolatile metadata updates in milliseconds*/
-	static final int wait_time = 10000;
+	static final int wait_time = 5000;
 	@Override
 	public void run() {
 		while(!stop)
@@ -328,6 +336,7 @@ public class Metadata implements Runnable{
 	static void update_active_peers(){
 		for(String peer : active_peers.keySet())
 		{
+			//System.out.println("update_active_peers("+peer+")");
 			if(active_peers.get(peer)==peer_renewed_service_this_round) active_peers.replace(peer, peer_renewed_service_last_round);
 			else {
 				active_peers.replace(peer, peer_seems_unactive);
