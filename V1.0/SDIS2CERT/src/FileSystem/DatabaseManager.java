@@ -9,9 +9,8 @@ import java.io.ObjectOutputStream;
 
 /* EXAMPLE: 
    DatabaseManager dbm = new DatabaseManager("teste.ser");
-	dbm.getDatabase().printFiles();
-	dbm.getDatabase().addPeerFile(new PeerFile("kik", 3));
-	dbm.getDatabase().addPeerFile(new PeerFile("leel", 2));
+	dbm.getDatabase().addOriginalFile("image.png"); creates and stores the original name and its digested id
+	dbm.getDatabase().addStoredChunkFile("fs8464ga8wrgg8a6ga8wa4g86sa46d6a48gf68awga", 3); stores a chunk id with its minimal replication value
 	dbm.save();
  */
 public class DatabaseManager {
@@ -30,19 +29,13 @@ public class DatabaseManager {
 		}else{
 			database = new Database();
 			save();
-			load();
 		}
-	}
-	
+	}	
 	
 	public void save(){
 		try {
 			fos = new FileOutputStream(filename);
 			oos = new ObjectOutputStream(fos);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		try {
 			oos.writeObject(database);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -53,10 +46,6 @@ public class DatabaseManager {
 		try {
 			fis = new FileInputStream(filename);
 			ois = new ObjectInputStream(fis);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		try {
 			database = (Database) ois.readObject();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -68,5 +57,4 @@ public class DatabaseManager {
 	public Database getDatabase(){
 		return database;
 	}
-
 }

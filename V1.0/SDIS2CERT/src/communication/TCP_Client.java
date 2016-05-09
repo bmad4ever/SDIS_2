@@ -8,8 +8,6 @@ import java.net.InetAddress;
 
 public class TCP_Client extends TCP_Thread{
 	
-	
-	
 	public TCP_Client(int p, String a) {
 		port = p;
 		try {
@@ -23,14 +21,11 @@ public class TCP_Client extends TCP_Thread{
 	}
 	
 	public void baserun() {
-		try {
-			
+		try {		
 			socket = new Socket(adress, port);
-		} catch (IOException e) 
-		{
+		} catch (IOException e) {
 			e.printStackTrace();
 			failed_init = true;
 		}
 	}
-	
 }

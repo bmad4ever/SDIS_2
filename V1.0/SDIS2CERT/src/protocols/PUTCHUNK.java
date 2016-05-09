@@ -7,11 +7,11 @@ import communication.messages.MessagePacket;
 public class PUTCHUNK extends TCP_Client{
 	private String senderId;
 	private String fileId;
-	private String chunkNum;
+	private int chunkNum;
 	private int replicationDegree;
 	private byte[] chunkData;
 
-	public PUTCHUNK(int p, String a, String senderId, String fileId, String chunkNum, int replicationDegree, byte[] chunkData) {
+	public PUTCHUNK(int p, String a, String senderId, String fileId, int chunkNum, int replicationDegree, byte[] chunkData) {
 		super(p,a);
 		this.senderId = senderId;
 		this.fileId = fileId;

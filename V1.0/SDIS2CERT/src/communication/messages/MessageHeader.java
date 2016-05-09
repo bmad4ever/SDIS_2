@@ -7,14 +7,14 @@ public class MessageHeader implements Comparable<MessageHeader>,java.io.Serializ
 	//private static final boolean DEBUG = false;
 
 	public enum MessageType {
-		hello,cred_pubkey,peer_privkey,/*hello, tell control that u exist*/
+		hello,cred_pubkey,peer_privkey,/*hello, tell control that you exist*/
 		getpeeraddr,peeraddr,		/*ask control peer addr*/
 
 		putchunk, stored,			/*backup*/
 		getchunk, chunk,			/*restore*/
 		requestdelete, delete, 		/*deleted*/
 		removed, 					/*space reclaim*/
-		
+
 		deny,						/*deny service*/
 		confirm						/*confirm service*/
 	};
@@ -22,9 +22,15 @@ public class MessageHeader implements Comparable<MessageHeader>,java.io.Serializ
 	private MessageType messageType;
 	private String senderId;
 	private String fileId;
-	private String chunkNo;
+	private int chunkNo;
 	private int replicationDegree;
 	private long timestamp;
+
+	public MessageHeader(MessageType messageType, String senderId){
+		this.messageType = messageType;
+		this.senderId = senderId;
+		this.timestamp = ++ProgramDefinitions.timestamp;
+	}
 
 	public MessageHeader(MessageType messageType, String senderId, String fileId){
 		this.messageType = messageType;
@@ -33,12 +39,12 @@ public class MessageHeader implements Comparable<MessageHeader>,java.io.Serializ
 		this.timestamp = ++ProgramDefinitions.timestamp;
 	}
 
-	public MessageHeader(MessageType messageType, String senderId, String fileId, String chunkNo){
+	public MessageHeader(MessageType messageType, String senderId, String fileId, int chunkNo){
 		this(messageType,  senderId,  fileId);
 		this.chunkNo = chunkNo;
 	}
 
-	public MessageHeader(MessageType messageType, String senderId, String fileId, String chunkNo, int replicationDegree){
+	public MessageHeader(MessageType messageType, String senderId, String fileId, int chunkNo, int replicationDegree){
 		this(messageType,  senderId,  fileId, chunkNo);
 		this.replicationDegree = replicationDegree;
 	}
@@ -56,7 +62,7 @@ public class MessageHeader implements Comparable<MessageHeader>,java.io.Serializ
 		return fileId;
 	}
 
-	public String getChunkNo(){
+	public int getChunkNo(){
 		return chunkNo;
 	}
 
@@ -74,7 +80,7 @@ public class MessageHeader implements Comparable<MessageHeader>,java.io.Serializ
 				//&& this.version.equals(that.version) 
 				&& this.senderId.equals(that.senderId) 
 				&& this.fileId.equals(that.fileId) 
-				&& this.chunkNo.equals(that.chunkNo) 
+				&& this.chunkNo==that.chunkNo 
 				&& this.replicationDegree==that.replicationDegree)?0:1
 						;		
 	}

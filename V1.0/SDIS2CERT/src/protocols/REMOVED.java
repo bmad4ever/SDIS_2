@@ -7,9 +7,9 @@ import communication.messages.MessagePacket;
 public class REMOVED extends TCP_Client{
 	private String senderId;
 	private String fileId;
-	private String chunkNum;
+	private int chunkNum;
 
-	public REMOVED(int p, String a, String senderId, String fileId, String chunkNum) {
+	public REMOVED(int p, String a, String senderId, String fileId, int chunkNum) {
 		super(p,a);
 		this.senderId = senderId;
 		this.fileId = fileId;
