@@ -8,12 +8,10 @@ import java.net.InetAddress;
 
 public class TCP_Client extends TCP_Thread{
 	
-	
-	
 	public TCP_Client(int p, String a) {
 		port = p;
 		try {
-			adress = InetAddress.getByName(a);
+			address = InetAddress.getByName(a);
 		} catch (UnknownHostException e) {e.printStackTrace();}
 	}
 	
@@ -23,14 +21,11 @@ public class TCP_Client extends TCP_Thread{
 	}
 	
 	public void baserun() {
-		try {
-			
-			socket = new Socket(adress, port);
-		} catch (IOException e) 
-		{
+		try {		
+			socket = new Socket(address, port);
+		} catch (IOException e) {
 			e.printStackTrace();
 			failed_init = true;
 		}
 	}
-	
 }

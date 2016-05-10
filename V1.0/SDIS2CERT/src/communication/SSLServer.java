@@ -68,7 +68,7 @@ public class SSLServer extends Thread{
 			if(DEBUG) System.out.println("Service type: HELLO");
 			MessageHeader header = new MessageHeader(
 					MessageHeader.MessageType.cred_pubkey
-					,"CONTROL"	,null,null,0);
+					,"CONTROL");
 			byte[] body = AsymmetricKey.pubk.getEncoded();
 			MessagePacket msg = new MessagePacket(header, body);
 			return msg;

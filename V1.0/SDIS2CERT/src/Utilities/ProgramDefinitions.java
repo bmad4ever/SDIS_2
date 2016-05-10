@@ -1,7 +1,5 @@
 package Utilities;
 
-import java.util.Hashtable;
-
 public class ProgramDefinitions {
 
 	static final public int MAX_SERVICE_THREADS = 10;

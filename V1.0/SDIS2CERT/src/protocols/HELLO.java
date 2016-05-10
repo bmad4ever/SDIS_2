@@ -37,7 +37,7 @@ public class HELLO extends TCP_Client{
 		if(failed_init)
 			return;
 		
-		MessageHeader nHeader = new MessageHeader(MessageHeader.MessageType.hello, ProgramDefinitions.mydata.peerID, null, null, 0);
+		MessageHeader nHeader = new MessageHeader(MessageHeader.MessageType.hello, ProgramDefinitions.mydata.peerID);
 		MessagePacket n = new MessagePacket(nHeader, null);
 		sendMessage(n);
 		
@@ -52,7 +52,7 @@ public class HELLO extends TCP_Client{
 		}
 		
 		byte[] raw = SerialU.serialize(ProgramDefinitions.mydata);
-		MessageHeader mHeader = new MessageHeader(MessageHeader.MessageType.peer_privkey, null, null, null, 0);
+		MessageHeader mHeader = new MessageHeader(MessageHeader.MessageType.peer_privkey, null);
 		MessagePacket m = new MessagePacket(mHeader, AsymmetricKey.encrypt(AsymmetricKey.pubk, raw));
 		sendMessage(m);
 		
