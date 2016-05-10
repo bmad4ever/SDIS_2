@@ -21,7 +21,7 @@ import funtionalities.SymmetricKey;
  *
  */
 public class ControlServiceThread extends TCP_Thread{
-	
+
 	private DatabaseManager db; // stores system information
 
 	public ControlServiceThread(Socket clientSocket, DatabaseManager database){

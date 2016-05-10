@@ -13,7 +13,7 @@ public class TCP_Thread extends Thread {
 	protected ObjectOutputStream socketWrite;
 	protected ObjectInputStream socketRead;
 
-	protected InetAddress adress;
+	protected InetAddress address;
 	public int port;
 
 	protected boolean failed_init = false;

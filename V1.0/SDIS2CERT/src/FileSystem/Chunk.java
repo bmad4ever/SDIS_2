@@ -1,6 +1,7 @@
 package FileSystem;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
@@ -15,6 +16,8 @@ public class Chunk implements Serializable {
 	private int chunkNum;
 	private int replicationDegree;
 	private ArrayList<String> peersSaved; // peerId's
+	
+	private byte[] data;
 	
 	public Chunk(String chunkFileId, int chunkN, int replicationD) {
 		fileId = chunkFileId;
@@ -61,6 +64,41 @@ public class Chunk implements Serializable {
 		}
 	}
 
+	public byte[] readChunkFileData() {
+		String chunkFilePath = ProgramDefinitions.mydata.peerID + File.separator + fileId
+				+ File.separator + fileId + "-" + String.format("%08d", chunkNum);
+
+		try {
+			File chunkFile = new File(chunkFilePath);
+			FileInputStream fis = new FileInputStream(chunkFile);
+
+			byte[] data = new byte[(int) chunkFile.length()];
+			fis.read(data);
+
+			fis.close();
+
+			return data;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			e.getCause();
+		}
+
+		return null;
+	}
+	
+	public boolean hasData(){
+		return data != null;
+	}
+	
+	public byte[] getData(){
+		return data;
+	}
+	
+	public void setData(byte[] d){
+		data = d;
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if(!(obj instanceof Chunk)){

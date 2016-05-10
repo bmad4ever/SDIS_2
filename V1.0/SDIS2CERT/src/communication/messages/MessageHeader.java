@@ -22,7 +22,7 @@ public class MessageHeader implements Comparable<MessageHeader>,java.io.Serializ
 	private MessageType messageType;
 	private String senderId;
 	private String fileId;
-	private int chunkNo;
+	private int chunkNum;
 	private int replicationDegree;
 	private long timestamp;
 
@@ -41,7 +41,7 @@ public class MessageHeader implements Comparable<MessageHeader>,java.io.Serializ
 
 	public MessageHeader(MessageType messageType, String senderId, String fileId, int chunkNo){
 		this(messageType,  senderId,  fileId);
-		this.chunkNo = chunkNo;
+		this.chunkNum = chunkNo;
 	}
 
 	public MessageHeader(MessageType messageType, String senderId, String fileId, int chunkNo, int replicationDegree){
@@ -62,8 +62,8 @@ public class MessageHeader implements Comparable<MessageHeader>,java.io.Serializ
 		return fileId;
 	}
 
-	public int getChunkNo(){
-		return chunkNo;
+	public int getChunkNum(){
+		return chunkNum;
 	}
 
 	public int getReplicationDegree(){
@@ -80,7 +80,7 @@ public class MessageHeader implements Comparable<MessageHeader>,java.io.Serializ
 				//&& this.version.equals(that.version) 
 				&& this.senderId.equals(that.senderId) 
 				&& this.fileId.equals(that.fileId) 
-				&& this.chunkNo==that.chunkNo 
+				&& this.chunkNum==that.chunkNum 
 				&& this.replicationDegree==that.replicationDegree)?0:1
 						;		
 	}
@@ -90,7 +90,7 @@ public class MessageHeader implements Comparable<MessageHeader>,java.io.Serializ
 				messageType.toString()
 				+" > SID:"+senderId
 				+" | FID:"+fileId
-				+" | NO:"+chunkNo
+				+" | NO:"+chunkNum
 				+" | RD:"+replicationDegree
 				+" | TS:"+timestamp
 				;
