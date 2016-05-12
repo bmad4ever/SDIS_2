@@ -7,6 +7,7 @@ import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocket;
 
+import Utilities.ProgramDefinitions;
 import communication.messages.MessageHeader;
 import communication.messages.MessagePacket;
 import funtionalities.AsymmetricKey;
@@ -18,16 +19,16 @@ public class SSLServer extends Thread{
 	volatile protected boolean stop = false;
 	public void STOP() {stop=true;};
 	
-	public void run(int port)  {
+	public void run()  {
 
 		SSLServerSocket sslServerSocket=null;
 		ObjectInputStream socketRead=null;
 		ObjectOutputStream socketWrite=null;
 		
 		try {
-			sslServerSocket = (SSLServerSocket) SSLServerSocketFactory.getDefault().createServerSocket(port);
+			sslServerSocket = (SSLServerSocket) SSLServerSocketFactory.getDefault().createServerSocket(ProgramDefinitions.CONTROL_PORT_SSL);
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
+			System.out.println("Exception on SSLServerSocketFactory");
 			e1.printStackTrace();
 			return;
 		}
@@ -43,9 +44,11 @@ public class SSLServer extends Thread{
 			socketRead = new ObjectInputStream(sslSocket.getInputStream());
 			socketWrite = new ObjectOutputStream(sslSocket.getOutputStream());
 
-			MessagePacket msg = (MessagePacket) socketRead.readObject() ;
-			
+			//Process hello and get response msg
+			MessagePacket msg = (MessagePacket) socketRead.readObject();
+
 			socketWrite.writeObject(getResponse(msg));
+			
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

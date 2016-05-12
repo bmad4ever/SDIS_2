@@ -11,5 +11,6 @@ public class ProgramDefinitions {
 	static public boolean is_control = false;
 	static public PeerData mydata;
 	static public int CONTROL_PORT = 50123;
+	static public int CONTROL_PORT_SSL = 50124;
 	static public String CONTROL_ADDRESS;
 }
