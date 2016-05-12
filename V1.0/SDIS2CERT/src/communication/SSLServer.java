@@ -32,7 +32,8 @@ public class SSLServer extends Thread{
 			e1.printStackTrace();
 			return;
 		}
-		//sslServerSocket.setNeedClientAuth(true);
+		sslServerSocket.setNeedClientAuth(true);
+		sslServerSocket.setEnabledCipherSuites(sslServerSocket.getSupportedCipherSuites());
 		//sslSocket.getSoTimeout();
 		
 		while (!stop) {
