@@ -3,8 +3,7 @@ package communication.messages;
 import Utilities.ProgramDefinitions;
 
 public class MessageHeader implements Comparable<MessageHeader>,java.io.Serializable {
-
-	//private static final boolean DEBUG = false;
+	private static final long serialVersionUID = -2756131360553425554L;
 
 	public enum MessageType {
 		hello,cred_pubkey,peer_privkey,/*hello, tell control that you exist*/

@@ -46,7 +46,7 @@ public class Chunk implements Serializable {
 			peersSaved.remove(peerId);
 	}
 	
-	public void writeChunkFile(byte[] data){
+	public void writeChunkFile(){
 		File chunkFolder = new File(ProgramDefinitions.mydata.peerID + File.separator + fileId);
 		if(!chunkFolder.exists())
 			chunkFolder.mkdir();

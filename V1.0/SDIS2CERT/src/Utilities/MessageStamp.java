@@ -1,12 +1,11 @@
 package Utilities;
 
-import java.util.Comparator;
-
 import communication.messages.DeleteRequestBody;
 import communication.messages.MessageHeader;
 
 public class MessageStamp implements java.io.Serializable, /*Comparator<MessageStamp>,*/Comparable<MessageStamp>{
-
+	private static final long serialVersionUID = -7439154315689360871L;
+	
 	public MessageHeader.MessageType msg;
 	public String fileid;
 	public long timestamp;
