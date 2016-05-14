@@ -15,7 +15,7 @@ import communication.messages.MessageHeader.MessageType;
 
 public class Metadata implements Runnable{
 
-	static final public boolean DEBUG=false;
+	static final private boolean DEBUG=true;
 
 	/**<p>records types and timestamps of received messages for each peer </p>
 	 * <p>PEERS will only store the 10 most recent putchunks and deletes</p>
@@ -126,6 +126,7 @@ public class Metadata implements Runnable{
 		} catch (InterruptedException e) {e.printStackTrace();}
 	}
 
+	
 	public static PeerData getPeerData(String peerid)
 	{
 		try {
@@ -165,6 +166,8 @@ public class Metadata implements Runnable{
 		return f.exists() && !f.isDirectory();
 	}
 
+	/**<p>used by control. removes private keys so that that the data can be sent to other peers.</p>
+	 * <p>can also be used by peers to avoid locking data list</p>*/
 	public static List<PeerData> getMetadata2send2peer()
 	{
 		if(data==null) return null;
@@ -183,7 +186,7 @@ public class Metadata implements Runnable{
 	public static void setPeerMetadataList(List<PeerData> newData){
 		try {
 			lock.acquire();
-			data = newData;
+			data = newData;	
 			lock.release();
 		} catch (InterruptedException e) {e.printStackTrace();}
 		return;

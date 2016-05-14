@@ -50,7 +50,7 @@ public class Test_Delete_Control {
 		List<String> PeerIDs = new ArrayList<String>();
 		PeerIDs.add("Peer1");	PeerIDs.add("Peer2");	PeerIDs.add("Peer3");
 
-		DELETE_request_to_control deleteclient = new DELETE_request_to_control(ProgramDefinitions.CONTROL_PORT, args[3], "FileID", PeerIDs);
+		DELETE_request_to_control deleteclient = new DELETE_request_to_control(ProgramDefinitions.CONTROL_PORT, args[3], "FileID", PeerIDs,null);
 		deleteclient.start();
 
 		try {
