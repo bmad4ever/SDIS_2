@@ -68,8 +68,7 @@ public class HELLO extends TCP_Client{
 		if(DEBUG)
 			response.print();
 		this.accept.value = (response.header.getMessageType() == MessageHeader.MessageType.confirm);
-		if(this.accept.value)
-		{
+		if(this.accept.value){
 			byte[] tmp = SymmetricKey.decryptData(ProgramDefinitions.mydata.priv_key, response.body);
 			List<PeerData> tmpPD = (List<PeerData>) SerialU.deserialize(tmp);
 			Metadata.setPeerMetadataList(tmpPD);

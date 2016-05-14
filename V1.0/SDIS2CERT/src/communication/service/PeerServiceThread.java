@@ -73,7 +73,7 @@ public class PeerServiceThread extends TCP_Thread{
 
 	private void process_getchunk(MessagePacket receivedMSG) {
 		// Id of the GETCHUNK sender
-		String getChunkSenderId = receivedMSG.header.getSenderId();
+		/*String getChunkSenderId = */receivedMSG.header.getSenderId();
 
 		// Id of the chunk file to restore
 		String getChunkFileId = receivedMSG.header.getFileId();
@@ -96,7 +96,7 @@ public class PeerServiceThread extends TCP_Thread{
 
 	private void process_chunk(MessagePacket receivedMSG) {
 		// Id of the CHUNK sender
-		String chunkSenderId = receivedMSG.header.getSenderId();
+		/*String chunkSenderId = */receivedMSG.header.getSenderId();
 
 		// Id of the chunk file received
 		String chunkFileId = receivedMSG.header.getFileId();
@@ -131,7 +131,8 @@ public class PeerServiceThread extends TCP_Thread{
 		}
 
 		// write chunk file
-		db.getDatabase().getStoredChunkData(chunkFileId, numOfChunkToStore).writeChunkFile(chunkData);
+		db.getDatabase().getStoredChunkData(chunkFileId, numOfChunkToStore).setData(chunkData);
+		db.getDatabase().getStoredChunkData(chunkFileId, numOfChunkToStore).writeChunkFile();
 
 		MessageHeader headMessage = new MessageHeader(MessageHeader.MessageType.stored, backupSenderId, chunkFileId, numOfChunkToStore);
 		MessagePacket n = new MessagePacket(headMessage, null);
