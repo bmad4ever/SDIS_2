@@ -91,7 +91,7 @@ public class BackupFile{
 				
 				//completed.add(new RefValue<Boolean>());
 				//executor.execute(
-				new PUTCHUNK(temp_peerdata.addr
+				Thread t_putchunk = new PUTCHUNK(temp_peerdata.addr
 						,ProgramDefinitions.mydata.peerID
 						,fileId
 						,chunkNum
@@ -99,6 +99,10 @@ public class BackupFile{
 						,chunkData
 						,completed);//completed.get(i));
 				//);
+				try{
+				t_putchunk.join();
+				}catch(Exception e){e.printStackTrace();}
+				
 				if(completed.value) db_chunk_info.addPeerSaved(temp_peerdata.peerID);
 			}
 				
