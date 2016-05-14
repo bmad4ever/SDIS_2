@@ -107,7 +107,7 @@ public class PeerServiceThread extends TCP_Thread{
 		byte[] receivedData = receivedMSG.body;
 		
 		if(!db.getDatabase().getStoredChunkData(chunkFileId, numOfChunkReceived).hasData())
-			db.getDatabase().getStoredChunkData(chunkFileId, numOfChunkReceived).setData(receivedData);
+			db.getDatabase().getStoredChunkData(chunkFileId, numOfChunkReceived).writeChunkFile(receivedData);
 	}
 
 	private void process_putchunk(MessagePacket receivedMSG) {		
@@ -131,8 +131,8 @@ public class PeerServiceThread extends TCP_Thread{
 		}
 
 		// write chunk file
-		db.getDatabase().getStoredChunkData(chunkFileId, numOfChunkToStore).setData(chunkData);
-		db.getDatabase().getStoredChunkData(chunkFileId, numOfChunkToStore).writeChunkFile();
+		//db.getDatabase().getStoredChunkData(chunkFileId, numOfChunkToStore).setData(chunkData);
+		db.getDatabase().getStoredChunkData(chunkFileId, numOfChunkToStore).writeChunkFile(chunkData);
 
 		MessageHeader headMessage = new MessageHeader(MessageHeader.MessageType.stored, backupSenderId, chunkFileId, numOfChunkToStore);
 		MessagePacket n = new MessagePacket(headMessage, null);
