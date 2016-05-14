@@ -1,5 +1,6 @@
 package protocols;
 
+import java.io.IOException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -9,6 +10,7 @@ import java.util.List;
 import Utilities.PeerData;
 import Utilities.ProgramDefinitions;
 import Utilities.RefValue;
+import communication.SSLClient;
 import communication.TCP_Client;
 import communication.messages.MessageHeader;
 import communication.messages.MessagePacket;
@@ -37,11 +39,15 @@ public class HELLO extends TCP_Client{
 		if(failed_init)
 			return;
 		
+
 		MessageHeader nHeader = new MessageHeader(MessageHeader.MessageType.hello, ProgramDefinitions.mydata.peerID);
 		MessagePacket n = new MessagePacket(nHeader, null);
-		sendMessage(n);
 		
-		MessagePacket response = (MessagePacket) receiveMessage();
+		MessagePacket response = null;
+		try {
+			response = (MessagePacket) SSLClient.SendAndReceiveOne(ProgramDefinitions.CONTROL_ADDRESS, ProgramDefinitions.CONTROL_PORT_SSL, n);
+		} catch (IOException e1) {	e1.printStackTrace();	};
+		
 		if(DEBUG)
 			response.print();
 				

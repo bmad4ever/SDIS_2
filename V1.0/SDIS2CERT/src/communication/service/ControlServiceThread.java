@@ -49,26 +49,37 @@ public class ControlServiceThread extends TCP_Thread{
 				System.out.println("Service type: DELETE");
 			process_delete(receivedMSG);
 			break;
+		case peer_privkey:
+			if(DEBUG)
+				System.out.println("Service type: Peer_Privkey");
+			process_privatekey(receivedMSG);
+			break;
 		default:
 			break;
 		}
 	}
-
+	
 	public void process_hello(MessagePacket receivedMSG){
-		MessageHeader header = new MessageHeader(
-				MessageHeader.MessageType.cred_pubkey,"CRED");
-		byte[] body = AsymmetricKey.pubk.getEncoded();
-		MessagePacket msg = new MessagePacket(header, body);
-		sendMessage(msg);
+		
+		//deny por agora
+		
+		MessageHeader h = new MessageHeader(
+				MessageHeader.MessageType.deny,"CRED");
+		MessagePacket m = new MessagePacket(h, null);
+		sendMessage(m);
+		return;
+	}
 
-		MessagePacket msgPack = (MessagePacket) receiveMessage();
+	public void process_privatekey(MessagePacket receivedMSG){
+		
 		if(DEBUG)
-			msgPack.print();
-		byte[] msgContent = AsymmetricKey.decrypt(AsymmetricKey.prvk, msgPack.body);
+			receivedMSG.print();
+		byte[] msgContent = AsymmetricKey.decrypt(AsymmetricKey.prvk, receivedMSG.body);
 		PeerData new_pd = (PeerData) SerialU.deserialize(msgContent);
 
 		PeerData existingData = Metadata.getPeerData(receivedMSG.header.getSenderId());
-
+		
+		//deny - no peer data sent
 		if(new_pd==null){
 			MessageHeader h = new MessageHeader(
 					MessageHeader.MessageType.deny,"CRED");
@@ -77,7 +88,8 @@ public class ControlServiceThread extends TCP_Thread{
 
 			return;
 		}
-
+		
+		//deny - private keys are disparate on new and old data
 		if (existingData != null){
 			if(Arrays.equals(new_pd.priv_key,existingData.priv_key)){
 				Metadata.updatePeerData(existingData, new_pd);
@@ -89,9 +101,12 @@ public class ControlServiceThread extends TCP_Thread{
 
 				return;
 			}
-		}else
+		}
+		//accept, store data
+		else
 			Metadata.addNewPeerData(new_pd);
 
+		// and send full peer metadata with no private keys.
 		MessageHeader h = new MessageHeader(MessageHeader.MessageType.confirm,"CRED");
 
 		List<PeerData> peerMetadata = Metadata.getMetadata2send2peer();

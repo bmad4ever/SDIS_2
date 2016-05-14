@@ -12,8 +12,7 @@ public class SSLClient {
 	public static Object SendAndReceiveOne(String host, int port, Object content) throws IOException {
 
 		SSLSocket sslSocket = (SSLSocket) SSLSocketFactory.getDefault().createSocket(host, port);
-		//sslSocket.setNeedClientAuth(true);
-		//sslSocket.getSoTimeout();
+		sslSocket.setEnabledCipherSuites(sslSocket.getSupportedCipherSuites());
 		
 		ObjectOutputStream socketWrite = new ObjectOutputStream(sslSocket.getOutputStream());
 		ObjectInputStream  socketRead = new ObjectInputStream(sslSocket.getInputStream());
