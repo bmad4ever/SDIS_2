@@ -25,12 +25,9 @@ import funtionalities.SymmetricKey;
  *
  */
 public class HELLO extends TCP_Client{
-	
-	RefValue<Boolean> accept;
-	
-	public HELLO(int p, String a, RefValue<Boolean> accept) {
-		super(p,a);
-		this.accept = accept;
+		
+	public HELLO(int p, String a, RefValue<Boolean> taskCompleted) {
+		super(p,a,taskCompleted);
 	}
 
 	@Override
@@ -67,8 +64,8 @@ public class HELLO extends TCP_Client{
 		response = (MessagePacket) receiveMessage();
 		if(DEBUG)
 			response.print();
-		this.accept.value = (response.header.getMessageType() == MessageHeader.MessageType.confirm);
-		if(this.accept.value){
+		this.taskCompleted.value = (response.header.getMessageType() == MessageHeader.MessageType.confirm);
+		if(this.taskCompleted.value){
 			byte[] tmp = SymmetricKey.decryptData(ProgramDefinitions.mydata.priv_key, response.body);
 			List<PeerData> tmpPD = (List<PeerData>) SerialU.deserialize(tmp);
 			Metadata.setPeerMetadataList(tmpPD);
