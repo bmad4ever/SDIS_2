@@ -17,6 +17,7 @@ import java.util.concurrent.TimeoutException;
 import FileSystem.DatabaseManager;
 import Utilities.Misc;
 import Utilities.ProgramDefinitions;
+import Utilities.RefValue;
 import communication.TCP_Client;
 import communication.messages.MessageHeader;
 import communication.messages.MessagePacket;
@@ -32,8 +33,8 @@ public class RestoreFile extends TCP_Client{
 
 	private String fileName;
 
-	public RestoreFile(int port, String address, DatabaseManager db, String fileName){
-		super(port, address);
+	public RestoreFile(int port, String address, DatabaseManager db, String fileName,RefValue<Boolean> accept){
+		super(port, address,accept);
 
 		this.db = db;
 

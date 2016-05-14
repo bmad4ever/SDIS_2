@@ -39,9 +39,10 @@ public class Database implements Serializable {
 		}
 	}
 	
-	public void addStoredChunkFile(String chunkFileId, int chunkNum, int replicationDegree) {
+	public Chunk addStoredChunkFile(String chunkFileId, int chunkNum, int replicationDegree) {
 		Chunk tempChunk = new Chunk(chunkFileId, chunkNum, replicationDegree);
 		if(!storedChunkFiles.contains(tempChunk)) storedChunkFiles.add(tempChunk);
+		return tempChunk;
 	}
 	
 	//getters

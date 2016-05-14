@@ -3,6 +3,7 @@ package protocols;
 import java.util.List;
 
 import Utilities.ProgramDefinitions;
+import Utilities.RefValue;
 import communication.TCP_Client;
 import communication.messages.DeleteRequestBody;
 import communication.messages.MessageHeader;
@@ -15,8 +16,8 @@ public class DELETE_request_to_control extends TCP_Client{
 	String FileID;
 	List<String> PeerIDs;
 
-	public DELETE_request_to_control(int p, String a, String FileID, List<String> PeerIDs) {
-		super(p,a);
+	public DELETE_request_to_control(int p, String a, String FileID, List<String> PeerIDs,RefValue<Boolean> accept) {
+		super(p,a,accept);
 		this.FileID = FileID;
 		this.PeerIDs = PeerIDs;
 	}
