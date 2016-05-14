@@ -20,6 +20,11 @@ public class PeerApp {
 			System.out.println("cred <ID> <password> <port number> <Control IP Address> ");
 			return;
 		}
+		
+		System.setProperty("Djavax.net.ssl.keyStore","client.keys");
+		System.setProperty("Djavax.net.ssl.keyStorePassword","123456");
+		System.setProperty("Djavax.net.ssl.trustStore","truststore");
+		System.setProperty("Djavax.net.ssl.trustStorePassword","123456");
 
 		SymmetricKey.generate_key(args[0]+args[1]);
 
