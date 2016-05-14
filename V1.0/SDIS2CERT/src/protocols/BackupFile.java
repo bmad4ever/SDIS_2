@@ -164,11 +164,11 @@ public class BackupFile{
 				buffer = new byte[_CHUNK_SIZE];
 			}
 
-			int bytesRead = bis.read(buffer);
+			/*int bytesRead = bis.read(buffer);
 			if(bytesRead == -1) bytesRead = 0;
 			byte[] smallBuffer = new byte[bytesRead];
 			System.arraycopy(buffer, 0, smallBuffer, 0, bytesRead);
-			result.add(smallBuffer);
+			result.add(smallBuffer);*/
 
 			bis.close();
 
