@@ -17,8 +17,6 @@ public class Chunk implements Serializable {
 	private int replicationDegree;
 	private ArrayList<String> peersSaved; // peerId's
 	
-	private byte[] data;
-	
 	public Chunk(String chunkFileId, int chunkN, int replicationD) {
 		fileId = chunkFileId;
 		chunkNum = chunkN;
@@ -45,8 +43,8 @@ public class Chunk implements Serializable {
 		if(peersSaved.contains(peerId))
 			peersSaved.remove(peerId);
 	}
-	
-	public void writeChunkFile(){
+		
+	public void writeChunkFile(byte[] newdata){
 		File chunkFolder = new File(ProgramDefinitions.mydata.peerID + File.separator + fileId);
 		if(!chunkFolder.exists())
 			chunkFolder.mkdir();
@@ -56,7 +54,7 @@ public class Chunk implements Serializable {
 		
 		try {
 			FileOutputStream fos = new FileOutputStream(filePath);
-			if(data != null) fos.write(data);
+			if(newdata != null) fos.write(newdata);
 			else fos.write(("").getBytes());
 			fos.close();
 		} catch (IOException e) {
@@ -86,17 +84,13 @@ public class Chunk implements Serializable {
 
 		return null;
 	}
-	
+		
 	public boolean hasData(){
-		return data != null;
-	}
-	
-	public byte[] getData(){
-		return data;
-	}
-	
-	public void setData(byte[] d){
-		data = d;
+		String filePath = ProgramDefinitions.mydata.peerID + File.separator + fileId
+				+ File.separator + fileId + "-" + String.format("%08d", chunkNum);
+		
+		File f = new File(filePath);
+		return f.exists() && !f.isDirectory();
 	}
 	
 	@Override
@@ -112,4 +106,9 @@ public class Chunk implements Serializable {
 	    	return true;
 	    }
 	}
+
+	public ArrayList<String> getPeersSaved(){
+		return peersSaved;
+	}
+	
 }
