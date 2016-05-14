@@ -13,8 +13,6 @@ public class SSLClient {
 
 		SSLSocket sslSocket = (SSLSocket) SSLSocketFactory.getDefault().createSocket(host, port);
 		sslSocket.setEnabledCipherSuites(sslSocket.getSupportedCipherSuites());
-		//sslSocket.setNeedClientAuth(true);
-		//sslSocket.getSoTimeout();
 		
 		ObjectOutputStream socketWrite = new ObjectOutputStream(sslSocket.getOutputStream());
 		ObjectInputStream  socketRead = new ObjectInputStream(sslSocket.getInputStream());

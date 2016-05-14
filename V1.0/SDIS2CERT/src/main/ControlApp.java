@@ -15,9 +15,15 @@ import funtionalities.SymmetricKey;
 
 public class ControlApp {
 	public static void main(String[] args) {
-
+		
 		//initialize stuff 
 		System.out.println("Server setting up...");
+		
+		System.setProperty("Djavax.net.ssl.keyStore","server.keys");
+		System.setProperty("Djavax.net.ssl.keyStorePassword","123456");
+		System.setProperty("Djavax.net.ssl.trustStore","truststore");
+		System.setProperty("Djavax.net.ssl.trustStorePassword","123456");
+		
 		try{
 			if(Metadata.exists_metadata_file()) 
 				Metadata.load();
@@ -27,7 +33,8 @@ public class ControlApp {
 			AsymmetricKey.generate_key();
 			SymmetricKey.generate_cipher();
 			ProgramDefinitions.is_control = true;
-			Metadata.printData();
+			if(Metadata.DEBUG)
+				Metadata.printData();
 		} catch (Exception e) {e.printStackTrace(); return;}
 		
 		//start SSL server
