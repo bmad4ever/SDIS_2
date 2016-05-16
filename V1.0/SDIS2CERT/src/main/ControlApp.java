@@ -4,13 +4,14 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import Utilities.PeerData;
 import Utilities.ProgramDefinitions;
 import communication.SSLServer;
 import communication.TCP_Server;
 import funtionalities.AsymmetricKey;
-import funtionalities.Metadata;
+import funtionalities.PeerMetadata;
 import funtionalities.SymmetricKey;
 
 public class ControlApp {
@@ -25,16 +26,16 @@ public class ControlApp {
 		System.setProperty("Djavax.net.ssl.trustStorePassword","123456");
 		
 		try{
-			if(Metadata.exists_metadata_file()) 
-				Metadata.load();
+			if(PeerMetadata.exists_metadata_file()) 
+				PeerMetadata.load();
 			else 
-				Metadata.data = new ArrayList<PeerData>();
+				PeerMetadata.data = new HashSet<PeerData>();
 			
 			AsymmetricKey.generate_key();
 			SymmetricKey.generate_cipher();
 			ProgramDefinitions.is_control = true;
-			if(Metadata.DEBUG)
-				Metadata.printData();
+			if(PeerMetadata.DEBUG)
+				PeerMetadata.printData();
 		} catch (Exception e) {e.printStackTrace(); return;}
 		
 		//start SSL server
@@ -48,7 +49,7 @@ public class ControlApp {
 			System.out.println("Control Server running on " + InetAddress.getLocalHost().getHostAddress() + ":" + ProgramDefinitions.CONTROL_PORT);
 		} catch (UnknownHostException e1) {e1.printStackTrace();}
 		server.start();
-		(new Thread(new Metadata())).start();//will save metadata on nonvolatile memory from time to time
+		(new Thread(new PeerMetadata())).start();//will save metadata on nonvolatile memory from time to time
 		
 		try {System.in.read();} 
 		catch (IOException e) {e.printStackTrace();}

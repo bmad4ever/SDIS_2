@@ -10,7 +10,7 @@ import Utilities.PeerData;
 import Utilities.ProgramDefinitions;
 import Utilities.RefValue;
 import communication.TCP_Server;
-import funtionalities.Metadata;
+import funtionalities.PeerMetadata;
 import funtionalities.PeerRenewService;
 import funtionalities.SymmetricKey;
 import protocols.HELLO;
@@ -36,7 +36,8 @@ public class PeerApp {
 		} catch (NumberFormatException | UnknownHostException e) {	e.printStackTrace();}
 		
 		ProgramDefinitions.db = new DatabaseManager(ProgramDefinitions.mydata.peerID + File.separator + ProgramDefinitions.chunkDatabaseFileName);
-
+		PeerMetadata.setDatabaseNames(ProgramDefinitions.peerInfoDatabaseName , ProgramDefinitions.timestampsDatabaseName);
+		
 		//start server
 		TCP_Server server = new TCP_Server(Integer.parseInt(args[2]));
 		server.start();
@@ -56,7 +57,7 @@ public class PeerApp {
 			return;
 		}
 
-		(new Thread(new Metadata())).start();//will save metadata on nonvolatile memory from time to time
+		(new Thread(new PeerMetadata())).start();//will save metadata on nonvolatile memory from time to time
 		(new Thread(new PeerRenewService())).start();
 
 

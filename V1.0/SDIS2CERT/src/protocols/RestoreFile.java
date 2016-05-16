@@ -15,7 +15,7 @@ import Utilities.PeerData;
 import Utilities.ProgramDefinitions;
 import Utilities.RefValue;
 import communication.TCP_Client;
-import funtionalities.Metadata;
+import funtionalities.PeerMetadata;
 
 public class RestoreFile extends TCP_Client{
 
@@ -72,7 +72,7 @@ public class RestoreFile extends TCP_Client{
 			List<String> peersIDs = chunk2request.getPeersSaved();
 			for(int i=0; i<peersIDs.size() && !restoreComplete;++i)//PeerData peer : peers)
 			{
-				PeerData temp_peerdata = Metadata.getPeerData(peersIDs.get(i));
+				PeerData temp_peerdata = PeerMetadata.getPeerData(peersIDs.get(i));
 
 				if(temp_peerdata==null) continue;
 				//do not count own data

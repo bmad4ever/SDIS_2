@@ -10,7 +10,7 @@ import communication.messages.DeleteRequestBody;
 import communication.messages.MessageHeader;
 import communication.messages.MessagePacket;
 import funtionalities.AsymmetricKey;
-import funtionalities.Metadata;
+import funtionalities.PeerMetadata;
 import funtionalities.SerialU;
 import funtionalities.SymmetricKey;
 
@@ -73,7 +73,7 @@ public class ControlServiceThread extends TCP_Thread{
 		byte[] msgContent = AsymmetricKey.decrypt(AsymmetricKey.prvk, receivedMSG.body);
 		PeerData new_pd = (PeerData) SerialU.deserialize(msgContent);
 
-		PeerData existingData = Metadata.getPeerData(receivedMSG.header.getSenderId());
+		PeerData existingData = PeerMetadata.getPeerData(receivedMSG.header.getSenderId());
 		
 		//deny - no peer data sent
 		if(new_pd==null){
@@ -88,7 +88,7 @@ public class ControlServiceThread extends TCP_Thread{
 		//deny - private keys are disparate on new and old data
 		if (existingData != null){
 			if(Arrays.equals(new_pd.priv_key,existingData.priv_key)){
-				Metadata.updatePeerData(existingData, new_pd);
+				PeerMetadata.updatePeerData(existingData, new_pd);
 			}else{
 				MessageHeader h = new MessageHeader(
 						MessageHeader.MessageType.deny,"CRED");
@@ -100,22 +100,22 @@ public class ControlServiceThread extends TCP_Thread{
 		}
 		//accept, store data
 		else
-			Metadata.addNewPeerData(new_pd);
+			PeerMetadata.addNewPeerData(new_pd);
 
 		// and send full peer metadata with no private keys.
 		MessageHeader h = new MessageHeader(MessageHeader.MessageType.confirm,"CRED");
 
-		List<PeerData> peerMetadata = Metadata.getMetadata2send2peer();
+		List<PeerData> peerMetadata = PeerMetadata.getMetadata2send2peer();
 		byte[] tmp =  SerialU.serialize(peerMetadata);
 		byte[] peerMbody = SymmetricKey.encryptData(new_pd.priv_key, tmp);
 		MessagePacket m = new MessagePacket(h,peerMbody);
-		Metadata.updateActivePeer(new_pd.peerID); 
+		PeerMetadata.updateActivePeer(new_pd.peerID); 
 		sendMessage(m);
 	}
 
 	public void process_delete(MessagePacket receivedMSG){
 		String sender = receivedMSG.header.getSenderId();
-		byte[] senderKey = Metadata.getPeerData(sender).priv_key;
+		byte[] senderKey = PeerMetadata.getPeerData(sender).priv_key;
 		byte[] unencryptBody = SymmetricKey.decryptData(senderKey, receivedMSG.body);
 		DeleteRequestBody msgBody = (DeleteRequestBody) SerialU.deserialize(unencryptBody);
 

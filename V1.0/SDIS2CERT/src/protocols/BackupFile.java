@@ -14,7 +14,7 @@ import FileSystem.DatabaseManager;
 import Utilities.PeerData;
 import Utilities.ProgramDefinitions;
 import Utilities.RefValue;
-import funtionalities.Metadata;
+import funtionalities.PeerMetadata;
 import funtionalities.SymmetricKey;
 
 public class BackupFile{
@@ -62,7 +62,7 @@ public class BackupFile{
 		while(( numOfTries <= _MAX_NUMBER_OF_RETRIES ) && !backupComplete){
 
 			//sendMessage(packetToSend);
-			List<PeerData> peers = Metadata.getMetadata2send2peer();
+			List<PeerData> peers = PeerMetadata.getMetadata2send2peer();
 			long seed = System.nanoTime();
 			Collections.shuffle(peers, new Random(seed));
 			

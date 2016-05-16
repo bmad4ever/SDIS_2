@@ -19,5 +19,6 @@ public class ProgramDefinitions {
 	static public String chunkDatabaseFileName = "chunkMetadata.ser";
 	static public DatabaseManager db;
 	
-	static public String peerInfoDatabase = "peerMetadata.ser"; 
+	static public String peerInfoDatabaseName = "peerMetadata.ser"; 
+	static public String timestampsDatabaseName = "timestampsMetadata.ser"; 
 }

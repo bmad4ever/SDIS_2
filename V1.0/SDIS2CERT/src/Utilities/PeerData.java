@@ -22,4 +22,11 @@ public class PeerData implements java.io.Serializable{
 		else 
 			return "data{id:" + peerID + "," +  addr.toString() + "}";
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(!(obj instanceof PeerData))
+			return false;
+		return peerID.equals(((PeerData)obj).peerID);
+	}
 }

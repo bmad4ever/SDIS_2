@@ -5,6 +5,7 @@ import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.HashSet;
 import java.util.List;
 
 import Utilities.PeerData;
@@ -15,7 +16,7 @@ import communication.TCP_Client;
 import communication.messages.MessageHeader;
 import communication.messages.MessagePacket;
 import funtionalities.AsymmetricKey;
-import funtionalities.Metadata;
+import funtionalities.PeerMetadata;
 import funtionalities.SerialU;
 import funtionalities.SymmetricKey;
 
@@ -67,12 +68,12 @@ public class HELLO extends TCP_Client{
 		this.taskCompleted.value = (response.header.getMessageType() == MessageHeader.MessageType.confirm);
 		if(this.taskCompleted.value){
 			byte[] tmp = SymmetricKey.decryptData(ProgramDefinitions.mydata.priv_key, response.body);
-			List<PeerData> tmpPD = (List<PeerData>) SerialU.deserialize(tmp);
-			Metadata.setPeerMetadataList(tmpPD);
+			HashSet<PeerData> tmpPD = (HashSet<PeerData>) SerialU.deserialize(tmp);
+			PeerMetadata.setPeerMetadataList(tmpPD);
 		}
 		
 		if(DEBUG)
-			Metadata.printData();
+			PeerMetadata.printData();
 		
 		
 	}
