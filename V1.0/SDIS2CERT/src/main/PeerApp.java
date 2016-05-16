@@ -36,7 +36,11 @@ public class PeerApp {
 		} catch (NumberFormatException | UnknownHostException e) {	e.printStackTrace();}
 		
 		ProgramDefinitions.db = new DatabaseManager(ProgramDefinitions.mydata.peerID + File.separator + ProgramDefinitions.chunkDatabaseFileName);
-		PeerMetadata.setDatabaseNames(ProgramDefinitions.peerInfoDatabaseName , ProgramDefinitions.timestampsDatabaseName);
+		
+		PeerMetadata.setDatabaseNames(
+				ProgramDefinitions.mydata.peerID + File.separator +ProgramDefinitions.peerInfoDatabaseName , 
+				ProgramDefinitions.mydata.peerID + File.separator +ProgramDefinitions.timestampsDatabaseName);
+		PeerMetadata.INIT();
 		
 		//start server
 		TCP_Server server = new TCP_Server(Integer.parseInt(args[2]));
@@ -59,6 +63,7 @@ public class PeerApp {
 
 		(new Thread(new PeerMetadata())).start();//will save metadata on nonvolatile memory from time to time
 		(new Thread(new PeerRenewService())).start();
+
 
 		try {System.in.read();} 
 		catch (IOException e) {e.printStackTrace();}

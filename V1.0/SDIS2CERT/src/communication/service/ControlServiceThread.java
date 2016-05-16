@@ -2,6 +2,7 @@ package communication.service;
 
 import java.net.Socket;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import Utilities.PeerData;
@@ -105,7 +106,7 @@ public class ControlServiceThread extends TCP_Thread{
 		// and send full peer metadata with no private keys.
 		MessageHeader h = new MessageHeader(MessageHeader.MessageType.confirm,"CRED");
 
-		List<PeerData> peerMetadata = PeerMetadata.getMetadata2send2peer();
+		HashSet<PeerData> peerMetadata = PeerMetadata.getMetadata2send2peer();
 		byte[] tmp =  SerialU.serialize(peerMetadata);
 		byte[] peerMbody = SymmetricKey.encryptData(new_pd.priv_key, tmp);
 		MessagePacket m = new MessagePacket(h,peerMbody);

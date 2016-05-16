@@ -1,12 +1,9 @@
 package main;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.HashSet;
-
-import Utilities.PeerData;
 import Utilities.ProgramDefinitions;
 import communication.SSLServer;
 import communication.TCP_Server;
@@ -26,10 +23,11 @@ public class ControlApp {
 		System.setProperty("Djavax.net.ssl.trustStorePassword","123456");
 		
 		try{
-			if(PeerMetadata.exists_metadata_file()) 
-				PeerMetadata.load();
-			else 
-				PeerMetadata.data = new HashSet<PeerData>();
+			PeerMetadata.setDatabaseNames(
+					"CONTROL" + File.separator +ProgramDefinitions.peerInfoDatabaseName , 
+					"CONTROL" + File.separator +ProgramDefinitions.timestampsDatabaseName);
+			PeerMetadata.INIT();
+			
 			
 			AsymmetricKey.generate_key();
 			SymmetricKey.generate_cipher();

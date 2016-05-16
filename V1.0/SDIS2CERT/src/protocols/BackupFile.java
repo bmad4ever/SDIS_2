@@ -62,9 +62,10 @@ public class BackupFile{
 		while(( numOfTries <= _MAX_NUMBER_OF_RETRIES ) && !backupComplete){
 
 			//sendMessage(packetToSend);
-			List<PeerData> peers = PeerMetadata.getMetadata2send2peer();
+			/*List<PeerData> peers = PeerMetadata.getMetadata2send2peer();
 			long seed = System.nanoTime();
-			Collections.shuffle(peers, new Random(seed));
+			Collections.shuffle(peers, new Random(seed));*/
+			List<PeerData> peers = PeerMetadata.getPeersListRandomlySorted();
 			
 			//only use list if mutithreading
 			//List<RefValue<Boolean>> completed = new ArrayList<RefValue<Boolean>>(replicationDegree);
