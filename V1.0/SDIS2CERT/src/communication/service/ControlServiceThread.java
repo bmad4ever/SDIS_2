@@ -4,7 +4,6 @@ import java.net.Socket;
 import java.util.Arrays;
 import java.util.List;
 
-import FileSystem.DatabaseManager;
 import Utilities.PeerData;
 import communication.TCP_Thread;
 import communication.messages.DeleteRequestBody;
@@ -22,11 +21,8 @@ import funtionalities.SymmetricKey;
  */
 public class ControlServiceThread extends TCP_Thread{
 
-	private DatabaseManager db; // stores system information
-
-	public ControlServiceThread(Socket clientSocket, DatabaseManager database){
+	public ControlServiceThread(Socket clientSocket){
 		socket = clientSocket;
-		db = database;
 	}	
 
 	public void run() {

@@ -2,7 +2,6 @@ package communication.service;
 
 import java.net.Socket;
 
-import FileSystem.DatabaseManager;
 import Utilities.ProgramDefinitions;
 import communication.TCP_Thread;
 import communication.messages.MessageHeader;
@@ -15,11 +14,8 @@ import communication.messages.MessagePacket;
  */
 public class PeerServiceThread extends TCP_Thread{
 
-	private DatabaseManager db;
-
-	public PeerServiceThread(Socket clientSocket, DatabaseManager database){
+	public PeerServiceThread(Socket clientSocket){
 		socket = clientSocket;
-		db = database;
 	}	
 
 	public void run() {
@@ -34,7 +30,7 @@ public class PeerServiceThread extends TCP_Thread{
 		case chunk:
 			if(DEBUG)
 				System.out.println("Service type: CHUNK");
-			process_chunk(receivedMSG);
+			//process_chunk(receivedMSG);
 			break;
 		case getchunk:
 			if(DEBUG)
@@ -49,14 +45,14 @@ public class PeerServiceThread extends TCP_Thread{
 		case stored:
 			if(DEBUG)
 				System.out.println("Service type: STORED");
-			process_stored(receivedMSG);
+			//process_stored(receivedMSG);
 			break;
 		default:
 			break;
 		}
 	}
 
-	private void process_stored(MessagePacket receivedMSG) {
+	/*private void process_stored(MessagePacket receivedMSG) {
 		// Id of the STORED sender
 		String storedSenderId = receivedMSG.header.getSenderId();
 
@@ -69,7 +65,7 @@ public class PeerServiceThread extends TCP_Thread{
 		// Saves the chunk storer id
 		if(db.getDatabase().isChunkStored(chunkStoredFileId, numOfChunkStored))
 			db.getDatabase().getStoredChunkData(chunkStoredFileId, numOfChunkStored).addPeerSaved(storedSenderId);
-	}
+	}*/
 
 	private void process_getchunk(MessagePacket receivedMSG) {
 		// Id of the GETCHUNK sender
@@ -82,10 +78,9 @@ public class PeerServiceThread extends TCP_Thread{
 		int numOfChunkToRestore = receivedMSG.header.getChunkNum();
 
 		// Verifies if it is a received chunk
-		if(!db.getDatabase().isChunkStored(getChunkFileId, numOfChunkToRestore)) return;
+		if(!ProgramDefinitions.db.getDatabase().isChunkStored(getChunkFileId, numOfChunkToRestore)) return;
 
-		// TODO encryption??
-		byte[] chunkToSendData = db.getDatabase().getStoredChunkData(getChunkFileId, numOfChunkToRestore).readChunkFileData();
+		byte[] chunkToSendData = ProgramDefinitions.db.getDatabase().getStoredChunkData(getChunkFileId, numOfChunkToRestore).readChunkFileData();
 
 		if(chunkToSendData != null){
 			MessageHeader headMessage = new MessageHeader(MessageHeader.MessageType.chunk, ProgramDefinitions.mydata.peerID, getChunkFileId, numOfChunkToRestore);
@@ -94,9 +89,9 @@ public class PeerServiceThread extends TCP_Thread{
 		}
 	}
 
-	private void process_chunk(MessagePacket receivedMSG) {
+	/*private void process_chunk(MessagePacket receivedMSG) {
 		// Id of the CHUNK sender
-		/*String chunkSenderId = */receivedMSG.header.getSenderId();
+		String chunkSenderId = receivedMSG.header.getSenderId();
 
 		// Id of the chunk file received
 		String chunkFileId = receivedMSG.header.getFileId();
@@ -108,7 +103,7 @@ public class PeerServiceThread extends TCP_Thread{
 		
 		if(!db.getDatabase().getStoredChunkData(chunkFileId, numOfChunkReceived).hasData())
 			db.getDatabase().getStoredChunkData(chunkFileId, numOfChunkReceived).writeChunkFile(receivedData);
-	}
+	}*/
 
 	private void process_putchunk(MessagePacket receivedMSG) {		
 		// Id of the PUTCHUNK sender
@@ -126,13 +121,13 @@ public class PeerServiceThread extends TCP_Thread{
 		byte[] chunkData = receivedMSG.body;
 
 		// writes the file if it is not already stored
-		if(!db.getDatabase().isChunkStored(chunkFileId, numOfChunkToStore)){
-			db.getDatabase().addStoredChunkFile(chunkFileId, numOfChunkToStore, chunkReplicationDegree); // registers the storing
+		if(!ProgramDefinitions.db.getDatabase().isChunkStored(chunkFileId, numOfChunkToStore)){
+			ProgramDefinitions.db.getDatabase().addStoredChunkFile(chunkFileId, numOfChunkToStore, chunkReplicationDegree); // registers the storing
 		}
 
 		// write chunk file
 		//db.getDatabase().getStoredChunkData(chunkFileId, numOfChunkToStore).setData(chunkData);
-		db.getDatabase().getStoredChunkData(chunkFileId, numOfChunkToStore).writeChunkFile(chunkData);
+		ProgramDefinitions.db.getDatabase().getStoredChunkData(chunkFileId, numOfChunkToStore).writeChunkFile(chunkData);
 
 		MessageHeader headMessage = new MessageHeader(MessageHeader.MessageType.stored, backupSenderId, chunkFileId, numOfChunkToStore);
 		MessagePacket n = new MessagePacket(headMessage, null);

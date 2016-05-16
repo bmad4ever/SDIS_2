@@ -8,13 +8,6 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
 import FileSystem.Chunk;
 import FileSystem.DatabaseManager;
 import Utilities.Misc;
@@ -22,14 +15,12 @@ import Utilities.PeerData;
 import Utilities.ProgramDefinitions;
 import Utilities.RefValue;
 import communication.TCP_Client;
-import communication.messages.MessageHeader;
-import communication.messages.MessagePacket;
 import funtionalities.Metadata;
 
 public class RestoreFile extends TCP_Client{
-	
+
 	private final static boolean DEBUG = true;
-	
+
 	public static int _CHUNK_SIZE = 64000;
 
 	private static int _MAX_NUMBER_OF_RETRIES = 2;
@@ -54,10 +45,10 @@ public class RestoreFile extends TCP_Client{
 			if(DEBUG) System.out.println("restoreChunk("+fileId+","+chunkNum+")File Chunk not in DB");
 			return false;
 		}
-		
+
 		int numOfTries = 1;
 		int waitInterval = _INITIAL_REPLY_WAIT_TIME;
-		
+
 		//MessageHeader headerToSend = new MessageHeader(MessageHeader.MessageType.getchunk, ProgramDefinitions.mydata.peerID);
 		//MessagePacket packetToSend = new MessagePacket(headerToSend, null);
 
@@ -67,29 +58,29 @@ public class RestoreFile extends TCP_Client{
 			public Boolean call() throws Exception {
 				while(!db.getDatabase().getStoredChunkData(fileId, chunkNum).hasData()){
 				}
-				
+
 				return true;
 			}
 		};*/
 
 		RefValue<Boolean> completed = new RefValue<Boolean>();
 		//RefValue<byte[]> received_chunk = new RefValue<byte[]>();
-		
+
 		boolean restoreComplete = false;
 		while(( numOfTries <= _MAX_NUMBER_OF_RETRIES ) && !restoreComplete){
-		
+
 			List<String> peersIDs = chunk2request.getPeersSaved();
 			for(int i=0; i<peersIDs.size() && !restoreComplete;++i)//PeerData peer : peers)
 			{
 				PeerData temp_peerdata = Metadata.getPeerData(peersIDs.get(i));
-				
+
 				if(temp_peerdata==null) continue;
 				//do not count own data
 				if (temp_peerdata.peerID==ProgramDefinitions.mydata.peerID) continue;
-				
+
 				//completed.add(new RefValue<Boolean>());
 				//executor.execute(
-				Thread t_putchunk = new GETCHUNK(temp_peerdata.addr
+				Thread t_getchunk = new GETCHUNK(temp_peerdata.addr
 						,ProgramDefinitions.mydata.peerID
 						,fileId
 						,chunkNum
@@ -97,9 +88,9 @@ public class RestoreFile extends TCP_Client{
 						,received_chunk);//completed.get(i));
 				//);
 				try{
-				t_putchunk.join();
+					t_getchunk.join();
 				}catch(Exception e){e.printStackTrace();}
-				
+
 				restoreComplete = completed.value;	
 			}
 
@@ -107,7 +98,7 @@ public class RestoreFile extends TCP_Client{
 				Thread.sleep(waitInterval);
 				numOfTries++;
 				waitInterval = waitInterval * 2;
-			/*	restoreComplete = executor.submit(callable).get(waitInterval, TimeUnit.SECONDS).booleanValue();
+				/*	restoreComplete = executor.submit(callable).get(waitInterval, TimeUnit.SECONDS).booleanValue();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} catch (ExecutionException e) {
@@ -132,14 +123,14 @@ public class RestoreFile extends TCP_Client{
 		do{
 			received_chunk = new RefValue<byte[]>();
 			if(!restoreChunk(fileId, chunkNum,received_chunk)) return false;
-			
+
 			// write temp chunk file
 			db.getDatabase().getStoredChunkData(fileId, chunkNum).writeChunkFile(received_chunk.value);
-			
+
 			chunkNum++;
 		}while(
 				db.getDatabase().getStoredChunkData(fileId, chunkNum)!=null
-			//ou received_chunk!=null && received_chunk.value.length == _CHUNK_SIZE
+				//ou received_chunk!=null && received_chunk.value.length == _CHUNK_SIZE
 				);
 
 		if(!uniteFile()) return false;
@@ -148,10 +139,10 @@ public class RestoreFile extends TCP_Client{
 	}
 
 	private boolean uniteFile(){
-		
+
 		String fileId = db.getDatabase().getFileId(fileName);
 		if(fileId == null) return false;
-		
+
 		String filesDir = ProgramDefinitions.mydata.peerID + File.separator + fileId;
 		String outputDir = ProgramDefinitions.mydata.peerID + File.separator + fileName;
 
@@ -181,7 +172,7 @@ public class RestoreFile extends TCP_Client{
 			e.printStackTrace();
 			e.getCause();
 		}
-		
+
 		if(!Misc.deleteFolder(fileId)) return false;
 
 		return true;

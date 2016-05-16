@@ -1,9 +1,11 @@
 package main;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import FileSystem.DatabaseManager;
 import Utilities.PeerData;
 import Utilities.ProgramDefinitions;
 import Utilities.RefValue;
@@ -14,6 +16,7 @@ import funtionalities.SymmetricKey;
 import protocols.HELLO;
 
 public class PeerApp {
+	
 	public static void main(String[] args) {
 
 		if(args.length!=4){
@@ -31,6 +34,8 @@ public class PeerApp {
 		try {
 			ProgramDefinitions.mydata = new PeerData(SymmetricKey.key, InetAddress.getLocalHost().getHostAddress(), Integer.parseInt(args[2]), args[0]);
 		} catch (NumberFormatException | UnknownHostException e) {	e.printStackTrace();}
+		
+		ProgramDefinitions.db = new DatabaseManager(ProgramDefinitions.mydata.peerID + File.separator + ProgramDefinitions.chunkDatabaseFileName);
 
 		//start server
 		TCP_Server server = new TCP_Server(Integer.parseInt(args[2]));

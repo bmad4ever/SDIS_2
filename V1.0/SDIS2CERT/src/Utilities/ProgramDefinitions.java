@@ -1,5 +1,7 @@
 package Utilities;
 
+import FileSystem.DatabaseManager;
+
 public class ProgramDefinitions {
 
 	static final public int MAX_SERVICE_THREADS = 10;
@@ -13,4 +15,9 @@ public class ProgramDefinitions {
 	static public int CONTROL_PORT = 50123;
 	static public int CONTROL_PORT_SSL = 50124;
 	static public String CONTROL_ADDRESS;
+	
+	static public String chunkDatabaseFileName = "chunkMetadata.ser";
+	static public DatabaseManager db;
+	
+	static public String peerInfoDatabase = "peerMetadata.ser"; 
 }

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import FileSystem.DatabaseManager;
 import Utilities.ProgramDefinitions;
 import communication.service.ControlServiceThread;
 import communication.service.PeerServiceThread;
@@ -20,9 +19,6 @@ public class TCP_Server extends Thread{
 
 	private ServerSocket peerServerSocket;
 	private Socket peerSocket;
-	
-	private DatabaseManager db;
-	private final String databaseFileName = "metada.ser";
 
 	volatile protected boolean stop = false;
 	public void STOP() { 
@@ -41,9 +37,7 @@ public class TCP_Server extends Thread{
 		{
 			File chunkFolder = new File(ProgramDefinitions.mydata.peerID);
 			if(!chunkFolder.exists())
-				chunkFolder.mkdir();
-			
-			db = new DatabaseManager(ProgramDefinitions.mydata.peerID + File.separator + databaseFileName);
+				chunkFolder.mkdir();	
 		}
 	}
 
@@ -57,9 +51,9 @@ public class TCP_Server extends Thread{
 
 				TCP_Thread newService;
 				if(ProgramDefinitions.is_control)
-					newService = new ControlServiceThread(peerSocket, db);
+					newService = new ControlServiceThread(peerSocket);
 				else
-					newService = new PeerServiceThread(peerSocket, db);
+					newService = new PeerServiceThread(peerSocket);
 				newService.start();
 
 

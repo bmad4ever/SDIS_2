@@ -8,21 +8,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import FileSystem.Chunk;
 import FileSystem.DatabaseManager;
 import Utilities.PeerData;
 import Utilities.ProgramDefinitions;
 import Utilities.RefValue;
-import communication.TCP_Client;
-import communication.messages.MessageHeader;
-import communication.messages.MessagePacket;
 import funtionalities.Metadata;
+import funtionalities.SymmetricKey;
 
 public class BackupFile{
 
@@ -65,9 +58,6 @@ public class BackupFile{
 				}
 			}
 		};*/
-
-		MessageHeader headerToSend = new MessageHeader(MessageHeader.MessageType.putchunk, ProgramDefinitions.mydata.peerID);
-		MessagePacket packetToSend = new MessagePacket(headerToSend, chunkData);
 
 		while(( numOfTries <= _MAX_NUMBER_OF_RETRIES ) && !backupComplete){
 
@@ -130,7 +120,7 @@ public class BackupFile{
 	}
 
 	public boolean doBackup(){
-		ArrayList<byte[]> data = splitFile(filePath);
+		ArrayList<byte[]> data = splitFileAndEncryptData(filePath);
 		if(data == null) return false;
 
 		File fileTemp = new File(filePath);
@@ -146,7 +136,7 @@ public class BackupFile{
 		return true;
 	}
 
-	public ArrayList<byte[]> splitFile(String fileDir){
+	public ArrayList<byte[]> splitFileAndEncryptData(String fileDir){
 		ArrayList<byte[]> result = new ArrayList<>();
 
 		File fileToSplit = new File(fileDir);
@@ -159,8 +149,8 @@ public class BackupFile{
 			byte[] buffer = new byte[_CHUNK_SIZE];
 			long numberOfChuncks = fileToSplit.length() / _CHUNK_SIZE;
 			for(int i = 0; i < numberOfChuncks; i++){
-				bis.read(buffer);
-				result.add(buffer);
+				bis.read(buffer);				
+				result.add(SymmetricKey.encryptData(SymmetricKey.key, buffer));
 				buffer = new byte[_CHUNK_SIZE];
 			}
 

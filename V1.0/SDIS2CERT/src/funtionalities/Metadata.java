@@ -3,15 +3,12 @@ package funtionalities;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.Semaphore;
-//import java.util.logging.*;
-//import java.util.stream.Collectors;
 
 import Utilities.MessageStamp;
 import Utilities.PeerAddress;
 import Utilities.PeerData;
 import Utilities.ProgramDefinitions;
 import communication.messages.MessageHeader.MessageType;
-
 
 public class Metadata implements Runnable{
 
@@ -48,7 +45,7 @@ public class Metadata implements Runnable{
 
 		//serialize data to a new file (keeps old data so far)
 		try (
-				OutputStream file = new FileOutputStream("new_metadata.ser");
+				OutputStream file = new FileOutputStream("new_" + ProgramDefinitions.peerInfoDatabase);
 				OutputStream buffer = new BufferedOutputStream(file);
 				ObjectOutput output = new ObjectOutputStream(buffer);
 				){
@@ -70,8 +67,8 @@ public class Metadata implements Runnable{
 
 		//if saved ok, then replace old data with new data
 		try {
-			File file = new File("new_metadata.ser");
-			File file2 = new File("metadata.ser");
+			File file = new File("new_" + ProgramDefinitions.peerInfoDatabase);
+			File file2 = new File(ProgramDefinitions.peerInfoDatabase);
 			file2.delete();
 			// Rename file
 			boolean success = file.renameTo(file2);
@@ -84,7 +81,7 @@ public class Metadata implements Runnable{
 
 	public static void load() {
 		try(
-				InputStream file = new FileInputStream("metadata.ser");
+				InputStream file = new FileInputStream(ProgramDefinitions.peerInfoDatabase);
 				InputStream buffer = new BufferedInputStream(file);
 				ObjectInput input = new ObjectInputStream (buffer);
 				){
@@ -162,7 +159,7 @@ public class Metadata implements Runnable{
 
 	public static boolean exists_metadata_file()
 	{
-		File f = new File("metadata.ser");
+		File f = new File(ProgramDefinitions.peerInfoDatabase);
 		return f.exists() && !f.isDirectory();
 	}
 
