@@ -57,7 +57,7 @@ public class PeerApp {
 		}
 
 		(new Thread(new Metadata())).start();//will save metadata on nonvolatile memory from time to time
-		(new Thread(new PeerRenewService())).start();
+		//(new Thread(new PeerRenewService())).start();
 
 
 		try {System.in.read();} 

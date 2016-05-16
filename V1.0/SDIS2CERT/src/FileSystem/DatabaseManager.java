@@ -34,6 +34,8 @@ public class DatabaseManager {
 	
 	public void save(){
 		try {
+			File f = new File(filename);
+			f.createNewFile();
 			fos = new FileOutputStream(filename);
 			oos = new ObjectOutputStream(fos);
 			oos.writeObject(database);
