@@ -12,11 +12,7 @@ public class PeerData implements java.io.Serializable{
 	public PeerData(byte[] priv_key, String ip, int port, String peerID){
 		this.addr = new PeerAddress(ip, port);
 		this.priv_key=priv_key;
-		
-		try{
-		MessageDigest md = MessageDigest.getInstance("MD5");
-		this.peerID = new String(md.digest(peerID.getBytes("UTF-8")));
-		} catch(Exception e){e.printStackTrace(); this.peerID="";}
+		this.peerID = peerID;
 	}
 
 	@Override

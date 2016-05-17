@@ -29,23 +29,20 @@ public class PeerServiceThread extends TCP_Thread{
 	}
 
 	void state_machine(MessagePacket receivedMSG){
-		/*System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		System.out.println(receivedMSG.header.getSenderId() + "---" + ProgramDefinitions.mydata.peerID);
 		if(receivedMSG.header.getSenderId().equals(ProgramDefinitions.mydata.peerID))
 		{
+			if(DEBUG) System.out.println("NOT EXPECTED 102:" + receivedMSG.header.getSenderId() + "---" + ProgramDefinitions.mydata.peerID);
 			return;
-		}*/
+		}
 		switch (receivedMSG.header.getMessageType()) {
 		case hello:
 			break;
 		case chunk:
-			if(DEBUG)
-				System.out.println("Service type: CHUNK");
+			if(DEBUG)System.out.println("Service type: CHUNK");
 			//process_chunk(receivedMSG);
 			break;
 		case getchunk:
-			if(DEBUG)
-				System.out.println("Service type: GETCHUNK");
+			if(DEBUG)System.out.println("Service type: GETCHUNK");
 			process_getchunk(receivedMSG);
 			break;
 		case putchunk:

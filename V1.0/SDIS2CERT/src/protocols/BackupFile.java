@@ -87,7 +87,11 @@ public class BackupFile{
 				PeerData temp_peerdata = peers.get(i);
 				//do not count own data
 				if (temp_peerdata.peerID.equals(ProgramDefinitions.mydata.peerID)) continue;
-				if(DEBUG) System.out.println("Sending putchunk<" +fileId +","+chunkNum +"> to " + temp_peerdata.peerID);
+				if(DEBUG) System.out.println("Sending putchunk<" +fileId +","+chunkNum +"> to " + 
+				temp_peerdata.peerID+ "______"
+				+ProgramDefinitions.mydata.peerID
+				+temp_peerdata.peerID.equals(ProgramDefinitions.mydata.peerID)
+				);
 				
 				//completed.add(new RefValue<Boolean>());
 				//executor.execute(
@@ -149,6 +153,7 @@ public class BackupFile{
 		}
 
 		peerFile = db.getDatabase().addOriginalFile(fileName,replicationDegree);
+		if(peerFile==null) peerFile = db.getDatabase().getFileMetadata(fileName);
 		String fileId = db.getDatabase().getFileId(fileName);
 
 		for(int i = 0; i < data.size(); i++){

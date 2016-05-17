@@ -81,7 +81,7 @@ public class RestoreFile{
 
 				if(temp_peerdata==null) continue;
 				//do not count own data
-				//if (temp_peerdata.peerID==ProgramDefinitions.mydata.peerID) continue;
+				if (temp_peerdata.peerID.equals(ProgramDefinitions.mydata.peerID)) continue;
 
 				//completed.add(new RefValue<Boolean>());
 				//executor.execute(
@@ -160,8 +160,8 @@ public class RestoreFile{
 		//String fileId = db.getDatabase().getFileId(fileName);
 		//if(fileId == null) return false;
 
-		String filesDir = ProgramDefinitions.mydata.peerID + File.separator + fileId;
-		String outputDir = ProgramDefinitions.mydata.peerID + File.separator + fileName;
+		String filesDir = ProgramDefinitions.myID + File.separator + fileId;
+		String outputDir = ProgramDefinitions.myID + File.separator + fileName;
 
 		File[] files = new File(filesDir).listFiles();
 		ArrayList<String> chunkNameHolder = new ArrayList<>();

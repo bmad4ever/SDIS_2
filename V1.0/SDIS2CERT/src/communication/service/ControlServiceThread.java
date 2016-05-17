@@ -58,7 +58,6 @@ public class ControlServiceThread extends TCP_Thread{
 	public void process_hello(MessagePacket receivedMSG){
 		
 		//deny por agora
-		
 		MessageHeader h = new MessageHeader(
 				MessageHeader.MessageType.deny,"CRED");
 		MessagePacket m = new MessagePacket(h, null);
@@ -84,6 +83,8 @@ public class ControlServiceThread extends TCP_Thread{
 
 			return;
 		}
+		
+		if(DEBUG)System.out.println("PPPPDDDDD<"+new_pd.peerID+">");
 		
 		//deny - private keys are disparate on new and old data
 		if (existingData != null){
