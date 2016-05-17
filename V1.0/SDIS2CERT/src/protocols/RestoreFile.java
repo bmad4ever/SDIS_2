@@ -139,7 +139,7 @@ public class RestoreFile{
 				}
 
 			// write temp chunk file
-			db.getDatabase().getStoredChunkData(fileId, chunkNum).writeChunkFile(received_chunk.value);
+			peerFile.getChunk(chunkNum).writeChunkFile(received_chunk.value,peerFile.getFileid());
 			chunkNum++;
 		}while(
 				db.getDatabase().getStoredChunkData(fileId, chunkNum)!=null
@@ -161,7 +161,7 @@ public class RestoreFile{
 		//if(fileId == null) return false;
 
 		String filesDir = ProgramDefinitions.myID + File.separator + fileId;
-		String outputDir = ProgramDefinitions.myID + File.separator + fileName;
+		String outputDir = ProgramDefinitions.myID + File.separator + fileName;// ProgramDefinitions.recoveredFilesFolderName + File.separator +fileName ;
 
 		File[] files = new File(filesDir).listFiles();
 		ArrayList<String> chunkNameHolder = new ArrayList<>();

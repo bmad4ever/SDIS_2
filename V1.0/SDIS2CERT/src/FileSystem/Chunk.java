@@ -63,6 +63,25 @@ public class Chunk implements Serializable {
 		}
 	}
 
+	/**use this one when recovering files*/
+	public void writeChunkFile(byte[] newdata,String folder2Use){
+		File chunkFolder = new File(ProgramDefinitions.myID + File.separator + folder2Use);
+		if(!chunkFolder.exists())
+			chunkFolder.mkdir();
+		
+		String filePath = ProgramDefinitions.myID + File.separator + folder2Use
+				+ File.separator + folder2Use + "-" + String.format("%08d", chunkNum);
+		
+		try {
+			FileOutputStream fos = new FileOutputStream(filePath);
+			if(newdata != null) fos.write(newdata);
+			else fos.write(("").getBytes());
+			fos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public byte[] readChunkFileData() {
 		String chunkFilePath = ProgramDefinitions.myID + File.separator + fileId
 				+ File.separator + fileId + "-" + String.format("%08d", chunkNum);

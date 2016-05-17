@@ -22,9 +22,15 @@ public class PeerFile implements Serializable {
 		return replicationDegree;
 	}
 	
+	/**should work to get num on recover, as long as they are stored in respectve order*/
 	public Chunk getChunk(int i) {
 		return chunks.get(i);
 	}
+	
+	/*public Chunk getChunkNum(int chunkNum) {
+		 for(Chunk chunk: chunks) chunk.getChunkNum();
+			 return null;
+	}*/
 	
 	/*public void addChunk(Chunk c) {
 		chunks.add(c);

@@ -21,5 +21,7 @@ public class ProgramDefinitions {
 	static public String peerInfoDatabaseName = "peerMetadata.ser"; 
 	static public String timestampsDatabaseName = "timestampsMetadata.ser"; 
 	
+	static public final String recoveredFilesFolderName = "RECOVERED FILES";
+	
 	static public DatabaseManager db;
 }
