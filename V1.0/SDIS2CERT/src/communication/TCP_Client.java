@@ -1,6 +1,5 @@
 package communication;
 
-import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -9,6 +8,8 @@ import Utilities.RefValue;
 import java.net.InetAddress;
 
 public class TCP_Client extends TCP_Thread{
+	
+	static final int SOCKET_TIMEOUT=4000;
 	
 	/**<p>informs if the thread completed it's job successfully (not necessarily to catch errors but t know if it completed the given task)/p>
 	 * <p>will be initialized with false in constructor if != null</p>
@@ -24,16 +25,17 @@ public class TCP_Client extends TCP_Thread{
 		} catch (UnknownHostException e) {e.printStackTrace();}
 	}
 	
-	@Override
+	/*@Override
 	public void run() {
 		baserun();
-	}
+	}*/
 	
 	public void baserun() {
 		try {		
 			socket = new Socket(address, port);
-		} catch (IOException e) {
-			e.printStackTrace();
+			socket.setSoTimeout(SOCKET_TIMEOUT);
+		} catch (Exception e) {
+			//e.printStackTrace();
 			failed_init = true;
 		}
 	}

@@ -21,6 +21,7 @@ public class Chunk implements Serializable {
 		fileId = chunkFileId;
 		chunkNum = chunkN;
 		replicationDegree = replicationD;
+		peersSaved = new ArrayList<String>();
 	}
 	
 	public String getFileId(){
@@ -35,21 +36,21 @@ public class Chunk implements Serializable {
 		return peersSaved.size() >= replicationDegree;
 	}
 	
-	public void addPeerSaved(String peerId) {
+	public synchronized void addPeerSaved(String peerId) {
 		if(!peersSaved.contains(peerId)) peersSaved.add(peerId);
 	}
 	
-	public void removePeerSaved(String peerId){
+	public synchronized void removePeerSaved(String peerId){
 		if(peersSaved.contains(peerId))
 			peersSaved.remove(peerId);
 	}
 		
 	public void writeChunkFile(byte[] newdata){
-		File chunkFolder = new File(ProgramDefinitions.mydata.peerID + File.separator + fileId);
+		File chunkFolder = new File(ProgramDefinitions.myID + File.separator + fileId);
 		if(!chunkFolder.exists())
 			chunkFolder.mkdir();
 		
-		String filePath = ProgramDefinitions.mydata.peerID + File.separator + fileId
+		String filePath = ProgramDefinitions.myID + File.separator + fileId
 				+ File.separator + fileId + "-" + String.format("%08d", chunkNum);
 		
 		try {
@@ -63,7 +64,7 @@ public class Chunk implements Serializable {
 	}
 
 	public byte[] readChunkFileData() {
-		String chunkFilePath = ProgramDefinitions.mydata.peerID + File.separator + fileId
+		String chunkFilePath = ProgramDefinitions.myID + File.separator + fileId
 				+ File.separator + fileId + "-" + String.format("%08d", chunkNum);
 
 		try {
@@ -86,7 +87,7 @@ public class Chunk implements Serializable {
 	}
 		
 	public boolean hasData(){
-		String filePath = ProgramDefinitions.mydata.peerID + File.separator + fileId
+		String filePath = ProgramDefinitions.myID + File.separator + fileId
 				+ File.separator + fileId + "-" + String.format("%08d", chunkNum);
 		
 		File f = new File(filePath);
@@ -100,15 +101,27 @@ public class Chunk implements Serializable {
 	    }else{
 	    	Chunk that = (Chunk)obj;
 	    	
-	    	if(!this.fileId.equals(that.fileId)) return false;
+	    	if( (this.fileId != null && that.fileId == null)
+	    	|| (that.fileId != null && this.fileId == null)
+	    			) return false;
+
+	    	if(this.fileId!=null&&!this.fileId.equals(that.fileId)) return false;
 	    	if(this.chunkNum != that.chunkNum) return false;
-	    	
 	    	return true;
 	    }
 	}
 
+	@Override
+	public int hashCode() {
+		return (fileId+chunkNum).hashCode();
+	}
+	
 	public ArrayList<String> getPeersSaved(){
 		return peersSaved;
 	}
 	
+	public void print()
+	{
+		System.out.println(fileId + "," + chunkNum + "," + replicationDegree);
+	}
 }

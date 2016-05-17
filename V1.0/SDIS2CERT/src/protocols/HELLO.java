@@ -6,8 +6,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.HashSet;
-import java.util.List;
-
 import Utilities.PeerData;
 import Utilities.ProgramDefinitions;
 import Utilities.RefValue;
@@ -37,7 +35,7 @@ public class HELLO extends TCP_Client{
 		if(failed_init)
 			return;
 		
-
+		//send SSL
 		MessageHeader nHeader = new MessageHeader(MessageHeader.MessageType.hello, ProgramDefinitions.mydata.peerID);
 		MessagePacket n = new MessagePacket(nHeader, null);
 		
@@ -48,13 +46,15 @@ public class HELLO extends TCP_Client{
 		
 		if(DEBUG)
 			response.print();
-				
+		
+		//get public assym key from response
 		try {
 			AsymmetricKey.pubk = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(response.body));
 		} catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
 		
+		//send our data to control
 		byte[] raw = SerialU.serialize(ProgramDefinitions.mydata);
 		MessageHeader mHeader = new MessageHeader(MessageHeader.MessageType.peer_privkey, null);
 		MessagePacket m = new MessagePacket(mHeader, AsymmetricKey.encrypt(AsymmetricKey.pubk, raw));

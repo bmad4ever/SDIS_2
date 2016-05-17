@@ -12,13 +12,14 @@ public class ProgramDefinitions {
 	static public long timestamp = 0;
 	static public boolean is_control = false;
 	static public PeerData mydata;
+	static public String myID;
 	static public int CONTROL_PORT = 50123;
 	static public int CONTROL_PORT_SSL = 50124;
 	static public String CONTROL_ADDRESS;
 	
 	static public String chunkDatabaseFileName = "chunkMetadata.ser";
-	static public DatabaseManager db;
-	
 	static public String peerInfoDatabaseName = "peerMetadata.ser"; 
 	static public String timestampsDatabaseName = "timestampsMetadata.ser"; 
+	
+	static public DatabaseManager db;
 }

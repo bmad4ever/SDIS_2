@@ -10,14 +10,14 @@ import java.util.List;
 import java.util.PriorityQueue;
 import FileSystem.Chunk;
 import FileSystem.DatabaseManager;
+import FileSystem.PeerFile;
 import Utilities.Misc;
 import Utilities.PeerData;
 import Utilities.ProgramDefinitions;
 import Utilities.RefValue;
-import communication.TCP_Client;
 import funtionalities.PeerMetadata;
 
-public class RestoreFile extends TCP_Client{
+public class RestoreFile{
 
 	private final static boolean DEBUG = true;
 
@@ -27,20 +27,24 @@ public class RestoreFile extends TCP_Client{
 	private static int _INITIAL_REPLY_WAIT_TIME = 1; // seconds
 
 	private DatabaseManager db;
-
+	private PeerFile peerFile;
 	private String fileName;
-
-	public RestoreFile(int port, String address, DatabaseManager db, String fileName,RefValue<Boolean> accept){
-		super(port, address,accept);
+	
+	RefValue<String> answer;
+	
+	public RestoreFile(DatabaseManager db, String fileName,RefValue<String> answer){
+		//super(port, address,accept);
 
 		this.db = db;
 
 		this.fileName = fileName;
+		this.answer = answer;
+		this.answer.value = "";
 	}
 
 	private boolean restoreChunk(final String fileId, final int chunkNum,RefValue<byte[]> received_chunk ){
 
-		Chunk chunk2request = db.getDatabase().getStoredChunkData(fileId,chunkNum);
+		Chunk chunk2request = peerFile.getChunk(chunkNum);
 		if(chunk2request==null) {
 			if(DEBUG) System.out.println("restoreChunk("+fileId+","+chunkNum+")File Chunk not in DB");
 			return false;
@@ -70,13 +74,14 @@ public class RestoreFile extends TCP_Client{
 		while(( numOfTries <= _MAX_NUMBER_OF_RETRIES ) && !restoreComplete){
 
 			List<String> peersIDs = chunk2request.getPeersSaved();
+			if (DEBUG) System.out.println("RESTORE_CHUNK111:"+peersIDs.size());
 			for(int i=0; i<peersIDs.size() && !restoreComplete;++i)//PeerData peer : peers)
 			{
 				PeerData temp_peerdata = PeerMetadata.getPeerData(peersIDs.get(i));
 
 				if(temp_peerdata==null) continue;
 				//do not count own data
-				if (temp_peerdata.peerID==ProgramDefinitions.mydata.peerID) continue;
+				//if (temp_peerdata.peerID==ProgramDefinitions.mydata.peerID) continue;
 
 				//completed.add(new RefValue<Boolean>());
 				//executor.execute(
@@ -87,6 +92,7 @@ public class RestoreFile extends TCP_Client{
 						,completed
 						,received_chunk);//completed.get(i));
 				//);
+				t_getchunk.start();
 				try{
 					t_getchunk.join();
 				}catch(Exception e){e.printStackTrace();}
@@ -115,33 +121,44 @@ public class RestoreFile extends TCP_Client{
 
 	public boolean doRestore(){
 
-		String fileId = db.getDatabase().getFileId(fileName);
-		if(fileId == null) return false;
-
+		peerFile = db.getDatabase().getFileMetadata(fileName);
+		if(peerFile == null) {
+			this.answer.value = "No such file registered in database";
+			return false;
+		}
+		String fileId = peerFile.getFileid();
+		
 		RefValue<byte[]> received_chunk=null;
 		int chunkNum = 0;
 		do{
 			received_chunk = new RefValue<byte[]>();
-			if(!restoreChunk(fileId, chunkNum,received_chunk)) return false;
+			if(!restoreChunk(fileId, chunkNum,received_chunk))
+				{	
+					this.answer.value = "Failed get chunk " +chunkNum;
+					return false;
+				}
 
 			// write temp chunk file
 			db.getDatabase().getStoredChunkData(fileId, chunkNum).writeChunkFile(received_chunk.value);
-
 			chunkNum++;
 		}while(
 				db.getDatabase().getStoredChunkData(fileId, chunkNum)!=null
 				//ou received_chunk!=null && received_chunk.value.length == _CHUNK_SIZE
 				);
 
-		if(!uniteFile()) return false;
+		if(!uniteFile(fileId)) {
+			this.answer.value = "Failed to unite chunks";
+			return false;
+		}
 
+		this.answer.value = "Restore Completed completed";
 		return true;
 	}
 
-	private boolean uniteFile(){
+	private boolean uniteFile(final String fileId){
 
-		String fileId = db.getDatabase().getFileId(fileName);
-		if(fileId == null) return false;
+		//String fileId = db.getDatabase().getFileId(fileName);
+		//if(fileId == null) return false;
 
 		String filesDir = ProgramDefinitions.mydata.peerID + File.separator + fileId;
 		String outputDir = ProgramDefinitions.mydata.peerID + File.separator + fileName;

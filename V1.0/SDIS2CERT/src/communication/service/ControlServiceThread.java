@@ -3,8 +3,6 @@ package communication.service;
 import java.net.Socket;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
-
 import Utilities.PeerData;
 import communication.TCP_Thread;
 import communication.messages.DeleteRequestBody;
@@ -26,6 +24,7 @@ public class ControlServiceThread extends TCP_Thread{
 		socket = clientSocket;
 	}	
 
+	@Override
 	public void run() {
 		MessagePacket receivedMSG = (MessagePacket) receiveMessage();			
 		if(DEBUG)

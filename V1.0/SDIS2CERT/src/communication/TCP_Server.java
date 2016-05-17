@@ -25,20 +25,13 @@ public class TCP_Server extends Thread{
 		stop=true;
 		try {
 			peerServerSocket.close();
-		} catch (IOException e) {e.printStackTrace();} 
+		} catch (IOException e) {}//e.printStackTrace();} 
 	}
 
 	public TCP_Server(int p) {
 		try {
 			peerServerSocket = new ServerSocket(p);
 		} catch (IOException e) {e.printStackTrace();}
-		
-		if(!ProgramDefinitions.is_control)
-		{
-			File chunkFolder = new File(ProgramDefinitions.mydata.peerID);
-			if(!chunkFolder.exists())
-				chunkFolder.mkdir();	
-		}
 	}
 
 	@Override

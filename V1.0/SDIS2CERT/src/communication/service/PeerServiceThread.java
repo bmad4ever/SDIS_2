@@ -2,6 +2,8 @@ package communication.service;
 
 import java.net.Socket;
 
+import FileSystem.Chunk;
+import FileSystem.Database;
 import Utilities.ProgramDefinitions;
 import communication.TCP_Thread;
 import communication.messages.MessageHeader;
@@ -18,12 +20,21 @@ public class PeerServiceThread extends TCP_Thread{
 		socket = clientSocket;
 	}	
 
+	@Override
 	public void run() {
-		MessagePacket receivedMSG = (MessagePacket) receiveMessage();			
-		receivedMSG.print();
+		/*MessagePacket receivedMSG = (MessagePacket) receiveMessage();			
+		receivedMSG.print();*/
+		
+		state_machine((MessagePacket) receiveMessage());
 	}
 
 	void state_machine(MessagePacket receivedMSG){
+		/*System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		System.out.println(receivedMSG.header.getSenderId() + "---" + ProgramDefinitions.mydata.peerID);
+		if(receivedMSG.header.getSenderId().equals(ProgramDefinitions.mydata.peerID))
+		{
+			return;
+		}*/
 		switch (receivedMSG.header.getMessageType()) {
 		case hello:
 			break;
@@ -69,7 +80,7 @@ public class PeerServiceThread extends TCP_Thread{
 
 	private void process_getchunk(MessagePacket receivedMSG) {
 		// Id of the GETCHUNK sender
-		/*String getChunkSenderId = */receivedMSG.header.getSenderId();
+		//String getChunkSenderId = receivedMSG.header.getSenderId();
 
 		// Id of the chunk file to restore
 		String getChunkFileId = receivedMSG.header.getFileId();
@@ -78,7 +89,13 @@ public class PeerServiceThread extends TCP_Thread{
 		int numOfChunkToRestore = receivedMSG.header.getChunkNum();
 
 		// Verifies if it is a received chunk
-		if(!ProgramDefinitions.db.getDatabase().isChunkStored(getChunkFileId, numOfChunkToRestore)) return;
+		ProgramDefinitions.db.getDatabase().printChucksStored();
+		System.out.println(getChunkFileId +" MMMM "+ numOfChunkToRestore);
+		if(!ProgramDefinitions.db.getDatabase().isChunkStored(getChunkFileId, numOfChunkToRestore)) 
+			{
+				if(DEBUG) System.out.println("chunk not owned ZZZZZZZZZZ");
+				return;			
+			}
 
 		byte[] chunkToSendData = ProgramDefinitions.db.getDatabase().getStoredChunkData(getChunkFileId, numOfChunkToRestore).readChunkFileData();
 
@@ -86,6 +103,7 @@ public class PeerServiceThread extends TCP_Thread{
 			MessageHeader headMessage = new MessageHeader(MessageHeader.MessageType.chunk, ProgramDefinitions.mydata.peerID, getChunkFileId, numOfChunkToRestore);
 			MessagePacket n = new MessagePacket(headMessage, chunkToSendData);
 			sendMessage(n);
+			if(DEBUG) System.out.println("chunk sent XXXXXXXXXXXX");
 		}
 	}
 
@@ -122,15 +140,15 @@ public class PeerServiceThread extends TCP_Thread{
 
 		// writes the file if it is not already stored
 		if(!ProgramDefinitions.db.getDatabase().isChunkStored(chunkFileId, numOfChunkToStore)){
-			ProgramDefinitions.db.getDatabase().addStoredChunkFile(chunkFileId, numOfChunkToStore, chunkReplicationDegree); // registers the storing
+			//register storing
+			Chunk chunk = ProgramDefinitions.db.getDatabase().addStoredChunkFile(chunkFileId, numOfChunkToStore, chunkReplicationDegree);
+			//saves copy on disk
+			chunk.writeChunkFile(chunkData);
 		}
-
-		// write chunk file
-		//db.getDatabase().getStoredChunkData(chunkFileId, numOfChunkToStore).setData(chunkData);
-		ProgramDefinitions.db.getDatabase().getStoredChunkData(chunkFileId, numOfChunkToStore).writeChunkFile(chunkData);
 
 		MessageHeader headMessage = new MessageHeader(MessageHeader.MessageType.stored, backupSenderId, chunkFileId, numOfChunkToStore);
 		MessagePacket n = new MessagePacket(headMessage, null);
 		sendMessage(n);
+		if(DEBUG) System.out.println(numOfChunkToStore+"!!!!!!!!!!!!!!!!!!!!!!!!!");
 	}
 }

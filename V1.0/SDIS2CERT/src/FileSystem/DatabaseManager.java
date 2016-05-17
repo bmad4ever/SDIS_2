@@ -28,7 +28,7 @@ public class DatabaseManager {
 			load();
 		}else{
 			database = new Database();
-			save();
+			//save();
 		}
 	}	
 	

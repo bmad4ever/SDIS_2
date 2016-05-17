@@ -26,7 +26,7 @@ public class Misc {
 			}
 		}
 		
-		File parentFolder = new File(ProgramDefinitions.mydata.peerID + File.separator + instance.getParentFile().getName());
+		File parentFolder = new File(ProgramDefinitions.myID + File.separator + instance.getParentFile().getName());
 		
 		instance.delete();
 		
@@ -49,7 +49,7 @@ public class Misc {
 	}
 	
 	static public boolean deleteFolder(String fileId){
-		String filesDir = ProgramDefinitions.mydata.peerID + File.separator + fileId;
+		String filesDir = ProgramDefinitions.myID + File.separator + fileId;
 		File chunkFolder = new File(filesDir);
 		
 		folderSize(chunkFolder);

@@ -36,6 +36,9 @@ public class PUTCHUNK extends TCP_Client{
 		if(DEBUG) System.out.println("Sending a message");
 		MessageHeader headMessage = new MessageHeader(MessageHeader.MessageType.putchunk, senderId, fileId, chunkNum, replicationDegree);
 		MessagePacket n = new MessagePacket(headMessage, chunkData);
-		this.taskCompleted.value = sendMessage(n);
+		sendMessage(n);
+		MessagePacket ans = (MessagePacket)receiveMessage();
+		if(ans==null) return;
+		this.taskCompleted.value =  ans.header.getMessageType()==MessageHeader.MessageType.stored;
 	}
 }

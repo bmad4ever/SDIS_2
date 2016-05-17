@@ -1,7 +1,6 @@
 package main;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -11,9 +10,9 @@ import Utilities.ProgramDefinitions;
 import Utilities.RefValue;
 import communication.TCP_Server;
 import funtionalities.PeerMetadata;
-import funtionalities.PeerRenewService;
 import funtionalities.SymmetricKey;
 import protocols.HELLO;
+import userInterface.PeerUI;
 
 public class PeerApp {
 	
@@ -22,6 +21,16 @@ public class PeerApp {
 		if(args.length!=4){
 			System.out.println("cred <ID> <password> <port number> <Control IP Address> ");
 			return;
+		}
+		
+		ProgramDefinitions.is_control = false;
+		ProgramDefinitions.myID = new String(args[0]);
+		
+		if(!ProgramDefinitions.is_control)
+		{
+			File chunkFolder = new File(ProgramDefinitions.myID);
+			if(!chunkFolder.exists())
+				chunkFolder.mkdir();	
 		}
 		
 		System.setProperty("Djavax.net.ssl.keyStore","client.keys");
@@ -35,11 +44,13 @@ public class PeerApp {
 			ProgramDefinitions.mydata = new PeerData(SymmetricKey.key, InetAddress.getLocalHost().getHostAddress(), Integer.parseInt(args[2]), args[0]);
 		} catch (NumberFormatException | UnknownHostException e) {	e.printStackTrace();}
 		
-		ProgramDefinitions.db = new DatabaseManager(ProgramDefinitions.mydata.peerID + File.separator + ProgramDefinitions.chunkDatabaseFileName);
+		//System.out.println(ProgramDefinitions.myID); if(true) return;
+		
+		ProgramDefinitions.db = new DatabaseManager(ProgramDefinitions.myID + File.separator + ProgramDefinitions.chunkDatabaseFileName);
 		
 		PeerMetadata.setDatabaseNames(
-				ProgramDefinitions.mydata.peerID + File.separator +ProgramDefinitions.peerInfoDatabaseName , 
-				ProgramDefinitions.mydata.peerID + File.separator +ProgramDefinitions.timestampsDatabaseName);
+				ProgramDefinitions.myID + File.separator +ProgramDefinitions.peerInfoDatabaseName , 
+				ProgramDefinitions.myID + File.separator +ProgramDefinitions.timestampsDatabaseName);
 		PeerMetadata.INIT();
 		
 		//start server
@@ -52,22 +63,26 @@ public class PeerApp {
 		ProgramDefinitions.CONTROL_ADDRESS = args[3];
 		HELLO client = new HELLO(ProgramDefinitions.CONTROL_PORT, ProgramDefinitions.CONTROL_ADDRESS, accept);
 		client.start();
+		
 		try {client.join();	} 
 		catch (InterruptedException e1) {	e1.printStackTrace();}
 
 		if(!accept.value)
 		{
-			System.out.println("Service denied by control");
+			System.out.println("Control Unavailable or Service denied");
+			server.STOP();
 			return;
 		}
 
-		(new Thread(new PeerMetadata())).start();//will save metadata on nonvolatile memory from time to time
-		(new Thread(new PeerRenewService())).start();
+		//START PASSIVE PERIODIC STUFF -------------------
+		//(new Thread(new PeerMetadata())).start();//will save metadata on nonvolatile memory from time to time
+		//(new Thread(new PeerRenewService())).start();
 
+		//UI RELATED
+		PeerUI.UI();
 
-		try {System.in.read();} 
-		catch (IOException e) {e.printStackTrace();}
-
+		//QUIT -------------------
+		server.STOP();
 		System.out.println("Closing down.");
 		System.exit(0);
 	}

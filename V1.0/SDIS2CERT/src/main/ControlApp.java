@@ -47,7 +47,8 @@ public class ControlApp {
 			System.out.println("Control Server running on " + InetAddress.getLocalHost().getHostAddress() + ":" + ProgramDefinitions.CONTROL_PORT);
 		} catch (UnknownHostException e1) {e1.printStackTrace();}
 		server.start();
-		(new Thread(new PeerMetadata())).start();//will save metadata on nonvolatile memory from time to time
+		
+		//(new Thread(new PeerMetadata())).start();//will save metadata on nonvolatile memory from time to time
 		
 		try {System.in.read();} 
 		catch (IOException e) {e.printStackTrace();}

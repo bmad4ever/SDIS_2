@@ -34,7 +34,7 @@ public class GETCHUNK extends TCP_Client{
 		
 		if(DEBUG) System.out.println("Sending a GETCHUNK message");
 		
-		MessageHeader headMessage = new MessageHeader(MessageHeader.MessageType.putchunk, senderId, fileId, chunkNum, 0);
+		MessageHeader headMessage = new MessageHeader(MessageHeader.MessageType.getchunk, senderId, fileId, chunkNum, 0);
 		MessagePacket n = new MessagePacket(headMessage, null);
 		sendMessage(n);
 		
