@@ -32,7 +32,6 @@ public class ControlServiceThread extends TCP_Thread{
 		MessagePacket receivedMSG = (MessagePacket) receiveMessage();			
 		if(DEBUG)
 			receivedMSG.print();
-
 		state_machine(receivedMSG);
 	}
 
@@ -46,7 +45,7 @@ public class ControlServiceThread extends TCP_Thread{
 		case requestdelete:
 			if(DEBUG)
 				System.out.println("Service type: DELETE");
-			process_delete(receivedMSG);
+			processDeleteRequest(receivedMSG);
 			break;
 		case peer_privkey:
 			if(DEBUG)
@@ -117,43 +116,50 @@ public class ControlServiceThread extends TCP_Thread{
 		sendMessage(m);
 	}
 
-	public void process_delete(MessagePacket receivedMSG){
+	/**
+	 * Processes the delete request message and processes it.
+	 * If there are any errors it should send a message to the
+	 * peer that requested the delete with the deny type
+	 * @param receivedMSG The delete request message packet to be processed
+	 */
+	public void processDeleteRequest(MessagePacket receivedMSG){
 		String sender = receivedMSG.header.getSenderId();
 		byte[] senderKey = PeerMetadata.getPeerData(sender).priv_key;
 		byte[] unencryptBody = SymmetricKey.decryptData(senderKey, receivedMSG.body);
 		DeleteRequestBody msgBody = (DeleteRequestBody) SerialU.deserialize(unencryptBody);
-		MessageHeader responseheader;
+		MessageHeader respheader;
 		if(msgBody == null) {
-			responseheader = new MessageHeader(MessageHeader.MessageType.deny,"CRED");
-			MessagePacket m = new MessagePacket(responseheader,null);
+			respheader = new MessageHeader(MessageHeader.MessageType.deny,"CRED");
+			MessagePacket m = new MessagePacket(respheader,null);
 			sendMessage(m);
-			return;
-		}
-		responseheader = new MessageHeader(MessageHeader.MessageType.confirm,"CRED");
-		//byte[] tmp = SerialU.serialize(msgBody.PeerIDs.size());
-		//byte[] responsebody = SymmetricKey.encryptData(senderKey, tmp);
-		MessagePacket m = new MessagePacket(responseheader,null);
-		sendMessage(m);
-
-		byte[] deleteBody = SerialU.serialize(msgBody.FileID);
-		MessagePacket deleteMessage = new MessagePacket(receivedMSG.header , deleteBody);
-
-		for(int i = 0; i < msgBody.PeerIDs.size(); i++){
-			System.out.println(msgBody.PeerIDs.get(i));
-			PeerData pd = PeerMetadata.getPeerData(msgBody.PeerIDs.get(i));
-			if(pd == null){
-				continue;
+		}else {
+			respheader = new MessageHeader(MessageHeader.MessageType.confirm,"CRED");
+			//byte[] tmp = SerialU.serialize(msgBody.PeerIDs.size());
+			//byte[] responsebody = SymmetricKey.encryptData(senderKey, tmp);
+			MessagePacket m = new MessagePacket(respheader,null);
+			sendMessage(m);
+			/* 
+			 * Gets the peer information of each peer in the list
+			 * and sends a DELETE protocol to each one of them with
+			 * a peerData object containing peer information
+			 */
+			byte[] deleteBody = SerialU.serialize(msgBody.FileID);
+			MessagePacket deleteMessage = new MessagePacket(receivedMSG.header, deleteBody);
+			for(int i = 0; i < msgBody.PeerIDs.size(); i++){
+				System.out.println("Sent DELETE to peer: " + msgBody.PeerIDs.get(i));
+				//TODO: Search only from the active peers
+				PeerData pd = PeerMetadata.getPeerData(msgBody.PeerIDs.get(i));
+				if(pd != null){
+					System.out.println("Sent to peer" + pd.peerID);
+					DELETE dp = new DELETE(pd, deleteMessage, new RefValue<Boolean>());
+					dp.start();
+					try {
+						dp.join();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 			}
-			DELETE dp = new DELETE(pd, new RefValue<Boolean>());
-			dp.start();
-			try {
-				dp.join();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			//O control deve, aqui, para cada peer identificado na lista:
-			// - Verificar se existe peer com esse nome na metadata
-			// - Se existir, fazer uma nova thread DELETE_protocol a cada um, na qual o corpo da mensagem a enviar � a variavel deleteMessage
 		}
 	}
 }
