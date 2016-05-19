@@ -3,7 +3,10 @@ package communication.service;
 import java.net.Socket;
 import java.util.Arrays;
 import java.util.HashSet;
+
+import protocols.DELETE;
 import Utilities.PeerData;
+import Utilities.RefValue;
 import communication.TCP_Thread;
 import communication.messages.DeleteRequestBody;
 import communication.messages.MessageHeader;
@@ -119,12 +122,17 @@ public class ControlServiceThread extends TCP_Thread{
 		byte[] senderKey = PeerMetadata.getPeerData(sender).priv_key;
 		byte[] unencryptBody = SymmetricKey.decryptData(senderKey, receivedMSG.body);
 		DeleteRequestBody msgBody = (DeleteRequestBody) SerialU.deserialize(unencryptBody);
-
-		MessageHeader responseheader = new MessageHeader(
-				MessageHeader.MessageType.confirm,"CRED");
-		byte[] tmp =  SerialU.serialize(msgBody.PeerIDs.size());
-		byte[] responsebody = SymmetricKey.encryptData(senderKey, tmp);
-		MessagePacket m = new MessagePacket(responseheader,responsebody);
+		MessageHeader responseheader;
+		if(msgBody == null) {
+			responseheader = new MessageHeader(MessageHeader.MessageType.deny,"CRED");
+			MessagePacket m = new MessagePacket(responseheader,null);
+			sendMessage(m);
+			return;
+		}
+		responseheader = new MessageHeader(MessageHeader.MessageType.confirm,"CRED");
+		//byte[] tmp = SerialU.serialize(msgBody.PeerIDs.size());
+		//byte[] responsebody = SymmetricKey.encryptData(senderKey, tmp);
+		MessagePacket m = new MessagePacket(responseheader,null);
 		sendMessage(m);
 
 		byte[] deleteBody = SerialU.serialize(msgBody.FileID);
@@ -132,10 +140,20 @@ public class ControlServiceThread extends TCP_Thread{
 
 		for(int i = 0; i < msgBody.PeerIDs.size(); i++){
 			System.out.println(msgBody.PeerIDs.get(i));
-
+			PeerData pd = PeerMetadata.getPeerData(msgBody.PeerIDs.get(i));
+			if(pd == null){
+				continue;
+			}
+			DELETE dp = new DELETE(pd, new RefValue<Boolean>());
+			dp.start();
+			try {
+				dp.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			//O control deve, aqui, para cada peer identificado na lista:
 			// - Verificar se existe peer com esse nome na metadata
-			// - Se existir, fazer uma nova thread DELETE_protocol a cada um, na qual o corpo da mensagem a enviar é a variavel deleteMessage
+			// - Se existir, fazer uma nova thread DELETE_protocol a cada um, na qual o corpo da mensagem a enviar ï¿½ a variavel deleteMessage
 		}
 	}
 }

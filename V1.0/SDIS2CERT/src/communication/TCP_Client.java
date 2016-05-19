@@ -17,8 +17,10 @@ public class TCP_Client extends TCP_Thread{
 	protected RefValue<Boolean> taskCompleted;
 	
 	public TCP_Client(int p, String a,RefValue<Boolean> taskCompleted) {
-		if (taskCompleted!=null) this.taskCompleted=taskCompleted;
-		this.taskCompleted.value = false;
+		if (taskCompleted != null){
+			this.taskCompleted = taskCompleted;
+			this.taskCompleted.value = false;
+		}
 		port = p;
 		try {
 			address = InetAddress.getByName(a);

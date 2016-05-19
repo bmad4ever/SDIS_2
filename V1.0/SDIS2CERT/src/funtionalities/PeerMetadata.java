@@ -453,7 +453,8 @@ public class PeerMetadata implements Runnable{
 		HashSet<PeerData> active = new HashSet<PeerData>();
 		for(String peer : active_peers.keySet())
 		{
-			if(active_peers.get(peer)!=peer_seems_unactive)  active.add( getPeerData(peer) );   
+			if(active_peers.get(peer)!=peer_seems_unactive)
+				active.add( getPeerData(peer) );
 		}
 		return active;
 	}
