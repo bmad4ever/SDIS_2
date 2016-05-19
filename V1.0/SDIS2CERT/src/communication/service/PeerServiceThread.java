@@ -1,5 +1,6 @@
 package communication.service;
 
+import java.io.File;
 import java.net.Socket;
 
 import FileSystem.Chunk;
@@ -29,8 +30,7 @@ public class PeerServiceThread extends TCP_Thread{
 	}
 
 	void state_machine(MessagePacket receivedMSG){
-		if(receivedMSG.header.getSenderId().equals(ProgramDefinitions.mydata.peerID))
-		{
+		if(receivedMSG.header.getSenderId().equals(ProgramDefinitions.mydata.peerID)) {
 			if(DEBUG) System.out.println("NOT EXPECTED 102:" + receivedMSG.header.getSenderId() + "---" + ProgramDefinitions.mydata.peerID);
 			return;
 		}
@@ -54,6 +54,9 @@ public class PeerServiceThread extends TCP_Thread{
 			if(DEBUG)
 				System.out.println("Service type: STORED");
 			//process_stored(receivedMSG);
+			break;
+		case delete:
+			processDelete(receivedMSG);
 			break;
 		default:
 			break;
@@ -148,4 +151,17 @@ public class PeerServiceThread extends TCP_Thread{
 		sendMessage(n);
 		if(DEBUG) System.out.println(numOfChunkToStore+"!!!!!!!!!!!!!!!!!!!!!!!!!");
 	}
+
+	/**
+	 * Process a delete message. If the message is valid it
+	 * tries to delete all the chunks of the file with a 
+	 * certain fileId contained in the message body. Sends
+	 * a confirmation message back to the control so it can
+	 * ragister the occurence
+	 * @param ms The message packet
+	 */
+	private void processDelete(MessagePacket ms){
+		//TODO: Receive > get header and process data > Decrypt > delete chunks > send confirmation?
+	}
+	
 }

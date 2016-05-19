@@ -32,7 +32,6 @@ public class REQUESTDEL extends TCP_Client{
 		sendMessage(message);
 		
 		MessagePacket response = (MessagePacket) receiveMessage();
-		//byte[] tmp = SymmetricKey.decryptData(ProgramDefinitions.mydata.priv_key, response.body);
 		if(response.header.getMessageType() == MessageHeader.MessageType.confirm)
 			System.out.println("DELETE request was successfull");
 	}

@@ -16,4 +16,5 @@ public class DELETE extends TCP_Client {
 		if(failed_init)
 			return;
 	}
+	
 }

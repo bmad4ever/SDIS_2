@@ -62,6 +62,7 @@ public class PeerUI {
 			System.out.println(restore_answer.value);
 			break;
 		case 3:
+			//TODO: This is a test.Please, change to real values
 			List<String> PeerIDs = new ArrayList<String>();
 			PeerIDs.add("Peer1");
 			PeerIDs.add("Peer2");
@@ -72,7 +73,7 @@ public class PeerUI {
 				deleteclient.join();
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
-				}
+			}
 			break;
 		case 5: return true ;
 		default:

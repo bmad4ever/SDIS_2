@@ -3,6 +3,7 @@ package Utilities;
 import FileSystem.DatabaseManager;
 
 public class ProgramDefinitions {
+	//TODO: Make symmetric key for the header field of the message(Still debating)
 
 	static final public int MAX_SERVICE_THREADS = 10;
 	static final public int NUMBER_OF_PUTCHUNK_TRIES = 5;
