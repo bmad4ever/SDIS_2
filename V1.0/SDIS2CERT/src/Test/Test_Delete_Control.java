@@ -12,6 +12,7 @@ import communication.TCP_Server;
 import funtionalities.SymmetricKey;
 import protocols.DELETE_request_to_control;
 import protocols.HELLO;
+import protocols.REQUESTDEL;
 
 public class Test_Delete_Control {
 	public static void main(String[] args) {
@@ -50,9 +51,8 @@ public class Test_Delete_Control {
 		List<String> PeerIDs = new ArrayList<String>();
 		PeerIDs.add("Peer1");	PeerIDs.add("Peer2");	PeerIDs.add("Peer3");
 
-		DELETE_request_to_control deleteclient = new DELETE_request_to_control(ProgramDefinitions.CONTROL_PORT, args[3], "FileID", PeerIDs,null);
+		REQUESTDEL deleteclient = new REQUESTDEL(ProgramDefinitions.CONTROL_PORT, args[3], "FileID", PeerIDs,null);
 		deleteclient.start();
-
 		try {
 			deleteclient.join();
 		} catch (InterruptedException e1) {e1.printStackTrace();}

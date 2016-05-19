@@ -3,9 +3,13 @@ package userInterface;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
 import Utilities.ProgramDefinitions;
 import Utilities.RefValue;
 import protocols.BackupFile;
+import protocols.REQUESTDEL;
 import protocols.RestoreFile;
 
 public class PeerUI {
@@ -56,6 +60,19 @@ public class PeerUI {
 			RestoreFile rf = new RestoreFile(ProgramDefinitions.db, "test.jpg",restore_answer);
 			rf.doRestore();
 			System.out.println(restore_answer.value);
+			break;
+		case 3:
+			List<String> PeerIDs = new ArrayList<String>();
+			PeerIDs.add("Peer1");
+			PeerIDs.add("Peer2");
+			PeerIDs.add("Peer3");
+			REQUESTDEL deleteclient = new REQUESTDEL(ProgramDefinitions.CONTROL_PORT, ProgramDefinitions.CONTROL_ADDRESS, "FileID", PeerIDs,null);
+			deleteclient.start();
+			try {
+				deleteclient.join();
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+				}
 			break;
 		case 5: return true ;
 		default:
