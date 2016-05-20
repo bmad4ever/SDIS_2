@@ -19,7 +19,7 @@ public class PeerApp {
 
 	public static void main(String[] args) {
 
-		if(args.length!=4){
+		if(args.length!=4) {
 			System.out.println("cred <ID> <password> <port number> <Control IP Address> ");
 			return;
 		}
@@ -27,12 +27,9 @@ public class PeerApp {
 		ProgramDefinitions.is_control = false;
 		ProgramDefinitions.myID = new String(args[0]);
 
-		if(!ProgramDefinitions.is_control)
-		{
-			File chunkFolder = new File(ProgramDefinitions.myID);
-			if(!chunkFolder.exists())
-				chunkFolder.mkdir();	
-		}
+		File chunkFolder = new File(ProgramDefinitions.myID);
+		if(!chunkFolder.exists())
+			chunkFolder.mkdir();
 
 		System.setProperty("Djavax.net.ssl.keyStore","client.keys");
 		System.setProperty("Djavax.net.ssl.keyStorePassword","123456");
@@ -70,11 +67,13 @@ public class PeerApp {
 		HELLO client = new HELLO(ProgramDefinitions.CONTROL_PORT, ProgramDefinitions.CONTROL_ADDRESS, accept);
 		client.start();
 
-		try {client.join();	} 
-		catch (InterruptedException e1) {	e1.printStackTrace();}
-
-		if(!accept.value)
-		{
+		try {
+			client.join();	
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
+		
+		if(!accept.value) {
 			System.out.println("Control Unavailable or Service denied");
 			server.STOP();
 			return;

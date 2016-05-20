@@ -37,7 +37,8 @@ public class Chunk implements Serializable {
 	}
 	
 	public synchronized void addPeerSaved(String peerId) {
-		if(!peersSaved.contains(peerId)) peersSaved.add(peerId);
+		if(!peersSaved.contains(peerId)) 
+			peersSaved.add(peerId);
 	}
 	
 	public synchronized void removePeerSaved(String peerId){

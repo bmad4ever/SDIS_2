@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import Utilities.ProgramDefinitions;
@@ -62,15 +63,12 @@ public class PeerUI {
 			System.out.println(restore_answer.value);
 			break;
 		case 3:
-			//TODO: This is a test.Please, change to real values
-			List<String> PeerIDs = new ArrayList<String>();
-			PeerIDs.add("Peer1");
-			PeerIDs.add("Peer2");
-			PeerIDs.add("Peer3");
-			REQUESTDEL deleteclient = new REQUESTDEL(ProgramDefinitions.CONTROL_PORT, ProgramDefinitions.CONTROL_ADDRESS, "FileID", PeerIDs,null);
-			deleteclient.start();
+			HashSet<String> set = ProgramDefinitions.db.getDatabase().getFileMetadata("test.jpg").getPeersWithChunks();
+			List<String> PeerIDs = new ArrayList<String>(set);
+			REQUESTDEL requestDelete = new REQUESTDEL(ProgramDefinitions.CONTROL_PORT, ProgramDefinitions.CONTROL_ADDRESS, "d407ee6406a1216f2366674a1a9ff71361d5bef4721f8eb8b51f95e319dd56", PeerIDs,null);
+			requestDelete.start();
 			try {
-				deleteclient.join();
+				requestDelete.join();
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}

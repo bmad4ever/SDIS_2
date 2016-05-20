@@ -23,6 +23,7 @@ public class ProgramDefinitions {
 	static public String timestampsDatabaseName = "timestampsMetadata.ser"; 
 	
 	static public final String recoveredFilesFolderName = "RECOVERED FILES";
+	static public final String backupFilesFolderName = "BackupFiles";
 	
 	static public DatabaseManager db;
 }

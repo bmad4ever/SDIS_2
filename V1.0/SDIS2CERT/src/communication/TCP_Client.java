@@ -33,7 +33,7 @@ public class TCP_Client extends TCP_Thread{
 	}*/
 	
 	public void baserun() {
-		try {		
+		try {
 			socket = new Socket(address, port);
 			socket.setSoTimeout(SOCKET_TIMEOUT);
 		} catch (Exception e) {

@@ -25,7 +25,9 @@ public class TCP_Server extends Thread{
 		stop=true;
 		try {
 			peerServerSocket.close();
-		} catch (IOException e) {}//e.printStackTrace();} 
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public TCP_Server(int p) {
@@ -41,17 +43,16 @@ public class TCP_Server extends Thread{
 				peerSocket = peerServerSocket.accept();
 				if(DEBUG)
 					System.out.println("Got a new client, servicing on a new thread");
-
 				TCP_Thread newService;
-				if(ProgramDefinitions.is_control)
+				if(ProgramDefinitions.is_control) {
 					newService = new ControlServiceThread(peerSocket);
-				else
+				}else {
 					newService = new PeerServiceThread(peerSocket);
+				}
 				newService.start();
-
-
-			} catch (IOException e) 
-			{if(DEBUG) System.out.println("Server Thread Closing"); }
+			} catch (IOException e) {
+				if(DEBUG) System.out.println("Server Thread Closing"); 
+			}
 		}
 	}
 }
