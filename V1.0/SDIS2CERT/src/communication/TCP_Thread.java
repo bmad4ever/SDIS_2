@@ -32,12 +32,15 @@ public class TCP_Thread extends Thread {
 	}
 
 	public Object receiveMessage() {
-		try{
+		try {
 			if (socketRead==null) socketRead = new ObjectInputStream(socket.getInputStream());
-			if(!failed_init){
+			if(!failed_init) {
 				return socketRead.readObject();
 			}else
 				return null;
-		} catch (Exception e) {e.printStackTrace(); return null;}
+		} catch (Exception e) {
+			e.printStackTrace(); 
+			return null;
+		}
 	}
 }

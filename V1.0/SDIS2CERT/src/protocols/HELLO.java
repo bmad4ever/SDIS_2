@@ -74,7 +74,5 @@ public class HELLO extends TCP_Client{
 		
 		if(DEBUG)
 			PeerMetadata.printData();
-		
-		
 	}
 }

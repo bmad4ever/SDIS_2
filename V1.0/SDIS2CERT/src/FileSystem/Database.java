@@ -1,22 +1,27 @@
 package FileSystem;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+
+import Utilities.ProgramDefinitions;
 
 public class Database implements Serializable {
 	private static final long serialVersionUID = 2933521614615136756L;
 
 	//private HashMap<String, String> myOriginalFiles; // original file name : fileId generated
 	private HashMap<String,PeerFile> myOriginalFilesMetadata;	
-	private HashSet<Chunk> storedChunkFiles; // fileId : chunk data
+	private HashMap<String,PeerFile> storedFiles;
+	//private HashSet<Chunk> storedChunkFiles; // fileId : chunk data
 
 	public Database () {
 		//myOriginalFiles = new HashMap<String, String>();
-		storedChunkFiles = new HashSet<Chunk>();
+		storedFiles = new HashMap<String,PeerFile>();
 		myOriginalFilesMetadata = new HashMap<String,PeerFile>();
 	}
 
@@ -45,10 +50,36 @@ public class Database implements Serializable {
 		return null;
 	}
 
-	public synchronized Chunk addStoredChunkFile(String chunkFileId, int chunkNum, int replicationDegree) {
-		Chunk tempChunk = new Chunk(chunkFileId, chunkNum, replicationDegree);
-		if(!storedChunkFiles.contains(tempChunk)) storedChunkFiles.add(tempChunk);
-		return tempChunk;
+	public synchronized boolean addStoredChunkFile(String fileId, int chunkNum, int replicationDegree, byte[] data) {
+		File fileFolder = new File(ProgramDefinitions.myID + File.separator + fileId);
+		
+		//Creates folder of the file if it doesn't exist
+		if(!fileFolder.exists()) {
+			fileFolder.mkdir();
+		}
+		String filePath = fileFolder.getPath() + File.separator + fileId + "-" + String.format("%08d", chunkNum);
+		
+		//Write data into chunk file
+		try {
+			FileOutputStream fos = new FileOutputStream(filePath);
+			if(data != null) {
+				fos.write(data);
+			}
+			else {
+				fos.write(("").getBytes());
+			}
+			fos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		//Save meta data of the chunk file in the database
+		if(!storedFiles.containsKey(fileId)) {
+			PeerFile pf = new PeerFile(fileId, replicationDegree);
+			storedFiles.put(fileId, pf);
+		}
+		storedFiles.get(fileId).addChunk(fileId, chunkNum, replicationDegree);
+		return true;
 	}
 
 	//getters
@@ -72,24 +103,65 @@ public class Database implements Serializable {
 		return null;
 	}
 	
-	public boolean isChunkStored(String chunkFileId, int chunkNum){
-		return storedChunkFiles.contains(new Chunk(chunkFileId, chunkNum, -1));
+	public boolean isFileStored(String fileId) {
+		return storedFiles.containsKey(fileId);
+	}
+	
+	public boolean isChunkStored(String fileId, int chunkNum) {
+		PeerFile pf = storedFiles.get(fileId);
+		if(pf != null) {
+			if(pf.hasChunk(chunkNum)){
+				return true;
+			}else {
+				return false;
+			}
+		}else {
+			return false;
+		}
 	}
 
-	public Chunk getStoredChunkData(String chunkFileId, int chunkNum){
-		if(isChunkStored(chunkFileId, chunkNum)){
-			Chunk tempChunk = new Chunk(chunkFileId, chunkNum, -1);
-			for(Chunk chunk : storedChunkFiles)
-				if(chunk.equals(tempChunk)) return chunk;
+	public byte[] getStoredChunkData(String fileId, int chunkNum) {
+		if(isChunkStored(fileId, chunkNum)) {
+			String chunkFilePath = ProgramDefinitions.myID + File.separator + fileId + File.separator + fileId + "-" + String.format("%08d", chunkNum);
+			try {
+				File chunkFile = new File(chunkFilePath);
+				FileInputStream fis = new FileInputStream(chunkFile);
+				byte[] data = new byte[(int) chunkFile.length()];
+				fis.read(data);
+				fis.close();
+				return data;
+			} catch (IOException e) {
+				e.printStackTrace();
+				e.getCause();
+			}
 		}
-
 		return null;
 	}
 
-	public void printChucksStored()
-	{
+	public void printChucksStored() {
 		System.out.println("LIST storedChunkFiles:");
-		for(Chunk c : storedChunkFiles) c.print();
+		//TODO: If you would like to finish this code I would apreciate that ;)
+	}
+	
+	/**
+	 * Deletes all the chunk files and folder
+	 * associated with this fileId and removes
+	 * those references from the database
+	 * @param fileID The file identifier
+	 */
+	public boolean deleteFile(String fileId){
+		String folderPath = ProgramDefinitions.myID + File.separator + fileId;
+		File folder = new File(folderPath);
+		if(folder.exists()){
+			File[] files = folder.listFiles();
+			for (int i = 0; i < files.length; i++) {
+				files[i].delete();
+			}
+			folder.delete();
+			return true;
+		}
+		return false;
+		//TODO: Delete in metadata
 	}
 	
 }
