@@ -17,7 +17,7 @@ import Utilities.ProgramDefinitions;
 	//create new object
 	SymmetricKey k = new SymmetricKey("123", "AES");
 	//encrypt data
-	byte[] ed = k.encryptData("isto é uma mensagem".getBytes());
+	byte[] ed = k.encryptData("isto e uma mensagem".getBytes());
 	System.out.println(new String(ed));
 	//decrypt data
 	System.out.println(new String(k.decryptData(ed)));
@@ -59,7 +59,6 @@ public class SymmetricKey {
 			e.printStackTrace();
 		}
 	}
-	
 	
 	static public byte[] encryptData(byte[] skb,byte[] dataToSend){
 		SecretKeySpec sk =  new SecretKeySpec(skb, ProgramDefinitions.SYMM_KEY_ALGORITHM);

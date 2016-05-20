@@ -1,19 +1,21 @@
 package communication.service;
 
+import java.io.File;
 import java.net.Socket;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
 
+import Utilities.BinaryFile;
 import Utilities.PeerData;
+import Utilities.ProgramDefinitions;
 import communication.TCP_Thread;
 import communication.messages.DeleteRequestBody;
 import communication.messages.MessageHeader;
 import communication.messages.MessagePacket;
 import funtionalities.AsymmetricKey;
-import funtionalities.Metadata;
+import funtionalities.PeerMetadata;
 import funtionalities.SerialU;
 import funtionalities.SymmetricKey;
-
 
 /**
  * Performs the server-side actions in a Protocol.
@@ -21,23 +23,39 @@ import funtionalities.SymmetricKey;
  *
  */
 public class ControlServiceThread extends TCP_Thread{
-	
-	public ControlServiceThread(Socket clientSocket)
-	{
+
+	public ControlServiceThread(Socket clientSocket){
 		socket = clientSocket;
 	}	
-	
+
+	@Override
 	public void run() {
-		MessagePacket receivedMSG = (MessagePacket)receiveMessage();			
+		MessagePacket receivedMSG = (MessagePacket) receiveMessage();			
 		if(DEBUG)
 			receivedMSG.print();
-		
+
 		state_machine(receivedMSG);
 	}
-	
-	
-	void state_machine(MessagePacket receivedMSG)
+
+
+	public void sendDeny()
 	{
+		MessageHeader h = new MessageHeader(
+				MessageHeader.MessageType.deny,"CRED");
+		MessagePacket m = new MessagePacket(h, null);
+		sendMessage(m);
+	}
+
+	public void sendConfirm()
+	{
+		MessageHeader h = new MessageHeader(
+				MessageHeader.MessageType.confirm,"CRED");
+		MessagePacket m = new MessagePacket(h, null);
+		sendMessage(m);
+	}
+
+
+	public void state_machine(MessagePacket receivedMSG){
 		switch (receivedMSG.header.getMessageType()) {
 		case hello:
 			if(DEBUG)
@@ -49,102 +67,143 @@ public class ControlServiceThread extends TCP_Thread{
 				System.out.println("Service type: DELETE");
 			process_delete(receivedMSG);
 			break;
-			
+		case peer_privkey:
+			if(DEBUG)
+				System.out.println("Service type: Peer_Privkey");
+			process_privatekey(receivedMSG);
+			break;
+		case peer_backup_metadata:
+			process_peer_metadata_backup(receivedMSG);
+			break;
+		case peer_restore_metadata:
+			process_peer_metadata_recover(receivedMSG);
+			break;
 		default:
 			break;
 		}
 	}
-	
-	
-	void process_hello(MessagePacket receivedMSG)
-	{
-		MessageHeader header = new MessageHeader(
-				MessageHeader.MessageType.cred_pubkey
-				,"CRED"	,null,null,0);
-		byte[] body = AsymmetricKey.pubk.getEncoded();
-		MessagePacket msg = new MessagePacket(header, body);
-		sendMessage(msg);
-		
-		MessagePacket msgPack = (MessagePacket) receiveMessage();
+
+	public void process_hello(MessagePacket receivedMSG){
+
+		//deny por agora
+		sendDeny();
+		return;
+	}
+
+	public void process_privatekey(MessagePacket receivedMSG){
+
 		if(DEBUG)
-			msgPack.print();
-		byte[] msgContent = AsymmetricKey.decrypt(AsymmetricKey.prvk, msgPack.body);
+			receivedMSG.print();
+		byte[] msgContent = AsymmetricKey.decrypt(AsymmetricKey.prvk, receivedMSG.body);
 		PeerData new_pd = (PeerData) SerialU.deserialize(msgContent);
-		
-		PeerData existingData = Metadata.getPeerData(receivedMSG.header.getSenderId());
-		
-		
-		if(new_pd==null)
-		{
-			MessageHeader h = new MessageHeader(
-					MessageHeader.MessageType.deny
-					,"CRED",null,null,0);
-			MessagePacket m = new MessagePacket(h, null);
-			sendMessage(m);
-			
+
+		PeerData existingData = PeerMetadata.getPeerData(receivedMSG.header.getSenderId());
+
+		//deny - no peer data sent
+		if(new_pd==null){
+			sendDeny();
 			return;
 		}
-		
-		if (existingData != null)
-		{
-			if(Arrays.equals(new_pd.priv_key,existingData.priv_key))
-			{
-				Metadata.updatePeerData(existingData, new_pd);
-			}
-			else
-			{
+
+		if(DEBUG)System.out.println("PPPPDDDDD<"+new_pd.peerID+">");
+
+		//deny - private keys are disparate on new and old data
+		if (existingData != null){
+			if(Arrays.equals(new_pd.priv_key,existingData.priv_key)){
+				PeerMetadata.updatePeerData(existingData, new_pd);
+			}else{
 				MessageHeader h = new MessageHeader(
-						MessageHeader.MessageType.deny
-						,"CRED",null,null,0);
+						MessageHeader.MessageType.deny,"CRED");
 				MessagePacket m = new MessagePacket(h, null);
 				sendMessage(m);
-				
+
 				return;
 			}
 		}
+		//accept, store data
 		else
-			Metadata.addNewPeerData(new_pd);
-		
-		MessageHeader h = new MessageHeader(
-				MessageHeader.MessageType.confirm
-				,"CRED",null,null,0);
-		List<PeerData> peerMetadata = Metadata.getMetadata2send2peer();
+			PeerMetadata.addNewPeerData(new_pd);
+
+		// and send full peer metadata with no private keys.
+		MessageHeader h = new MessageHeader(MessageHeader.MessageType.confirm,"CRED");
+
+		HashSet<PeerData> peerMetadata = PeerMetadata.getMetadata2send2peer();
 		byte[] tmp =  SerialU.serialize(peerMetadata);
 		byte[] peerMbody = SymmetricKey.encryptData(new_pd.priv_key, tmp);
 		MessagePacket m = new MessagePacket(h,peerMbody);
-		Metadata.updateActivePeer(new_pd.peerID); 
+		PeerMetadata.updateActivePeer(new_pd.peerID); 
 		sendMessage(m);
-		
-		
 	}
-	
-	void process_delete(MessagePacket receivedMSG)
-	{
+
+	public void process_delete(MessagePacket receivedMSG){
 		String sender = receivedMSG.header.getSenderId();
-		byte[] senderKey = Metadata.getPeerData(sender).priv_key;
+		byte[] senderKey = PeerMetadata.getPeerData(sender).priv_key;
 		byte[] unencryptBody = SymmetricKey.decryptData(senderKey, receivedMSG.body);
 		DeleteRequestBody msgBody = (DeleteRequestBody) SerialU.deserialize(unencryptBody);
-		
+
 		MessageHeader responseheader = new MessageHeader(
-				MessageHeader.MessageType.confirm
-				,"CRED",null,null,0);
+				MessageHeader.MessageType.confirm,"CRED");
 		byte[] tmp =  SerialU.serialize(msgBody.PeerIDs.size());
 		byte[] responsebody = SymmetricKey.encryptData(senderKey, tmp);
 		MessagePacket m = new MessagePacket(responseheader,responsebody);
 		sendMessage(m);
-		
+
 		byte[] deleteBody = SerialU.serialize(msgBody.FileID);
 		MessagePacket deleteMessage = new MessagePacket(receivedMSG.header , deleteBody);
-		
-		for(int i = 0; i < msgBody.PeerIDs.size(); i++)
-		{
+
+		for(int i = 0; i < msgBody.PeerIDs.size(); i++){
 			System.out.println(msgBody.PeerIDs.get(i));
-			
+
 			//O control deve, aqui, para cada peer identificado na lista:
 			// - Verificar se existe peer com esse nome na metadata
 			// - Se existir, fazer uma nova thread DELETE_protocol a cada um, na qual o corpo da mensagem a enviar é a variavel deleteMessage
 		}
-		
-		
 	}
+
+	public void process_peer_metadata_backup(MessagePacket receivedMSG)
+	{
+		if(PeerMetadata.getPeerData(receivedMSG.header.getSenderId()) == null)
+		{
+			sendDeny();
+			return; //failed to backup data or not a known peer
+		}
+		
+		File dir_rec = new File(ProgramDefinitions.controlPeersBackupFolderName);
+		dir_rec.mkdir();
+		if(!BinaryFile.saveBinaryFile(
+				ProgramDefinitions.controlPeersBackupFolderName + 
+				receivedMSG.header.getFileId()
+				,receivedMSG.body))
+		{
+			sendDeny();
+			return; //failed to backup data or not a known peer
+		}
+		sendConfirm();
+	}
+
+	public void process_peer_metadata_recover(MessagePacket receivedMSG)
+	{
+		if(PeerMetadata.getPeerData(receivedMSG.header.getSenderId()) == null)
+		{
+			sendDeny();
+			return; //not a known peer
+		}
+		
+		byte[] data = null;
+		try{ data = BinaryFile.readBinaryFile(
+				ProgramDefinitions.controlPeersBackupFolderName + 
+				receivedMSG.header.getFileId());
+		} catch (Exception e) {return;}
+		if(data == null){
+			sendDeny();
+			return; //failed to read data
+		}
+		
+		MessageHeader h = new MessageHeader(
+				MessageHeader.MessageType.peer_medatada,"CRED");
+		MessagePacket m = new MessagePacket(h, data);
+		sendMessage(m);
+
+	}
+
 }

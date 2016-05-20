@@ -13,35 +13,31 @@ public class TCP_Thread extends Thread {
 	protected ObjectOutputStream socketWrite;
 	protected ObjectInputStream socketRead;
 
-	protected InetAddress adress;
+	protected InetAddress address;
 	public int port;
-	
+
 	protected boolean failed_init = false;
-	
+
 	protected final boolean DEBUG = true;
-	
-	public void sendMessage(Object obj){
+
+	/**returns true if message was sent successfully*/
+	public boolean sendMessage(Object obj){
 		try{
-		if (socketWrite == null) socketWrite = new ObjectOutputStream(socket.getOutputStream());
-		if(!failed_init)
-			{
+			if (socketWrite == null) socketWrite = new ObjectOutputStream(socket.getOutputStream());
+			if(!failed_init){
 				socketWrite.writeObject(obj);
 			}
-		}catch (Exception e) {e.printStackTrace();}
-
+		}catch (Exception e) {e.printStackTrace(); return false;}
+		return true;
 	}
 
 	public Object receiveMessage() {
 		try{
-		if (socketRead==null) socketRead = new ObjectInputStream(socket.getInputStream());
-		if(!failed_init)
-			{
-			return socketRead.readObject();
-			}
-		else
-			return null;
+			if (socketRead==null) socketRead = new ObjectInputStream(socket.getInputStream());
+			if(!failed_init){
+				return socketRead.readObject();
+			}else
+				return null;
 		} catch (Exception e) {e.printStackTrace(); return null;}
 	}
-	
-	
 }

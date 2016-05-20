@@ -1,59 +1,104 @@
 package FileSystem;
-import java.io.Serializable;
-import java.util.HashMap;
 
+import java.io.Serializable;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.HashSet;
 
 public class Database implements Serializable {
-	private HashMap<String,PeerFile> myFiles;
-	private HashMap<String,PeerFile> peerFiles;
-	public HashMap<String, String> testMap;
-	
+	private static final long serialVersionUID = 2933521614615136756L;
+
+	//private HashMap<String, String> myOriginalFiles; // original file name : fileId generated
+	public HashMap<String,PeerFile> myOriginalFilesMetadata;	
+	public HashSet<Chunk> storedChunkFiles; // fileId : chunk data
+
 	public Database () {
-		myFiles = new HashMap<>();
-		peerFiles = new HashMap<>();
-		testMap = new HashMap<>();
+		//myOriginalFiles = new HashMap<String, String>();
+		storedChunkFiles = new HashSet<Chunk>();
+		myOriginalFilesMetadata = new HashMap<String,PeerFile>();
 	}
-	
-	public void addMyFiles(PeerFile pf) {
-		myFiles.put(pf.getName(), pf);
-	}
-	
-	public void addPeerFile(PeerFile pf) {
-		peerFiles.put(pf.getName(), pf);
-	}
-	
-	public PeerFile getMyFile(String key) {
-		return myFiles.get(key);
-	}
-	
-	public PeerFile getPeerFile(String key) {
-		return peerFiles.get(key);
-	}
-	
-	public int getNumMyFiles() {
-		return myFiles.size();
-	}
-	
-	public int getNumPeerFiles() {
-		return peerFiles.size();
-	}
-	
-	public void printFiles() {
-		System.out.println("MY FILES:");
-		for (PeerFile file : myFiles.values()) {
-			System.out.println(file.getName());
+
+	public PeerFile addOriginalFile(String originalFileName,int degree) {
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			md.update(originalFileName.getBytes());
+			byte[] mdBytes = md.digest();
+
+			StringBuffer hexString = new StringBuffer();
+			for (int i = 0; i < mdBytes.length; i++) {
+				hexString.append(Integer.toHexString(0xFF & mdBytes[i]));
+			}
+
+			String fileId = hexString.toString();
+
+			if(!myOriginalFilesMetadata.containsKey(originalFileName)){			
+				PeerFile pf= new PeerFile(fileId,degree);
+				myOriginalFilesMetadata.put(originalFileName,pf);
+				return pf;
+			}
+
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
 		}
-		System.out.println("PEER FILES:");
-		for (PeerFile file : peerFiles.values()) {
-			System.out.println(file.getName());
+		return null;
+	}
+
+	public synchronized Chunk addStoredChunkFile(String chunkFileId, int chunkNum, int replicationDegree) {
+		Chunk tempChunk = new Chunk(chunkFileId, chunkNum, replicationDegree);
+		if(!storedChunkFiles.contains(tempChunk)) storedChunkFiles.add(tempChunk);
+		return tempChunk;
+	}
+
+	//getters
+	/*public String getOriginalFileName(String fileId){
+		if(myOriginalFiles.containsValue(fileId)){
+			for(Map.Entry<String, String> entry : myOriginalFiles.entrySet()){
+				if(entry.getValue().equals(fileId)) return entry.getKey();
+			}
 		}
+
+		return null;
+	}*/
+
+	public String getFileId(String originalFileName) {
+		if(myOriginalFilesMetadata.containsKey(originalFileName)) return myOriginalFilesMetadata.get(originalFileName).getFileid();
+		return null;
+	}
+
+	public PeerFile getFileMetadata(String originalFileName) {
+		if(myOriginalFilesMetadata.containsKey(originalFileName)) return myOriginalFilesMetadata.get(originalFileName);
+		return null;
 	}
 	
-	public void printTest(){
-		System.out.println("TEST:");
-		for (String s : testMap.values()) {
-			System.out.println(s);
+	public boolean isChunkStored(String chunkFileId, int chunkNum){
+		return storedChunkFiles.contains(new Chunk(chunkFileId, chunkNum, -1));
+	}
+
+	public Chunk getStoredChunkData(String chunkFileId, int chunkNum){
+		if(isChunkStored(chunkFileId, chunkNum)){
+			Chunk tempChunk = new Chunk(chunkFileId, chunkNum, -1);
+			for(Chunk chunk : storedChunkFiles)
+				if(chunk.equals(tempChunk)) return chunk;
 		}
+
+		return null;
+	}
+
+	public void printChucksStored()
+	{
+		System.out.println("LIST storedChunkFiles:");
+		for(Chunk c : storedChunkFiles) c.print();
 	}
 	
+	//BACKUP RELATED
+	
+	public void joinPeerBackedUpData(HashMap<String,PeerFile> backedupData)
+	{
+		for(String file: backedupData.keySet())
+		{
+			if(!myOriginalFilesMetadata.containsKey(file))
+			myOriginalFilesMetadata.put(file, backedupData.get(file));
+		}
+	}
 }

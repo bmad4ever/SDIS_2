@@ -3,10 +3,10 @@ package communication;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+
 import Utilities.ProgramDefinitions;
 import communication.service.ControlServiceThread;
 import communication.service.PeerServiceThread;
-
 
 /**
  * Server Socket. Continuously accepts connections. Upon being sent a connection request, opens a new thread capable of handling protocols.
@@ -15,17 +15,16 @@ import communication.service.PeerServiceThread;
 public class TCP_Server extends Thread{
 
 	static final boolean DEBUG = true;
-	
-	ServerSocket peerServerSocket;
-	Socket peerSocket;
+
+	private ServerSocket peerServerSocket;
+	private Socket peerSocket;
 
 	volatile protected boolean stop = false;
-	public void STOP() 
-	{ 
+	public void STOP() { 
 		stop=true;
 		try {
 			peerServerSocket.close();
-		} catch (IOException e) {e.printStackTrace();} 
+		} catch (IOException e) {}//e.printStackTrace();} 
 	}
 
 	public TCP_Server(int p) {
@@ -36,26 +35,22 @@ public class TCP_Server extends Thread{
 
 	@Override
 	public void run() {
-		while(!stop)
-		{
+		while(!stop){
 			try {
 				peerSocket = peerServerSocket.accept();
 				if(DEBUG)
 					System.out.println("Got a new client, servicing on a new thread");
-				
+
 				TCP_Thread newService;
 				if(ProgramDefinitions.is_control)
 					newService = new ControlServiceThread(peerSocket);
 				else
 					newService = new PeerServiceThread(peerSocket);
 				newService.start();
-				
+
 
 			} catch (IOException e) 
 			{if(DEBUG) System.out.println("Server Thread Closing"); }
 		}
-		
 	}
-
-
 }

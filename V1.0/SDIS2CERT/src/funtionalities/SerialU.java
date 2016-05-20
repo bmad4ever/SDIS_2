@@ -16,6 +16,7 @@ public class SerialU {
 		} catch (Exception e){e.printStackTrace();}
 		return null;
 	}
+	
 	public static Object deserialize(byte[] data) {
 		try{
 	    ByteArrayInputStream in = new ByteArrayInputStream(data);
@@ -24,5 +25,4 @@ public class SerialU {
 		} catch (Exception e){e.printStackTrace();}
 		return null;
 	}
-	
 }

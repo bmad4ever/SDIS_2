@@ -1,19 +1,20 @@
 package protocols;
 
+import java.io.IOException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.List;
-
+import java.util.HashSet;
 import Utilities.PeerData;
 import Utilities.ProgramDefinitions;
 import Utilities.RefValue;
+import communication.SSLClient;
 import communication.TCP_Client;
 import communication.messages.MessageHeader;
 import communication.messages.MessagePacket;
 import funtionalities.AsymmetricKey;
-import funtionalities.Metadata;
+import funtionalities.PeerMetadata;
 import funtionalities.SerialU;
 import funtionalities.SymmetricKey;
 
@@ -23,12 +24,9 @@ import funtionalities.SymmetricKey;
  *
  */
 public class HELLO extends TCP_Client{
-	
-	RefValue<Boolean> accept;
-	
-	public HELLO(int p, String a, RefValue<Boolean> accept) {
-		super(p,a);
-		this.accept = accept;
+		
+	public HELLO(int p, String a, RefValue<Boolean> taskCompleted) {
+		super(p,a,taskCompleted);
 	}
 
 	@Override
@@ -37,41 +35,53 @@ public class HELLO extends TCP_Client{
 		if(failed_init)
 			return;
 		
-		MessageHeader nHeader = new MessageHeader(MessageHeader.MessageType.hello, ProgramDefinitions.mydata.peerID, null, null, 0);
+		//send SSL
+		MessageHeader nHeader = new MessageHeader(MessageHeader.MessageType.hello, ProgramDefinitions.mydata.peerID);
 		MessagePacket n = new MessagePacket(nHeader, null);
-		sendMessage(n);
 		
-		MessagePacket response = (MessagePacket) receiveMessage();
-		if(DEBUG)
-			response.print();
-				
+		MessagePacket response = null;
+		try {
+			response = (MessagePacket) SSLClient.SendAndReceiveOne(ProgramDefinitions.CONTROL_ADDRESS, ProgramDefinitions.CONTROL_PORT_SSL, n);
+		} catch (IOException e1) {	e1.printStackTrace();	};
+		
+		if(response==null)
+		{
+			return;
+		}
+		
+		if(DEBUG) response.print();
+		
+		
+		
+		//get public assym key from response
 		try {
 			AsymmetricKey.pubk = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(response.body));
 		} catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
 		
+		//send our data to control
 		byte[] raw = SerialU.serialize(ProgramDefinitions.mydata);
-		MessageHeader mHeader = new MessageHeader(MessageHeader.MessageType.peer_privkey, null, null, null, 0);
+		MessageHeader mHeader = new MessageHeader(MessageHeader.MessageType.peer_privkey, null);
 		MessagePacket m = new MessagePacket(mHeader, AsymmetricKey.encrypt(AsymmetricKey.pubk, raw));
 		sendMessage(m);
 		
-		
-		
 		response = (MessagePacket) receiveMessage();
-		if(DEBUG)
-			response.print();
-		this.accept.value = (response.header.getMessageType() == MessageHeader.MessageType.confirm);
-		if(this.accept.value)
+		if(response==null)
 		{
+			return;
+		}
+		
+		if(DEBUG) response.print();
+		this.taskCompleted.value = (response.header.getMessageType() == MessageHeader.MessageType.confirm);
+		if(this.taskCompleted.value){
 			byte[] tmp = SymmetricKey.decryptData(ProgramDefinitions.mydata.priv_key, response.body);
-			List<PeerData> tmpPD = (List<PeerData>) SerialU.deserialize(tmp);
-			Metadata.setPeerMetadataList(tmpPD);
+			HashSet<PeerData> tmpPD = (HashSet<PeerData>) SerialU.deserialize(tmp);
+			PeerMetadata.setPeerMetadataList(tmpPD);
 		}
 		
 		if(DEBUG)
-			Metadata.printData();
-		
-		
+			PeerMetadata.printData();
+
 	}
 }
