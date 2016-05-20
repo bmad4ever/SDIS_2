@@ -1,0 +1,1 @@
+start cmd.exe /k "java -jar peerApp.jar Pinguim77 gelado 10000 %1" & start cmd.exe /k "java -jar peerApp.jar MonkeyDick9 bananas 10010 %1" & start cmd.exe /k "java -jar peerApp.jar TitanicDeNoe diluvio 10020 %1" & start cmd.exe /k "java -jar peerApp.jar thatDood123 my912passwor7d 10030 %1"
