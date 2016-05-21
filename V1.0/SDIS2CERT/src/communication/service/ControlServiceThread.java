@@ -8,7 +8,9 @@ import java.util.HashSet;
 import Utilities.BinaryFile;
 import Utilities.PeerData;
 import Utilities.ProgramDefinitions;
+import Utilities.RefValue;
 import communication.TCP_Thread;
+import communication.messages.DeleteBody;
 import communication.messages.DeleteRequestBody;
 import communication.messages.MessageHeader;
 import communication.messages.MessagePacket;
@@ -16,6 +18,7 @@ import funtionalities.AsymmetricKey;
 import funtionalities.PeerMetadata;
 import funtionalities.SerialU;
 import funtionalities.SymmetricKey;
+import protocols.DELETE;
 
 /**
  * Performs the server-side actions in a Protocol.

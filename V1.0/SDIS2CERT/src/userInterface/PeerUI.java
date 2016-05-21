@@ -3,9 +3,14 @@ package userInterface;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
 import Utilities.ProgramDefinitions;
 import Utilities.RefValue;
 import protocols.BackupFile;
+import protocols.PEER_BACKUP_METADATA;
 import protocols.REQUESTDEL;
 import protocols.PEER_RESTORE_METADATA;
 import protocols.RestoreFile;
@@ -52,19 +57,17 @@ public class PeerUI {
 		PEER_BACKUP_METADATA pbm;
 		PEER_RESTORE_METADATA prd;
 
-
-
 		if(DEBUG) System.out.println("Processing user input " + choice);
 		switch (choice) {
 		case 1: 
 			RefValue<String> backup_answer = new RefValue<String>();
-			BackupFile bf = new BackupFile(ProgramDefinitions.db, "test.jpg",1,backup_answer);
+			bf = new BackupFile(ProgramDefinitions.db, "test.jpg",1,backup_answer);
 			bf.doBackup();
 			System.out.println(backup_answer.value);
 			break;
 		case 2:
 			RefValue<String> restore_answer = new RefValue<String>();
-			RestoreFile rf = new RestoreFile(ProgramDefinitions.db, "test.jpg",restore_answer);
+			rf = new RestoreFile(ProgramDefinitions.db, "test.jpg",restore_answer);
 			rf.doRestore();
 			System.out.println(restore_answer.value);
 			break;

@@ -15,7 +15,7 @@ public class Database implements Serializable {
 	private static final long serialVersionUID = 2933521614615136756L;
 
 	//private HashMap<String, String> myOriginalFiles; // original file name : fileId generated
-	private HashMap<String,PeerFile> myOriginalFilesMetadata;	
+	public HashMap<String,PeerFile> myOriginalFilesMetadata;	
 	private HashMap<String,PeerFile> storedFiles;
 	//private HashSet<Chunk> storedChunkFiles; // fileId : chunk data
 
@@ -162,6 +162,17 @@ public class Database implements Serializable {
 		}
 		return false;
 		//TODO: Delete in metadata
+	}
+	
+	
+	//ONLINE BACKUP RELATED
+	public void joinPeerBackedUpData(HashMap<String,PeerFile> backedupData)
+	{
+		for(String file: backedupData.keySet())
+		{
+			if(!myOriginalFilesMetadata.containsKey(file))
+			myOriginalFilesMetadata.put(file, backedupData.get(file));
+		}
 	}
 	
 }

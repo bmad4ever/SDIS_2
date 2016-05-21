@@ -101,8 +101,7 @@ public class PeerServiceThread extends TCP_Thread{
 				return;			
 			}
 
-		byte[] chunkToSendData = ProgramDefinitions.db.getDatabase().getStoredChunkData(getChunkFileId, numOfChunkToRestore).readChunkFileData();
-
+		byte[] chunkToSendData = ProgramDefinitions.db.getDatabase().getStoredChunkData(getChunkFileId, numOfChunkToRestore);
 		if(chunkToSendData != null){
 			MessageHeader headMessage = new MessageHeader(MessageHeader.MessageType.chunk, ProgramDefinitions.mydata.peerID, getChunkFileId, numOfChunkToRestore);
 			MessagePacket n = new MessagePacket(headMessage, chunkToSendData);
