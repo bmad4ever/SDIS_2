@@ -1,4 +1,5 @@
 package communication.service;
+
 import java.net.Socket;
 
 import FileSystem.Chunk;
@@ -31,7 +32,8 @@ public class PeerServiceThread extends TCP_Thread{
 	}
 
 	void state_machine(MessagePacket receivedMSG){
-		if(receivedMSG.header.getSenderId().equals(ProgramDefinitions.mydata.peerID)) {
+		if(receivedMSG.header.getSenderId().equals(ProgramDefinitions.mydata.peerID))
+		{
 			if(DEBUG) System.out.println("NOT EXPECTED 102:" + receivedMSG.header.getSenderId() + "---" + ProgramDefinitions.mydata.peerID);
 			return;
 		}
@@ -99,7 +101,8 @@ public class PeerServiceThread extends TCP_Thread{
 				return;			
 			}
 
-		byte[] chunkToSendData = ProgramDefinitions.db.getDatabase().getStoredChunkData(getChunkFileId, numOfChunkToRestore);
+		byte[] chunkToSendData = ProgramDefinitions.db.getDatabase().getStoredChunkData(getChunkFileId, numOfChunkToRestore).readChunkFileData();
+
 		if(chunkToSendData != null){
 			MessageHeader headMessage = new MessageHeader(MessageHeader.MessageType.chunk, ProgramDefinitions.mydata.peerID, getChunkFileId, numOfChunkToRestore);
 			MessagePacket n = new MessagePacket(headMessage, chunkToSendData);

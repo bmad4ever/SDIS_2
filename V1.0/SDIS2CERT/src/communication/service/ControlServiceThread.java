@@ -1,15 +1,14 @@
 package communication.service;
 
+import java.io.File;
 import java.net.Socket;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import protocols.DELETE;
+import Utilities.BinaryFile;
 import Utilities.PeerData;
 import Utilities.ProgramDefinitions;
-import Utilities.RefValue;
 import communication.TCP_Thread;
-import communication.messages.DeleteBody;
 import communication.messages.DeleteRequestBody;
 import communication.messages.MessageHeader;
 import communication.messages.MessagePacket;
@@ -34,8 +33,27 @@ public class ControlServiceThread extends TCP_Thread{
 		MessagePacket receivedMSG = (MessagePacket) receiveMessage();			
 		if(DEBUG)
 			receivedMSG.print();
+
 		state_machine(receivedMSG);
 	}
+
+
+	public void sendDeny()
+	{
+		MessageHeader h = new MessageHeader(
+				MessageHeader.MessageType.deny,"CRED");
+		MessagePacket m = new MessagePacket(h, null);
+		sendMessage(m);
+	}
+
+	public void sendConfirm()
+	{
+		MessageHeader h = new MessageHeader(
+				MessageHeader.MessageType.confirm,"CRED");
+		MessagePacket m = new MessagePacket(h, null);
+		sendMessage(m);
+	}
+
 
 	public void state_machine(MessagePacket receivedMSG){
 		switch (receivedMSG.header.getMessageType()) {
@@ -54,42 +72,41 @@ public class ControlServiceThread extends TCP_Thread{
 				System.out.println("Service type: Peer_Privkey");
 			process_privatekey(receivedMSG);
 			break;
+		case peer_backup_metadata:
+			process_peer_metadata_backup(receivedMSG);
+			break;
+		case peer_restore_metadata:
+			process_peer_metadata_recover(receivedMSG);
+			break;
 		default:
 			break;
 		}
 	}
-	
+
 	public void process_hello(MessagePacket receivedMSG){
-		
+
 		//deny por agora
-		MessageHeader h = new MessageHeader(
-				MessageHeader.MessageType.deny,"CRED");
-		MessagePacket m = new MessagePacket(h, null);
-		sendMessage(m);
+		sendDeny();
 		return;
 	}
 
 	public void process_privatekey(MessagePacket receivedMSG){
-		
+
 		if(DEBUG)
 			receivedMSG.print();
 		byte[] msgContent = AsymmetricKey.decrypt(AsymmetricKey.prvk, receivedMSG.body);
 		PeerData new_pd = (PeerData) SerialU.deserialize(msgContent);
 
 		PeerData existingData = PeerMetadata.getPeerData(receivedMSG.header.getSenderId());
-		
+
 		//deny - no peer data sent
 		if(new_pd==null){
-			MessageHeader h = new MessageHeader(
-					MessageHeader.MessageType.deny,"CRED");
-			MessagePacket m = new MessagePacket(h, null);
-			sendMessage(m);
-
+			sendDeny();
 			return;
 		}
-		
+
 		if(DEBUG)System.out.println("PPPPDDDDD<"+new_pd.peerID+">");
-		
+
 		//deny - private keys are disparate on new and old data
 		if (existingData != null){
 			if(Arrays.equals(new_pd.priv_key,existingData.priv_key)){
@@ -165,5 +182,51 @@ public class ControlServiceThread extends TCP_Thread{
 			}
 		}
 	}
-	
+
+	public void process_peer_metadata_backup(MessagePacket receivedMSG)
+	{
+		if(PeerMetadata.getPeerData(receivedMSG.header.getSenderId()) == null)
+		{
+			sendDeny();
+			return; //failed to backup data or not a known peer
+		}
+		
+		File dir_rec = new File(ProgramDefinitions.controlPeersBackupFolderName);
+		dir_rec.mkdir();
+		if(!BinaryFile.saveBinaryFile(
+				ProgramDefinitions.controlPeersBackupFolderName + 
+				receivedMSG.header.getFileId()
+				,receivedMSG.body))
+		{
+			sendDeny();
+			return; //failed to backup data or not a known peer
+		}
+		sendConfirm();
+	}
+
+	public void process_peer_metadata_recover(MessagePacket receivedMSG)
+	{
+		if(PeerMetadata.getPeerData(receivedMSG.header.getSenderId()) == null)
+		{
+			sendDeny();
+			return; //not a known peer
+		}
+		
+		byte[] data = null;
+		try{ data = BinaryFile.readBinaryFile(
+				ProgramDefinitions.controlPeersBackupFolderName + 
+				receivedMSG.header.getFileId());
+		} catch (Exception e) {return;}
+		if(data == null){
+			sendDeny();
+			return; //failed to read data
+		}
+		
+		MessageHeader h = new MessageHeader(
+				MessageHeader.MessageType.peer_medatada,"CRED");
+		MessagePacket m = new MessagePacket(h, data);
+		sendMessage(m);
+
+	}
+
 }
