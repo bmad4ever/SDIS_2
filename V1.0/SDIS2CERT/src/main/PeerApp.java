@@ -2,7 +2,6 @@ package main;
 
 import java.io.File;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.security.MessageDigest;
 
 import FileSystem.DatabaseManager;
@@ -19,7 +18,7 @@ public class PeerApp {
 
 	public static void main(String[] args) {
 
-		if(args.length!=4) {
+		if(args.length!=4){
 			System.out.println("cred <ID> <password> <port number> <Control IP Address> ");
 			return;
 		}
@@ -39,12 +38,14 @@ public class PeerApp {
 		SymmetricKey.generate_key(args[0]+args[1]);
 
 		try {
-			MessageDigest md = MessageDigest.getInstance("MD5");
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			md.update(args[0].getBytes("UTF-8"));
 			ProgramDefinitions.mydata = new PeerData(
 					SymmetricKey.key, 
 					InetAddress.getLocalHost().getHostAddress(),
 					Integer.parseInt(args[2]),
-					new String(md.digest(args[0].getBytes("UTF-8"))) );
+					String.format("%064x",new java.math.BigInteger(1, md.digest())
+							) );
 		} catch (Exception e) {	e.printStackTrace();}
 
 		//System.out.println(ProgramDefinitions.myID); if(true) return;
