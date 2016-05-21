@@ -44,8 +44,12 @@ public class HELLO extends TCP_Client{
 			response = (MessagePacket) SSLClient.SendAndReceiveOne(ProgramDefinitions.CONTROL_ADDRESS, ProgramDefinitions.CONTROL_PORT_SSL, n);
 		} catch (IOException e1) {	e1.printStackTrace();	};
 		
-		if(DEBUG)
-			response.print();
+		if(response==null)
+		{
+			return;
+		}
+		
+		if(DEBUG) response.print();
 		
 		//get public assym key from response
 		try {
@@ -60,11 +64,13 @@ public class HELLO extends TCP_Client{
 		MessagePacket m = new MessagePacket(mHeader, AsymmetricKey.encrypt(AsymmetricKey.pubk, raw));
 		sendMessage(m);
 		
-		
-		
 		response = (MessagePacket) receiveMessage();
-		if(DEBUG)
-			response.print();
+		if(response==null)
+		{
+			return;
+		}
+		
+		if(DEBUG) response.print();
 		this.taskCompleted.value = (response.header.getMessageType() == MessageHeader.MessageType.confirm);
 		if(this.taskCompleted.value){
 			byte[] tmp = SymmetricKey.decryptData(ProgramDefinitions.mydata.priv_key, response.body);
@@ -74,5 +80,6 @@ public class HELLO extends TCP_Client{
 		
 		if(DEBUG)
 			PeerMetadata.printData();
+
 	}
 }
