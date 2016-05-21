@@ -3,27 +3,24 @@ package userInterface;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-
 import Utilities.ProgramDefinitions;
 import Utilities.RefValue;
 import protocols.BackupFile;
 import protocols.REQUESTDEL;
+import protocols.PEER_RESTORE_METADATA;
 import protocols.RestoreFile;
 
 public class PeerUI {
 
 	private static final boolean DEBUG = true;
-	
+
 	static BufferedReader br;
-	
+
 	public static void UI(){
 
 		br = new BufferedReader(new InputStreamReader(System.in));
-        System.out.print("Enter String");
-		
+		System.out.print("Enter String");
+
 		int input=0;
 		while(input!=6){
 			System.out.println();
@@ -48,6 +45,15 @@ public class PeerUI {
 
 	private static boolean run_choice(int choice)
 	{
+		RefValue<String> answers;
+		RefValue<Boolean> completed;
+		BackupFile bf;
+		RestoreFile rf;
+		PEER_BACKUP_METADATA pbm;
+		PEER_RESTORE_METADATA prd;
+
+
+
 		if(DEBUG) System.out.println("Processing user input " + choice);
 		switch (choice) {
 		case 1: 
@@ -73,7 +79,42 @@ public class PeerUI {
 				e1.printStackTrace();
 			}
 			break;
-		case 5: return true ;
+		case 4: 
+			completed = new RefValue<Boolean>();
+			pbm = new PEER_BACKUP_METADATA(
+					ProgramDefinitions.CONTROL_PORT,
+					ProgramDefinitions.CONTROL_ADDRESS,
+					ProgramDefinitions.mydata.peerID,
+					ProgramDefinitions.mydata.peerID,
+					ProgramDefinitions.db,
+					completed
+					);
+			pbm.run();
+			try{
+				pbm.join();
+			} catch (Exception e){e.printStackTrace();}
+			if(completed.value) System.out.println("Metadata Backup was successfull");
+			else System.out.println("Metadata Backup failed");
+			break;
+		case 5: 
+			completed = new RefValue<Boolean>();
+			prd = new PEER_RESTORE_METADATA(
+					ProgramDefinitions.CONTROL_PORT,
+					ProgramDefinitions.CONTROL_ADDRESS,
+					ProgramDefinitions.mydata.peerID,
+					ProgramDefinitions.mydata.peerID,
+					completed,
+					ProgramDefinitions.db				
+					);
+			prd.run();
+			try{
+				prd.join();
+			} catch (Exception e){e.printStackTrace();}
+			if(completed.value) System.out.println("Metadata Backup was successfull");
+			else System.out.println("Metadata Backup failed");
+			
+			break;
+		case 6: return true;
 		default:
 			break;
 		}
