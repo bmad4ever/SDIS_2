@@ -1,10 +1,13 @@
 package FileSystem;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 
 
 /* EXAMPLE: 
@@ -15,8 +18,8 @@ import java.io.ObjectOutputStream;
  */
 public class DatabaseManager {
 	private FileInputStream fis;
-	private FileOutputStream fos;
-	private ObjectOutputStream oos;
+	//private FileOutputStream fos;
+	//private ObjectOutputStream oos;
 	private ObjectInputStream ois;
 	private Database database;
 	private String filename;
@@ -32,14 +35,33 @@ public class DatabaseManager {
 		}
 	}	
 	
-	public void save(){
-		try {
-			fos = new FileOutputStream(filename);
-			oos = new ObjectOutputStream(fos);
-			oos.writeObject(database);
-		} catch (IOException e) {
-			e.printStackTrace();
+	public boolean save(){
+
+		//serialize data to a new file (keeps old data so far)
+		try (
+				FileOutputStream file = new FileOutputStream("new_" + filename);
+				ObjectOutputStream output = new ObjectOutputStream(file);
+				){
+			try {
+				output.writeObject(database);
+			} catch (Exception e) {e.printStackTrace();}
+		}  
+		catch(IOException ex){
+			return false;
 		}
+
+		//if saved ok, then replace old data with new data
+		try {
+			File peerFile = new File("new_" + filename);
+			File peerFile2 = new File(filename);
+			peerFile2.delete();
+			// Rename file
+			boolean success = peerFile.renameTo(peerFile2);
+			return success;
+		}  		catch(Exception ex){
+			return false;
+		}
+
 	}
 	
 	private void load(){
