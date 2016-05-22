@@ -10,8 +10,10 @@ import Utilities.ProgramDefinitions;
 import Utilities.RefValue;
 import communication.TCP_Server;
 import funtionalities.PeerMetadata;
+import funtionalities.PeriodicUpdates;
 import funtionalities.SymmetricKey;
 import protocols.HELLO;
+import protocols.PEER_RESTORE_METADATA;
 import userInterface.PeerUI;
 
 public class PeerApp {
@@ -50,7 +52,8 @@ public class PeerApp {
 
 		//System.out.println(ProgramDefinitions.myID); if(true) return;
 
-		ProgramDefinitions.db = new DatabaseManager(ProgramDefinitions.myID + File.separator + ProgramDefinitions.chunkDatabaseFileName);
+		String db_path=ProgramDefinitions.myID + File.separator + ProgramDefinitions.chunkDatabaseFileName;
+		ProgramDefinitions.db = new DatabaseManager(db_path);
 
 		PeerMetadata.setDatabaseNames(
 				ProgramDefinitions.myID + File.separator +ProgramDefinitions.peerInfoDatabaseName , 
@@ -81,7 +84,7 @@ public class PeerApp {
 		}
 
 		//START PASSIVE PERIODIC STUFF -------------------
-		//(new Thread(new PeerMetadata())).start();//will save metadata on nonvolatile memory from time to time
+		(new Thread(new PeriodicUpdates())).start();//will save metadata on nonvolatile memory from time to time
 		//(new Thread(new PeerRenewService())).start();
 
 		//UI RELATED
@@ -89,7 +92,9 @@ public class PeerApp {
 
 		//QUIT -------------------
 		server.STOP();
+		PeriodicUpdates.STOP();
 		System.out.println("Closing down.");
+		ProgramDefinitions.db.save();
 		System.exit(0);
 	}
 }

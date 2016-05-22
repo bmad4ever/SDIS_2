@@ -9,6 +9,7 @@ import java.util.List;
 
 import Utilities.ProgramDefinitions;
 import Utilities.RefValue;
+import funtionalities.PeerMetadata;
 import protocols.BackupFile;
 import protocols.PEER_BACKUP_METADATA;
 import protocols.REQUESTDEL;
@@ -36,6 +37,11 @@ public class PeerUI {
 			System.out.println("4-Backup Client Data");
 			System.out.println("5-Recover Client Data");
 			System.out.println("6-Quit");
+			if(DEBUG)
+			{
+				System.out.println("7-list TSV");
+				
+			}
 
 			while(true){//get user input
 				try{
@@ -64,6 +70,7 @@ public class PeerUI {
 			bf = new BackupFile(ProgramDefinitions.db, "test.jpg",1,backup_answer);
 			bf.doBackup();
 			System.out.println(backup_answer.value);
+			ProgramDefinitions.db.save();
 			break;
 		case 2:
 			RefValue<String> restore_answer = new RefValue<String>();
@@ -113,11 +120,16 @@ public class PeerUI {
 			try{
 				prd.join();
 			} catch (Exception e){e.printStackTrace();}
-			if(completed.value) System.out.println("Metadata Backup was successfull");
+			if(completed.value) {
+				System.out.println("Metadata Backup was successfull");
+				ProgramDefinitions.db.save();
+			}
 			else System.out.println("Metadata Backup failed");
 			
 			break;
 		case 6: return true;
+		case 7: if(DEBUG) PeerMetadata.printMaxTimeStamps();
+			break;
 		default:
 			break;
 		}

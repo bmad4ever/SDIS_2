@@ -12,8 +12,11 @@ import java.util.HashMap;
 import Utilities.ProgramDefinitions;
 
 public class Database implements Serializable {
-	private static final long serialVersionUID = 2933521614615136756L;
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	//private HashMap<String, String> myOriginalFiles; // original file name : fileId generated
 	public HashMap<String,PeerFile> myOriginalFilesMetadata;	
 	private HashMap<String,PeerFile> storedFiles;

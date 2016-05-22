@@ -67,7 +67,7 @@ public class BackupFile{
 			}
 		};*/
 
-		while(( numOfTries <= _MAX_NUMBER_OF_RETRIES ) && !backupComplete){
+		while( numOfTries <= _MAX_NUMBER_OF_RETRIES ){
 
 			//sendMessage(packetToSend);
 			/*List<PeerData> peers = PeerMetadata.getMetadata2send2peer();
@@ -82,7 +82,7 @@ public class BackupFile{
 			//List<Thread> putchunks = new Lis
 			//ExecutorService executor = Executors.newFixedThreadPool(5); //could try to trun multiple at the same time later
 
-			for(int i=0; i<peers.size();++i)//PeerData peer : peers)
+			for(int i=0; i<peers.size() && !backupComplete ;++i)//PeerData peer : peers)
 			{	
 				PeerData temp_peerdata = peers.get(i);
 				//do not count own data
@@ -109,8 +109,11 @@ public class BackupFile{
 				}catch(Exception e){e.printStackTrace();}
 
 				if(completed.value) db_chunk_info.addPeerSaved(temp_peerdata.peerID);
+				if(db_chunk_info.isAboveReplicationDegree())
+					backupComplete = true;
 			}
-
+			if(backupComplete) break;
+			
 			try {
 				Thread.sleep(waitInterval);//receiveExecutor.submit(receiveRunnable).get(waitInterval, TimeUnit.SECONDS);
 				/*} catch (InterruptedException e) {
@@ -127,8 +130,6 @@ public class BackupFile{
 			numOfTries++;
 			
 			//if(db.getDatabase().getStoredChunkData(fileId, chunkNum).isAboveReplicationDegree())
-			if(db_chunk_info.isAboveReplicationDegree())
-				backupComplete = true;
 		}
 
 		//receiveExecutor.shutdown();

@@ -43,4 +43,11 @@ public class TCP_Thread extends Thread {
 			return null;
 		}
 	}
+
+	public void closeSocket()
+	{
+		try{
+		socket.close();
+		}catch(Exception e){}
+	}
 }

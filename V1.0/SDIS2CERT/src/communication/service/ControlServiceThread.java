@@ -84,6 +84,7 @@ public class ControlServiceThread extends TCP_Thread{
 		default:
 			break;
 		}
+		closeSocket();
 	}
 
 	public void process_hello(MessagePacket receivedMSG){
@@ -164,13 +165,14 @@ public class ControlServiceThread extends TCP_Thread{
 			 * a peerData object containing peer information
 			 */
 			
-			MessageHeader header = new MessageHeader(MessageHeader.MessageType.delete, "control");
+			//send message using request delete timestamp
+			MessageHeader header = new MessageHeader(MessageHeader.MessageType.delete, "control",receivedMSG.header.getTimeStamp());
 			for(int i = 0; i < msgBody.PeerIDs.size(); i++){
 				System.out.println("Sent DELETE to peer: " + msgBody.PeerIDs.get(i));
-				//TODO: Search only from the active peers
+				if (!PeerMetadata.isPeerActive(msgBody.PeerIDs.get(i))) continue; //peer is not active
 				PeerData pd = PeerMetadata.getPeerData(msgBody.PeerIDs.get(i));
 				if(pd != null){
-					DeleteBody deleteBody = new DeleteBody(msgBody.FileID, msgBody.PeerIDs.get(i));
+					DeleteBody deleteBody = new DeleteBody(msgBody.FileID, sender);//msgBody.PeerIDs.get(i));
 					byte[] body = SerialU.serialize(deleteBody);
 					byte[] encryptBody = SymmetricKey.encryptData(pd.priv_key, body);
 					MessagePacket deleteMessage = new MessagePacket(header, encryptBody);
@@ -229,7 +231,6 @@ public class ControlServiceThread extends TCP_Thread{
 				MessageHeader.MessageType.peer_medatada,"CRED");
 		MessagePacket m = new MessagePacket(h, data);
 		sendMessage(m);
-
 	}
 
 }

@@ -10,7 +10,7 @@ import Utilities.PeerData;
 import Utilities.ProgramDefinitions;
 import communication.messages.MessageHeader.MessageType;
 
-public class PeerMetadata implements Runnable{
+public class PeerMetadata {
 
 	/*DEV NOTES
 	 * peer data can be saved by both the control and the peer with save_peers
@@ -58,7 +58,7 @@ public class PeerMetadata implements Runnable{
 
 		//serialize data to a new file (keeps old data so far)
 		try (
-				OutputStream peerFile = new FileOutputStream("new_" + peerInfoDatabaseName);
+				OutputStream peerFile = new FileOutputStream(peerInfoDatabaseName+"_new");
 				OutputStream buffer = new BufferedOutputStream(peerFile);
 				ObjectOutput output = new ObjectOutputStream(buffer);
 				){
@@ -75,7 +75,7 @@ public class PeerMetadata implements Runnable{
 
 		//if saved ok, then replace old data with new data
 		try {
-			File peerFile = new File("new_" + peerInfoDatabaseName);
+			File peerFile = new File(peerInfoDatabaseName+"_new");
 			File peerFile2 = new File(peerInfoDatabaseName);
 			peerFile2.delete();
 			// Rename file
@@ -87,40 +87,45 @@ public class PeerMetadata implements Runnable{
 
 	}
 
-	/**saves peers maxtimestamp received list and also own timestamp*/
+	/**<p>if peer-> saves peers maxtimestamp received list and also own timestamp</p>
+	 *<p>if control-> saves peers maxtimestamp received list and also message_stamps list</p> */
 	public static boolean save_timestamps(){
-
+		boolean locked = false;
 		//serialize data to a new file (keeps old data so far)
 		try (
-				OutputStream stampFile = new FileOutputStream("new_" + timestampsDatabaseName);
+				OutputStream stampFile = new FileOutputStream(timestampsDatabaseName+"_new");
 				OutputStream buffer = new BufferedOutputStream(stampFile);
 				ObjectOutput output = new ObjectOutputStream(buffer);
 				){
 			try {
 				lock.acquire();
-
+				locked=true;
 				Object[] alldata; 
 				if (ProgramDefinitions.is_control) alldata  = new Object[]{timestamp_table,message_stamps};
 				else alldata = new Object[]{timestamp_table,ProgramDefinitions.timestamp};
-
 				output.writeObject(alldata);
 				lock.release();
-			} catch (InterruptedException e) {e.printStackTrace();}
+				locked=false;
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				if(locked) lock.release();
+				}
 		}  
 		catch(IOException ex){
-			//fLogger.log(Level.SEVERE, "Cannot perform output.", ex);
+			//ex.printStackTrace();
+			if(locked) lock.release(); //fLogger.log(Level.SEVERE, "Cannot perform output.", ex);
 			return false;
 		}
 
 		//if saved ok, then replace old data with new data
 		try {
-			File stampsFile = new File("new_" + timestampsDatabaseName);
+			File stampsFile = new File(timestampsDatabaseName+"_new");
 			File stampsFile2 = new File(timestampsDatabaseName);
-			stampsFile2.delete();
-			// Rename file
+			stampsFile2.delete();			// Rename file
 			boolean success = stampsFile.renameTo(stampsFile2);
 			return success;
 		}  		catch(Exception ex){
+			//ex.printStackTrace();
 			return false;
 		}
 
@@ -199,10 +204,10 @@ public class PeerMetadata implements Runnable{
 		if(PeerMetadata.exists_timestampMetadata_file()) load_timestamps();
 		else 
 		{
-			timestamp_table = new Hashtable<String, Long>();
-			message_stamps = new Hashtable<String, List<MessageStamp>>();
 			ProgramDefinitions.timestamp = 0;
 		}
+		if (timestamp_table==null) timestamp_table = new Hashtable<String, Long>();
+		if (message_stamps==null) message_stamps = new Hashtable<String, List<MessageStamp>>();
 	}
 	
 	//[end] SAVE & LOAD DATA
@@ -292,12 +297,14 @@ public class PeerMetadata implements Runnable{
 		return;
 	}
 
+	/**returns false if message shouldn't be processed (ex.: delete a file after a putchunk with higher timestamp*/
 	public static boolean processStamping(String peerid, MessageStamp stamp)
 	{
 		MessageStamp stamp_copy = new MessageStamp(); //avoid possible future problem on list (due to references)
 		stamp_copy.CopyFrom(stamp);
 
 		//[start] COMMON
+		if(DEBUG) System.out.println(peerid);
 		Long current_timestamp = timestamp_table.get(peerid);
 		if(current_timestamp==null) timestamp_table.put(peerid, stamp_copy.timestamp);
 		else if(current_timestamp<stamp_copy.timestamp) 
@@ -312,8 +319,9 @@ public class PeerMetadata implements Runnable{
 		{
 			if(! CONTROL_ACCEPTED_STAMPS.contains(stamp_copy.msg) ) return true;
 
+			if(!message_stamps.contains(peerid))  message_stamps.put(peerid, new ArrayList<MessageStamp>());
 			List<MessageStamp> stamps = message_stamps.get(peerid);
-			if (stamps == null) {
+			if (stamps.size() == 0) {
 				List<MessageStamp> new_stamps = new ArrayList<MessageStamp>();
 				new_stamps.add(stamp_copy);
 				message_stamps.put(peerid, new_stamps);
@@ -333,9 +341,11 @@ public class PeerMetadata implements Runnable{
 
 		//[start] PEER ONLY
 		if(! PEER_ACCEPTED_STAMPS.contains(stamp_copy.msg) ) return true;
-
+		
+		if(DEBUG) if(peerid==null) System.out.println("NULL PEERID ASDFG");
+		if(!message_stamps.contains(peerid))  message_stamps.put(peerid, new ArrayList<MessageStamp>());
 		List<MessageStamp> stamps = message_stamps.get(peerid);
-		if (stamps == null) {
+		if (stamps.size()==0) {//this fills 10 spaces with the same stamp (since this will be "used queue like")
 			List<MessageStamp> new_stamps = new ArrayList<MessageStamp>();
 			for(int i=0;i<PEER_max_msg_stamps;++i) new_stamps.add(stamp_copy);
 			message_stamps.put(peerid, new_stamps);
@@ -376,33 +386,12 @@ public class PeerMetadata implements Runnable{
 			System.out.println("Data is empty");
 	}
 
-
-
-
-
-	static boolean stop=false;
-	public static void STOP(){stop=true;}
-	/**time between nonvolatile metadata updates in milliseconds*/
-	static final int wait_time = 5000;
-	@Override
-	public void run() {
-		while(!stop)
-		{
-			try {
-				Thread.sleep(wait_time);
-				save_timestamps();
-				if (ProgramDefinitions.is_control) update_active_peers();
-				save_peers();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-
+	public static void printMaxTimeStamps()
+	{
+		System.out.println("TSV");
+		for(String peer:timestamp_table.keySet())
+			System.out.println(peer + "(ts)="+timestamp_table.get(peer));
 	}
-
-
-
-
 
 
 	//[start] PEER ONLY
@@ -465,6 +454,12 @@ public class PeerMetadata implements Runnable{
 		active_peers.replace(peerid, peer_renewed_service_this_round);
 	}
 
+	public static boolean isPeerActive(String peerid)
+	{
+		if(!active_peers.containsKey(peerid)) return false;
+		return active_peers.get(peerid)>0;
+	}
+	
 	//[end] CONTROL ONLY
 
 }

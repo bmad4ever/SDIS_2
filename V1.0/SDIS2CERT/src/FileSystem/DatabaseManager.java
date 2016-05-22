@@ -8,6 +8,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.List;
+
+import Utilities.MessageStamp;
+import Utilities.PeerData;
+import Utilities.ProgramDefinitions;
+import funtionalities.PeerMetadata;
 
 
 /* EXAMPLE: 
@@ -39,7 +47,7 @@ public class DatabaseManager {
 
 		//serialize data to a new file (keeps old data so far)
 		try (
-				FileOutputStream file = new FileOutputStream("new_" + filename);
+				FileOutputStream file = new FileOutputStream(filename+"_new");
 				ObjectOutputStream output = new ObjectOutputStream(file);
 				){
 			try {
@@ -47,12 +55,13 @@ public class DatabaseManager {
 			} catch (Exception e) {e.printStackTrace();}
 		}  
 		catch(IOException ex){
+			ex.printStackTrace();
 			return false;
 		}
 
 		//if saved ok, then replace old data with new data
 		try {
-			File peerFile = new File("new_" + filename);
+			File peerFile = new File(filename+"_new");
 			File peerFile2 = new File(filename);
 			peerFile2.delete();
 			// Rename file

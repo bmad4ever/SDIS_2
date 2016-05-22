@@ -2,8 +2,11 @@ package communication.service;
 
 import java.net.Socket;
 
+import javax.xml.soap.DetailEntry;
+
 import FileSystem.Chunk;
 import FileSystem.DatabaseManager;
+import Utilities.MessageStamp;
 import Utilities.ProgramDefinitions;
 import communication.TCP_Thread;
 import communication.messages.DeleteBody;
@@ -65,22 +68,8 @@ public class PeerServiceThread extends TCP_Thread{
 		default:
 			break;
 		}
+		closeSocket();
 	}
-
-	/*private void process_stored(MessagePacket receivedMSG) {
-		// Id of the STORED sender
-		String storedSenderId = receivedMSG.header.getSenderId();
-
-		// Id of the STORED chunk file
-		String chunkStoredFileId = receivedMSG.header.getFileId();
-
-		// Num of the STORED chunk
-		int numOfChunkStored = receivedMSG.header.getChunkNum();
-
-		// Saves the chunk storer id
-		if(db.getDatabase().isChunkStored(chunkStoredFileId, numOfChunkStored))
-			db.getDatabase().getStoredChunkData(chunkStoredFileId, numOfChunkStored).addPeerSaved(storedSenderId);
-	}*/
 
 	private void process_getchunk(MessagePacket receivedMSG) {
 		// Id of the GETCHUNK sender
@@ -94,7 +83,7 @@ public class PeerServiceThread extends TCP_Thread{
 
 		// Verifies if it is a received chunk
 		ProgramDefinitions.db.getDatabase().printChucksStored();
-		System.out.println(getChunkFileId +" MMMM "+ numOfChunkToRestore);
+
 		if(!ProgramDefinitions.db.getDatabase().isChunkStored(getChunkFileId, numOfChunkToRestore)) 
 			{
 				if(DEBUG) System.out.println("chunk not owned ZZZZZZZZZZ");
@@ -110,22 +99,6 @@ public class PeerServiceThread extends TCP_Thread{
 		}
 	}
 
-	/*private void process_chunk(MessagePacket receivedMSG) {
-		// Id of the CHUNK sender
-		String chunkSenderId = receivedMSG.header.getSenderId();
-
-		// Id of the chunk file received
-		String chunkFileId = receivedMSG.header.getFileId();
-
-		// Num of the chunk file received
-		int numOfChunkReceived = receivedMSG.header.getChunkNum();
-		
-		byte[] receivedData = receivedMSG.body;
-		
-		if(!db.getDatabase().getStoredChunkData(chunkFileId, numOfChunkReceived).hasData())
-			db.getDatabase().getStoredChunkData(chunkFileId, numOfChunkReceived).writeChunkFile(receivedData);
-	}*/
-
 	private void process_putchunk(MessagePacket receivedMSG) {		
 		// Id of the PUTCHUNK sender
 		String backupSenderId = receivedMSG.header.getSenderId();
@@ -140,7 +113,22 @@ public class PeerServiceThread extends TCP_Thread{
 		int chunkReplicationDegree = receivedMSG.header.getReplicationDegree();
 
 		byte[] chunkData = receivedMSG.body;
+		if(chunkData==null)
+		{
+			return; //nothing can be backedup
+		}
 
+		//refuse chunk if peer seems to be offline
+		/*if(PeerMetadata.getPeerData(backupSenderId)!=null){
+		return;//not sure if this should be the default behavior, seems safer but also easier to miss valid putchunks
+		}*/
+		//get and process message stamp
+		MessageStamp stamp = new MessageStamp(receivedMSG.header);
+		if(!PeerMetadata.processStamping(backupSenderId, stamp)) 
+		{
+			return; //putchunk received after a delete of the same file with higher timestamp
+		}
+		
 		// writes the file if it is not already stored
 		if(!ProgramDefinitions.db.getDatabase().isChunkStored(chunkFileId, numOfChunkToStore)){
 			//Saves on data and registers storing
@@ -162,10 +150,17 @@ public class PeerServiceThread extends TCP_Thread{
 	 * @param message The message packet
 	 */
 	private void processDelete(MessagePacket message){
-		String sender = message.header.getSenderId();
+		//String sender = message.header.getSenderId();
 		byte[] senderKey = ProgramDefinitions.mydata.priv_key;
 		byte[] unencryptBody = SymmetricKey.decryptData(senderKey, message.body);
 		DeleteBody msgBody = (DeleteBody) SerialU.deserialize(unencryptBody);
+			
+		MessageStamp stamp = new MessageStamp(message.header,msgBody);
+		if(!PeerMetadata.processStamping(msgBody.getPeerId(), stamp)) 
+		{
+			return; //delete received after a putchunk of the same file with higher timestamp
+		}
+		
 		//TODO: Check if peerId matches the peerId of the file
 		deleteFile(msgBody.getFileId());
 	}
