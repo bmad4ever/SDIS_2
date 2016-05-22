@@ -12,7 +12,6 @@ import communication.TCP_Server;
 import funtionalities.PeerMetadata;
 import funtionalities.SymmetricKey;
 import protocols.HELLO;
-import userInterface.PeerUI;
 
 public class PeerApp {
 
@@ -83,9 +82,6 @@ public class PeerApp {
 		//START PASSIVE PERIODIC STUFF -------------------
 		//(new Thread(new PeerMetadata())).start();//will save metadata on nonvolatile memory from time to time
 		//(new Thread(new PeerRenewService())).start();
-
-		//UI RELATED
-		PeerUI.UI();
 
 		//QUIT -------------------
 		server.STOP();
