@@ -6,18 +6,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.SwingConstants;
-import java.awt.Rectangle;
 
 public class MainPanel extends JPanel {
 	
-	public MainPanel(final JFrame mainFrame) {
+	public MainPanel(final GUI mainFrame) {
 		setSize(new Dimension(450, 550));
 		
 		setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -42,6 +38,14 @@ public class MainPanel extends JPanel {
 		});
 		
 		JButton recoverButton = new JButton("Recover File");
+		recoverButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				mainFrame.setContentPane(new RecoverPanel(mainFrame));
+			}
+		});
+		
 		JButton deleteButton = new JButton("Delete File");
 		JButton backupClientDataButton = new JButton("Backup Client Data");
 		JButton recoverClientDataButton = new JButton("Recover Client Data");

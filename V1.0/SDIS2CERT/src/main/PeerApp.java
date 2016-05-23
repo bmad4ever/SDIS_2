@@ -83,12 +83,11 @@ public class PeerApp {
 		(new Thread(new PeriodicUpdates())).start();//will save metadata on nonvolatile memory from time to time
 		//(new Thread(new PeerRenewService())).start();
 
-		// UI stuff		
-		//UI.showMessageStamps(ProgramDefinitions.myID); // sem parametros mostra as stamps de todos os peers
+		// UI stuff
 		GUI gui = new GUI(ProgramDefinitions.myID);
-		while(gui.isActive()){
-
+		while(gui.isOpen()){
 		}
+		System.out.println("hello");
 
 		//QUIT -------------------
 		server.STOP();

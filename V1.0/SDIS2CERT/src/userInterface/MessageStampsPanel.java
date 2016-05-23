@@ -22,7 +22,7 @@ import javax.swing.JTable;
 import javax.swing.JScrollPane;
 
 public class MessageStampsPanel extends JPanel {
-	public MessageStampsPanel(final JFrame mainFrame) {
+	public MessageStampsPanel(final GUI mainFrame) {
 		setSize(new Dimension(450, 550));
 
 		setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -69,6 +69,7 @@ public class MessageStampsPanel extends JPanel {
 		
 		JTable table = new JTable(dataToDisplay, columnNames);
 		table.setBounds(0, 350, 360, -289);
+		table.setEnabled(false);
 
 		JScrollPane scrollPane = new JScrollPane(table);
 		table.setFillsViewportHeight(true);

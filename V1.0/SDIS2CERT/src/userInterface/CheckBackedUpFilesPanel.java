@@ -22,7 +22,7 @@ import Utilities.ProgramDefinitions;
 
 public class CheckBackedUpFilesPanel extends JPanel {
 
-	public CheckBackedUpFilesPanel(final JFrame mainFrame) {
+	public CheckBackedUpFilesPanel(final GUI mainFrame) {
 		setSize(new Dimension(450, 550));
 
 		setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -66,6 +66,7 @@ public class CheckBackedUpFilesPanel extends JPanel {
 
 		JTable table = new JTable(dataToDisplay, columnNames);
 		table.setBounds(0, 350, 360, -289);
+		table.setEnabled(false);
 
 		JScrollPane scrollPane = new JScrollPane(table);
 		table.setFillsViewportHeight(true);

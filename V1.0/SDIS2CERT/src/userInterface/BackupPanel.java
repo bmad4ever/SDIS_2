@@ -9,7 +9,6 @@ import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -23,11 +22,12 @@ import Utilities.RefValue;
 import javax.swing.JTextField;
 
 public class BackupPanel extends JPanel {
-
+	private static final long serialVersionUID = -8357555092138143552L;
+	
 	private static int MAX_REPLICATION_DEGREE = 9;
 	private JTextField fileChosenField;
 
-	public BackupPanel(final JFrame mainFrame) {
+	public BackupPanel(final GUI mainFrame) {
 		setSize(new Dimension(450, 550));
 
 		setBorder(new EmptyBorder(5, 5, 5, 5));

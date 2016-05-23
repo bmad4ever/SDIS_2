@@ -6,9 +6,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-
-import javax.swing.JFrame;
 
 import Utilities.MessageStamp;
 import Utilities.ProgramDefinitions;
@@ -30,25 +27,51 @@ public class UI {
 		return backup_answer;
 	}
 
-	public static void quit(JFrame mainFrame){
+	public static RefValue<String> recover(String fileName){
+		RefValue<String> restore_answer = new RefValue<String>();
+		RestoreFile rf = new RestoreFile(ProgramDefinitions.db, fileName, restore_answer);
+		rf.doRestore();
+		return restore_answer;
+	}
+
+	public static void delete(String fileName, String fileId){
+		HashSet<String> set = ProgramDefinitions.db.getDatabase().getFileMetadata(fileName).getPeersWithChunks();
+		List<String> PeerIDs = new ArrayList<String>(set);
+		REQUESTDEL requestDelete = new REQUESTDEL(ProgramDefinitions.CONTROL_PORT, ProgramDefinitions.CONTROL_ADDRESS,
+				fileId, PeerIDs, null);
+		requestDelete.start();
+		try {
+			requestDelete.join();
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
+		return;
+	}
+
+	public static void quit(GUI mainFrame){
+		mainFrame.closeWindow();
 		mainFrame.dispose();
 	}
+
+
+
+
 
 
 
 	public static void showMessageStamps(String peerId){
 		if(PeerMetadata.message_stamps.containsKey(peerId)){
 			System.out.println("\n\n");
-			
+
 			List<MessageStamp> mStamps = PeerMetadata.message_stamps.get(peerId);
-			
+
 			for(MessageStamp ms : mStamps)
 				System.out.println("-> " + peerId + "\t: " + ms.fileid + "\t: " + ms.msg.toString() + "\t: " + ms.timestamp);
 		}
 	}
-	
+
 	public static void showMessageStamps(){
-		
+
 	}
 
 
