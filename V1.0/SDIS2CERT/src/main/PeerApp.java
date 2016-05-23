@@ -89,6 +89,7 @@ public class PeerApp {
 		GUI gui = new GUI(ProgramDefinitions.myID);
 		}catch(Exception e){e.printStackTrace();}
 		try{GUI.lock.acquire();}catch(Exception e){e.printStackTrace();}
+		
 		//QUIT -------------------
 		server.STOP();
 		PeriodicUpdates.STOP();

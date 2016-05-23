@@ -1,8 +1,8 @@
-/FileSystem/
+/userInterface/
+/protocols/
+/main/
 /Test/
 /Utilities/
 /communication/
 /funtionalities/
-/main/
-/protocols/
-/userInterface/
+/FileSystem/

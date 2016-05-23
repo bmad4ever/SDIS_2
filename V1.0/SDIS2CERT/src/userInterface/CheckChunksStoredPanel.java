@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -20,13 +19,10 @@ import FileSystem.PeerFile;
 import Utilities.ProgramDefinitions;
 
 public class CheckChunksStoredPanel extends JPanel {
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
-	public CheckChunksStoredPanel(final JFrame mainFrame) {
+	public CheckChunksStoredPanel(final GUI mainFrame) {
+
 		setSize(new Dimension(450, 550));
 
 		setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -69,6 +65,7 @@ public class CheckChunksStoredPanel extends JPanel {
 
 		JTable table = new JTable(dataToDisplay, columnNames);
 		table.setBounds(0, 350, 360, -289);
+		table.setEnabled(false);
 
 		JScrollPane scrollPane = new JScrollPane(table);
 		table.setFillsViewportHeight(true);

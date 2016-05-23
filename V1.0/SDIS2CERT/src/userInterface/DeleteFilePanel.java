@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -18,25 +18,25 @@ import javax.swing.border.EmptyBorder;
 
 import FileSystem.PeerFile;
 import Utilities.ProgramDefinitions;
+import Utilities.RefValue;
 
-public class CheckBackedUpFilesPanel extends JPanel {
-	private static final long serialVersionUID = 1L;
-
-	public CheckBackedUpFilesPanel(final GUI mainFrame) {
+public class DeleteFilePanel extends JPanel {
+	
+	public DeleteFilePanel(final GUI mainFrame) {
 		setSize(new Dimension(450, 550));
 
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(null);
 
 		// title
-		JLabel lblCheckBackedUpFilesMenu = new JLabel("Check Backed Up Files Menu");
-		lblCheckBackedUpFilesMenu.setHorizontalAlignment(SwingConstants.CENTER);
-		lblCheckBackedUpFilesMenu.setBounds(10, 11, 430, 14);
-		add(lblCheckBackedUpFilesMenu);
+		JLabel lblDeleteMenu = new JLabel("Delete Menu");
+		lblDeleteMenu.setHorizontalAlignment(SwingConstants.CENTER);
+		lblDeleteMenu.setBounds(10, 11, 430, 14);
+		add(lblDeleteMenu);
 
 		// buttons
 		JPanel optionsPanel = new JPanel();
-		optionsPanel.setBounds(45, 36, 360, 353);
+		optionsPanel.setBounds(45, 36, 360, 287);
 
 		add(optionsPanel);
 		optionsPanel.setLayout(null);
@@ -64,15 +64,35 @@ public class CheckBackedUpFilesPanel extends JPanel {
 			dataToDisplay[i] = row.toArray(new String[row.size()]);
 		}
 
-		JTable table = new JTable(dataToDisplay, columnNames);
+		final JTable table = new JTable(dataToDisplay, columnNames);
 		table.setBounds(0, 350, 360, -289);
-		table.setEnabled(false);
+
+		for (int c = 0; c < table.getColumnCount(); c++){
+		    Class<?> col_class = table.getColumnClass(c);
+		    table.setDefaultEditor(col_class, null);        // remove editor
+		}
 
 		JScrollPane scrollPane = new JScrollPane(table);
 		table.setFillsViewportHeight(true);
 
-		scrollPane.setBounds(0, 0, 360, 353);
+		scrollPane.setBounds(0, 0, 360, 285);
 		optionsPanel.add(scrollPane);
+		
+		// recover button
+		JButton recoverButton = new JButton("Delete");
+		recoverButton.setBounds(125, 352, 200, 36);
+		recoverButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(table.getSelectedRow() == -1){
+					JOptionPane.showMessageDialog(null, "No file to delete!");
+				}else{
+					UI.delete((String) table.getValueAt(table.getSelectedRow(), 0), (String) table.getValueAt(table.getSelectedRow(), 1));
+				}
+			}
+		});
+		
+		add(recoverButton);
 
 		// back
 		JPanel backPanel = new JPanel(new GridLayout(0, 1));
