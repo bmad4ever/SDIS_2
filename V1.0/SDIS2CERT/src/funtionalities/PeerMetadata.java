@@ -298,35 +298,35 @@ public class PeerMetadata {
 	/**returns false if message shouldn't be processed (ex.: delete a file after a putchunk with higher timestamp*/
 	public static boolean processStamping(String peerid, MessageStamp stamp)
 	{
-		MessageStamp stamp_copy = new MessageStamp(); //avoid possible future problem on list (due to references)
-		stamp_copy.CopyFrom(stamp);
+		//MessageStamp stamp_copy = new MessageStamp(); //avoid possible future problem on list (due to references)
+		//stamp_copy.CopyFrom(stamp);
 
 		//[start] COMMON
 		if(DEBUG) System.out.println(peerid);
 		Long current_timestamp = timestamp_table.get(peerid);
-		if(current_timestamp==null) timestamp_table.put(peerid, stamp_copy.timestamp);
-		else if(current_timestamp<stamp_copy.timestamp) 
+		if(current_timestamp==null) timestamp_table.put(peerid, stamp.timestamp);
+		else if(current_timestamp<stamp.timestamp) 
 		{
-			timestamp_table.replace(peerid,stamp_copy.timestamp);
+			timestamp_table.replace(peerid,stamp.timestamp);
 		}
-		else if (current_timestamp==stamp_copy.timestamp) return false;
+		else if (current_timestamp==stamp.timestamp) return false;
 		//[end] COMMON
 
 		//CONTROL ONLY
 		if(ProgramDefinitions.is_control)
 		{
-			if(! CONTROL_ACCEPTED_STAMPS.contains(stamp_copy.msg) ) return true;
+			if(! CONTROL_ACCEPTED_STAMPS.contains(stamp.msg) ) return true;
 
-			if(!message_stamps.contains(peerid))  message_stamps.put(peerid, new ArrayList<MessageStamp>());
+			if(!message_stamps.containsKey(peerid)) message_stamps.put(peerid, new ArrayList<MessageStamp>());
 			List<MessageStamp> stamps = message_stamps.get(peerid);
 			if (stamps.size() == 0) {
-				List<MessageStamp> new_stamps = new ArrayList<MessageStamp>();
-				new_stamps.add(stamp_copy);
-				message_stamps.put(peerid, new_stamps);
+				//List<MessageStamp> new_stamps = new ArrayList<MessageStamp>();
+				stamps.add(new MessageStamp(stamp));
+				message_stamps.put(peerid, stamps);
 				return true;
 			}
 			//else
-			stamps.add(stamp_copy);
+			stamps.add(new MessageStamp(stamp));
 
 			/*note on sorting
 			 * this could be heavy if receiving lots of requests
@@ -338,22 +338,28 @@ public class PeerMetadata {
 		}
 
 		//[start] PEER ONLY
-		if(! PEER_ACCEPTED_STAMPS.contains(stamp_copy.msg) ) return true;
+		if(! PEER_ACCEPTED_STAMPS.contains(stamp.msg) ) return true;
 		
 		if(DEBUG) if(peerid==null) System.out.println("NULL PEERID ASDFG");
-		if(!message_stamps.contains(peerid))  message_stamps.put(peerid, new ArrayList<MessageStamp>());
+		if(!message_stamps.containsKey(peerid))  message_stamps.put(peerid, new ArrayList<MessageStamp>());
 		List<MessageStamp> stamps = message_stamps.get(peerid);
 		if (stamps.size()==0) {//this fills 10 spaces with the same stamp (since this will be "used queue like")
-			List<MessageStamp> new_stamps = new ArrayList<MessageStamp>();
-			for(int i=0;i<PEER_max_msg_stamps;++i) new_stamps.add(stamp_copy);
-			message_stamps.put(peerid, new_stamps);
+			if(DEBUG)System.out.println("ZERO HERE 2359!!!");
+			//List<MessageStamp> new_stamps = new ArrayList<MessageStamp>();
+			for(int i=0;i<PEER_max_msg_stamps;++i) {
+				stamps.add(new MessageStamp(stamp));
+				}
+			message_stamps.put(peerid, stamps);
 			return true;
 		}
 		//else 
 
-		if(!peerCheckValidStamp(stamps,stamp_copy)) return false;
-
+		int aux = peerCheckValidStamp(stamps,stamp);
+		if(aux==-1) return false;
+		if(aux==1) return true;
+		
 		//simulate a circular fifo queue
+		if(DEBUG)System.out.println("YEP THE PRBLEM IS HERE 10101010222");
 		for(int i=PEER_max_msg_stamps-1;i>0;--i)
 		{
 			MessageStamp st = stamps.get(i);
@@ -361,7 +367,7 @@ public class PeerMetadata {
 			st.CopyFrom(prevSt);
 		}
 		MessageStamp st = stamps.get(0);
-		st.CopyFrom(stamp_copy);
+		st.CopyFrom(new MessageStamp(stamp));
 		//[end] PEER ONLY
 		return true;
 	}
@@ -374,6 +380,11 @@ public class PeerMetadata {
 		} catch (InterruptedException e) {e.printStackTrace();}
 	}
 
+	static public int getPeerDataLength()
+	{
+		return data.size() - 1;//minus self (is included in the list)
+	}
+	
 	public static void printData()
 	{
 		if (data != null)
@@ -394,24 +405,36 @@ public class PeerMetadata {
 
 	//[start] PEER ONLY
 
-	static private boolean peerCheckValidStamp(List<MessageStamp> stamps, MessageStamp new_stamp)
+	/** returns -1 if not valid, 0 if valid, 1 if replaced */
+	static private int peerCheckValidStamp(List<MessageStamp> stamps, MessageStamp new_stamp)
 	{
 		for(int i=0;i<PEER_max_msg_stamps;++i)
 		{
 			MessageStamp stamp = stamps.get(i);
+			
+			//is not valid
 			if(stamp.timestamp>new_stamp.timestamp
-					&& stamp.fileid == new_stamp.fileid
+					&& stamp.fileid.equals(new_stamp.fileid)
 					&& (
 							stamp.msg == MessageType.putchunk && new_stamp.msg == MessageType.delete
 							||
 							stamp.msg == MessageType.delete && new_stamp.msg == MessageType.putchunk
 							)
-					) return false;
+					) return -1;
+			
+			//replace
+			if(stamp.timestamp<new_stamp.timestamp
+					&& stamp.fileid.equals(new_stamp.fileid)
+					) {
+				stamp.CopyFrom(new_stamp);
+				return 1;
+			}
 		}
 
-		return true;
+		//add new
+		return 0;
 	}
-
+	
 	//[end] PEER ONLY
 
 	//[start] CONTROL ONLY
