@@ -21,6 +21,11 @@ import Utilities.ProgramDefinitions;
 
 public class CheckChunksStoredPanel extends JPanel {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public CheckChunksStoredPanel(final JFrame mainFrame) {
 		setSize(new Dimension(450, 550));
 

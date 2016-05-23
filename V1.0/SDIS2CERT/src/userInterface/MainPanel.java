@@ -10,13 +10,15 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.SwingConstants;
-import java.awt.Rectangle;
 
 public class MainPanel extends JPanel {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public MainPanel(final JFrame mainFrame) {
 		setSize(new Dimension(450, 550));
 		
@@ -96,6 +98,7 @@ public class MainPanel extends JPanel {
 		quitButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				GUI.lock.release();
 				UI.quit(mainFrame);
 			}
 		});

@@ -13,6 +13,10 @@ import Utilities.ProgramDefinitions;
 
 public class Database implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public HashMap<String, PeerFile> myOriginalFilesMetadata;	
 	public HashMap<String, PeerFile> storedFiles;
 

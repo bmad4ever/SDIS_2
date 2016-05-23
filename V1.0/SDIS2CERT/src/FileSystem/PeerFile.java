@@ -7,6 +7,10 @@ import java.util.List;
 
 public class PeerFile implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String fileId;
 	private int replicationDegree;
 	private HashMap<Integer, Chunk> chunks;

@@ -2,15 +2,11 @@ package communication.service;
 
 import java.net.Socket;
 
-import javax.xml.soap.DetailEntry;
-
-import FileSystem.Chunk;
 import FileSystem.DatabaseManager;
 import Utilities.MessageStamp;
 import Utilities.ProgramDefinitions;
 import communication.TCP_Thread;
 import communication.messages.DeleteBody;
-import communication.messages.DeleteRequestBody;
 import communication.messages.MessageHeader;
 import communication.messages.MessagePacket;
 import funtionalities.PeerMetadata;

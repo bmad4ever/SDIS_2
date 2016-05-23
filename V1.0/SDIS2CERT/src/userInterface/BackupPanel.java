@@ -24,6 +24,10 @@ import javax.swing.JTextField;
 
 public class BackupPanel extends JPanel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static int MAX_REPLICATION_DEGREE = 9;
 	private JTextField fileChosenField;
 

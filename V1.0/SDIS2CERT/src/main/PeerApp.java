@@ -85,11 +85,10 @@ public class PeerApp {
 
 		// UI stuff		
 		//UI.showMessageStamps(ProgramDefinitions.myID); // sem parametros mostra as stamps de todos os peers
+		try{GUI.lock.acquire();
 		GUI gui = new GUI(ProgramDefinitions.myID);
-		while(gui.isActive()){
-
-		}
-
+		}catch(Exception e){e.printStackTrace();}
+		try{GUI.lock.acquire();}catch(Exception e){e.printStackTrace();}
 		//QUIT -------------------
 		server.STOP();
 		PeriodicUpdates.STOP();

@@ -9,6 +9,7 @@ import communication.SSLServer;
 import communication.TCP_Server;
 import funtionalities.AsymmetricKey;
 import funtionalities.PeerMetadata;
+//import funtionalities.PeerMetadata;
 import funtionalities.SymmetricKey;
 
 public class ControlApp {

@@ -22,6 +22,11 @@ import javax.swing.JTable;
 import javax.swing.JScrollPane;
 
 public class MessageStampsPanel extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public MessageStampsPanel(final JFrame mainFrame) {
 		setSize(new Dimension(450, 550));
 

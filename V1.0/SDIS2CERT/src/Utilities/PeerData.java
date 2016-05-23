@@ -1,7 +1,5 @@
 package Utilities;
 
-import java.security.MessageDigest;
-
 public class PeerData implements java.io.Serializable{
 	private static final long serialVersionUID = -2293181236755152514L;
 	

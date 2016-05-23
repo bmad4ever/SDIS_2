@@ -5,7 +5,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.JButton;
@@ -21,6 +20,11 @@ import FileSystem.PeerFile;
 import Utilities.ProgramDefinitions;
 
 public class CheckBackedUpFilesPanel extends JPanel {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	public CheckBackedUpFilesPanel(final JFrame mainFrame) {
 		setSize(new Dimension(450, 550));
