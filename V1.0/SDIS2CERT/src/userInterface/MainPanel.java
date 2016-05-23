@@ -30,7 +30,7 @@ public class MainPanel extends JPanel {
 		
 		// buttons
 		JPanel buttonPanel = new JPanel(new GridLayout(0, 1));
-		buttonPanel.setBounds(125, 194, 200, 196);
+		buttonPanel.setBounds(125, 76, 200, 314);
 		
 		JButton backupButton = new JButton("Backup File");
 		backupButton.addActionListener(new ActionListener() {
@@ -48,8 +48,34 @@ public class MainPanel extends JPanel {
 		recoverClientDataButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		
+		JButton timeStampsButton = new JButton("Check Time Stamps");
+		timeStampsButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
 				setVisible(false);
 				mainFrame.setContentPane(new MessageStampsPanel(mainFrame));
+			}
+		});
+		
+		JButton backedUpFilesButton = new JButton("Check Files Backed Up");
+		backedUpFilesButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				mainFrame.setContentPane(new CheckBackedUpFilesPanel(mainFrame));
+			}
+		});
+		
+		JButton checkChunksStoredButton = new JButton("Check Chunks Stored");
+		checkChunksStoredButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				mainFrame.setContentPane(new CheckChunksStoredPanel(mainFrame));
 			}
 		});
 		
@@ -58,6 +84,9 @@ public class MainPanel extends JPanel {
 		buttonPanel.add(deleteButton);
 		buttonPanel.add(backupClientDataButton);
 		buttonPanel.add(recoverClientDataButton);
+		buttonPanel.add(timeStampsButton);
+		buttonPanel.add(backedUpFilesButton);
+		buttonPanel.add(checkChunksStoredButton);
 		
 		// quit
 		JPanel quitPanel = new JPanel(new GridLayout(0, 1));
@@ -75,6 +104,6 @@ public class MainPanel extends JPanel {
 
 		add(lblBackupFileSystem);
 		add(buttonPanel);
-		add(quitPanel);
+		add(quitPanel);		
 	}
 }

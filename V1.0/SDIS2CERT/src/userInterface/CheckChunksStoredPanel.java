@@ -5,34 +5,33 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import Utilities.MessageStamp;
-import funtionalities.PeerMetadata;
+import FileSystem.PeerFile;
+import Utilities.ProgramDefinitions;
 
-import javax.swing.JTable;
-import javax.swing.JScrollPane;
-
-public class MessageStampsPanel extends JPanel {
-	public MessageStampsPanel(final JFrame mainFrame) {
+public class CheckChunksStoredPanel extends JPanel {
+	
+	public CheckChunksStoredPanel(final JFrame mainFrame) {
 		setSize(new Dimension(450, 550));
 
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(null);
 
 		// title
-		JLabel lblMessageStampsMenu = new JLabel("Message Stamps Menu");
-		lblMessageStampsMenu.setHorizontalAlignment(SwingConstants.CENTER);
-		lblMessageStampsMenu.setBounds(10, 11, 430, 14);
-		add(lblMessageStampsMenu);
+		JLabel lblCheckChunksStoredMenu = new JLabel("Check Chunks Stored Menu");
+		lblCheckChunksStoredMenu.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCheckChunksStoredMenu.setBounds(10, 11, 430, 14);
+		add(lblCheckChunksStoredMenu);
 
 		// buttons
 		JPanel optionsPanel = new JPanel();
@@ -40,40 +39,36 @@ public class MessageStampsPanel extends JPanel {
 
 		add(optionsPanel);
 		optionsPanel.setLayout(null);
-		
+
 		// table data
-		 String[] columnNames = {"PeerId", "FileId", "MsgHeader", "TimeStamp"};
+		String[] columnNames = {"FileId", "Min Rep Dgr"};
 		ArrayList<ArrayList<String>> dataToDisplayArr = new ArrayList<>();
-		
-		for (Map.Entry<String, List<MessageStamp>> entry : PeerMetadata.message_stamps.entrySet()) {			
-		    String key = entry.getKey();
-		    
-		    List<MessageStamp> value = entry.getValue();
-		    for(MessageStamp ms : value){
-		    	ArrayList<String> tableLine = new ArrayList<>();
-		    	
-		    	tableLine.add(key);
-		    	tableLine.add(ms.fileid);
-		    	tableLine.add(ms.msg.toString());
-		    	tableLine.add("" + ms.timestamp);
-		    	
-		    	dataToDisplayArr.add(tableLine);
-		    }
+
+		for (Map.Entry<String, PeerFile> entry : ProgramDefinitions.db.getDatabase().storedFiles.entrySet()) {			
+			String key = entry.getKey();
+			PeerFile value = entry.getValue();
+			
+			ArrayList<String> tableLine = new ArrayList<>();
+			
+			tableLine.add(key);
+			tableLine.add("" + value.getReplicationDegree());
+			
+			dataToDisplayArr.add(tableLine);
 		}
-		
+
 		Object[][] dataToDisplay = new Object[dataToDisplayArr.size()][];
 		for (int i = 0; i < dataToDisplayArr.size(); i++) {
-		    ArrayList<String> row = dataToDisplayArr.get(i);
-		    dataToDisplay[i] = row.toArray(new String[row.size()]);
+			ArrayList<String> row = dataToDisplayArr.get(i);
+			dataToDisplay[i] = row.toArray(new String[row.size()]);
 		}
-		
+
 		JTable table = new JTable(dataToDisplay, columnNames);
 		table.setBounds(0, 350, 360, -289);
 
 		JScrollPane scrollPane = new JScrollPane(table);
 		table.setFillsViewportHeight(true);
-		
-		scrollPane.setBounds(0, 84, 360, 269);
+
+		scrollPane.setBounds(0, 0, 360, 353);
 		optionsPanel.add(scrollPane);
 
 		// back

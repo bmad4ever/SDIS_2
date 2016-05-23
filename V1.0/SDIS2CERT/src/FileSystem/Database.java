@@ -14,13 +14,10 @@ import Utilities.ProgramDefinitions;
 public class Database implements Serializable {
 	private static final long serialVersionUID = 2933521614615136756L;
 
-	//private HashMap<String, String> myOriginalFiles; // original file name : fileId generated
-	public HashMap<String,PeerFile> myOriginalFilesMetadata;	
-	private HashMap<String,PeerFile> storedFiles;
-	//private HashSet<Chunk> storedChunkFiles; // fileId : chunk data
+	public HashMap<String, PeerFile> myOriginalFilesMetadata;	
+	public HashMap<String, PeerFile> storedFiles;
 
 	public Database () {
-		//myOriginalFiles = new HashMap<String, String>();
 		storedFiles = new HashMap<String,PeerFile>();
 		myOriginalFilesMetadata = new HashMap<String,PeerFile>();
 	}
@@ -83,16 +80,6 @@ public class Database implements Serializable {
 	}
 
 	//getters
-	/*public String getOriginalFileName(String fileId){
-		if(myOriginalFiles.containsValue(fileId)){
-			for(Map.Entry<String, String> entry : myOriginalFiles.entrySet()){
-				if(entry.getValue().equals(fileId)) return entry.getKey();
-			}
-		}
-
-		return null;
-	}*/
-
 	public String getFileId(String originalFileName) {
 		if(myOriginalFilesMetadata.containsKey(originalFileName)) return myOriginalFilesMetadata.get(originalFileName).getFileid();
 		return null;
@@ -136,11 +123,6 @@ public class Database implements Serializable {
 			}
 		}
 		return null;
-	}
-
-	public void printChucksStored() {
-		System.out.println("LIST storedChunkFiles:");
-		//TODO: If you would like to finish this code I would apreciate that ;)
 	}
 	
 	/**

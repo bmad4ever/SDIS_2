@@ -6,25 +6,25 @@ import java.util.List;
 
 
 public class PeerFile implements Serializable {
-	private String fileid;
+	private String fileId;
 	private int replicationDegree;
 	private HashMap<Integer, Chunk> chunks;
 
 	public PeerFile (String id,int degree) {
-		fileid = id;
+		fileId = id;
 		replicationDegree = degree;
 		chunks = new HashMap<Integer,Chunk>();
 	}
 
 	public String getFileid() {
-		return fileid;
+		return fileId;
 	}
 
 	public int getReplicationDegree() {
 		return replicationDegree;
 	}
 
-	/**should work to get num on recover, as long as they are stored in respectve order*/
+	/**should work to get num on recover, as long as they are stored in respective order*/
 	public Chunk getChunk(int i) {
 		return chunks.get(i);
 	}
@@ -62,5 +62,4 @@ public class PeerFile implements Serializable {
 			return false;
 		}
 	}
-
 }

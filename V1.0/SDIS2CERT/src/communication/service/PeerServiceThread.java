@@ -93,7 +93,6 @@ public class PeerServiceThread extends TCP_Thread{
 		int numOfChunkToRestore = receivedMSG.header.getChunkNum();
 
 		// Verifies if it is a received chunk
-		ProgramDefinitions.db.getDatabase().printChucksStored();
 		System.out.println(getChunkFileId +" MMMM "+ numOfChunkToRestore);
 		if(!ProgramDefinitions.db.getDatabase().isChunkStored(getChunkFileId, numOfChunkToRestore)) 
 			{

@@ -13,7 +13,6 @@ import funtionalities.PeerMetadata;
 import funtionalities.SymmetricKey;
 import protocols.HELLO;
 import userInterface.GUI;
-import userInterface.UI;
 
 public class PeerApp {
 
@@ -48,8 +47,6 @@ public class PeerApp {
 					String.format("%064x",new java.math.BigInteger(1, md.digest())
 							) );
 		} catch (Exception e) {	e.printStackTrace();}
-
-		//System.out.println(ProgramDefinitions.myID); if(true) return;
 
 		ProgramDefinitions.db = new DatabaseManager(ProgramDefinitions.myID + File.separator + ProgramDefinitions.chunkDatabaseFileName);
 
