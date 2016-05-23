@@ -10,10 +10,12 @@ import Utilities.ProgramDefinitions;
 import Utilities.RefValue;
 import communication.TCP_Server;
 import funtionalities.PeerMetadata;
+import funtionalities.PeriodicUpdates;
 import funtionalities.SymmetricKey;
 import protocols.HELLO;
 import userInterface.GUI;
 import userInterface.UI;
+import protocols.PEER_RESTORE_METADATA;
 
 public class PeerApp {
 
@@ -51,7 +53,8 @@ public class PeerApp {
 
 		//System.out.println(ProgramDefinitions.myID); if(true) return;
 
-		ProgramDefinitions.db = new DatabaseManager(ProgramDefinitions.myID + File.separator + ProgramDefinitions.chunkDatabaseFileName);
+		String db_path=ProgramDefinitions.myID + File.separator + ProgramDefinitions.chunkDatabaseFileName;
+		ProgramDefinitions.db = new DatabaseManager(db_path);
 
 		PeerMetadata.setDatabaseNames(
 				ProgramDefinitions.myID + File.separator +ProgramDefinitions.peerInfoDatabaseName , 
@@ -74,7 +77,7 @@ public class PeerApp {
 		} catch (InterruptedException e1) {
 			e1.printStackTrace();
 		}
-		
+
 		if(!accept.value) {
 			System.out.println("Control Unavailable or Service denied");
 			server.STOP();
@@ -82,20 +85,22 @@ public class PeerApp {
 		}
 
 		//START PASSIVE PERIODIC STUFF -------------------
-		//(new Thread(new PeerMetadata())).start();//will save metadata on nonvolatile memory from time to time
+		(new Thread(new PeriodicUpdates())).start();//will save metadata on nonvolatile memory from time to time
 		//(new Thread(new PeerRenewService())).start();
-		
+
 		// UI stuff		
 		//UI.showMessageStamps(ProgramDefinitions.myID); // sem parametros mostra as stamps de todos os peers
 		GUI gui = new GUI(ProgramDefinitions.myID);
 		while(gui.isActive()){
-			
+
 		}
 
 		//QUIT -------------------
 		server.STOP();
+		PeriodicUpdates.STOP();
 		System.out.println("Closing down.");
 		//System.exit(0);
+		ProgramDefinitions.db.save();
 		return;
 	}
 }

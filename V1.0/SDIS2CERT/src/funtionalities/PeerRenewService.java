@@ -9,7 +9,7 @@ public class PeerRenewService implements Runnable{
 	static final private boolean DEBUG=true;
 
 	static boolean stop=false;
-	void STOP(){stop=true;}
+	static public void STOP(){stop=true;}
 	static final int wait_time = 5000;
 	
 	

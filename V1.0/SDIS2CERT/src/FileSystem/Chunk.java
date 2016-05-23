@@ -10,8 +10,10 @@ import java.util.ArrayList;
 import Utilities.ProgramDefinitions;
 
 public class Chunk implements Serializable {
-	private static final long serialVersionUID = -5618507391328167972L;
-	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String fileId;
 	private int chunkNum;
 	private int replicationDegree;

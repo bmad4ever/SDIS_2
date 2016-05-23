@@ -29,6 +29,12 @@ public class MessageHeader implements Comparable<MessageHeader>,java.io.Serializ
 	private int replicationDegree;
 	private long timestamp;
 
+	public MessageHeader(MessageType messageType, String senderId,long timestamp){
+		this.messageType = messageType;
+		this.senderId = senderId;
+		this.timestamp = timestamp;
+	}
+	
 	public MessageHeader(MessageType messageType, String senderId){
 		this.messageType = messageType;
 		this.senderId = senderId;
