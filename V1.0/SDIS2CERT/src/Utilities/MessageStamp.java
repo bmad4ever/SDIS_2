@@ -13,6 +13,12 @@ public class MessageStamp implements java.io.Serializable, /*Comparator<MessageS
 	
 	public MessageStamp(){}
 	
+	public MessageStamp(MessageStamp msgStmp){
+		this.msg = msgStmp.msg;
+		this.fileid = msgStmp.fileid;
+		this.timestamp = msgStmp.timestamp;
+	}
+	
 	public MessageStamp(MessageHeader msgHeader){
 		msg = msgHeader.getMessageType();
 		fileid = msgHeader.getFileId();
