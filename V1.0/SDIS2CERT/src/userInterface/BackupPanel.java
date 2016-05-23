@@ -85,6 +85,8 @@ public class BackupPanel extends JPanel {
 				else{
 					RefValue<String> str = UI.backup(fileChosenField.getText(), (int) replicationDegreeSpinner.getValue());
 					JOptionPane.showMessageDialog(null, str.value + "!");
+					setVisible(false);
+					mainFrame.setContentPane(new MainPanel(mainFrame));
 				}
 			}
 		});

@@ -49,6 +49,14 @@ public class MainPanel extends JPanel {
 		});
 		
 		JButton deleteButton = new JButton("Delete File");
+		deleteButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				mainFrame.setContentPane(new DeleteFilePanel(mainFrame));
+			}
+		});
+		
 		JButton backupClientDataButton = new JButton("Backup Client Data");
 		JButton recoverClientDataButton = new JButton("Recover Client Data");
 		recoverClientDataButton.addActionListener(new ActionListener() {
@@ -58,7 +66,7 @@ public class MainPanel extends JPanel {
 			}
 		});
 		
-		JButton timeStampsButton = new JButton("Check Time Stamps");
+		JButton timeStampsButton = new JButton("Check Message Stamps");
 		timeStampsButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
