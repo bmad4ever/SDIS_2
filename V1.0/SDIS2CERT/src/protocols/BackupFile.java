@@ -124,7 +124,8 @@ public class BackupFile{
 			} catch (TimeoutException e) {
 				numOfTries++;
 
-				 */} catch(Exception e){e.printStackTrace();}
+				 */
+				} catch(Exception e){e.printStackTrace();}
 			
 			waitInterval = waitInterval * 2;
 			numOfTries++;
@@ -145,6 +146,13 @@ public class BackupFile{
 			answer.value = "No such file found";
 			return false;
 		}
+		
+		if(PeerMetadata.getPeerDataLength()<replicationDegree)
+		{
+			answer.value = "Not enough connected peers to ensure given replication degree";
+			return false;
+		}
+		
 		String fileName = fileTemp.getName();
 		
 		ArrayList<byte[]> data = splitFileAndEncryptData(filePath);
