@@ -12,6 +12,8 @@ import communication.TCP_Server;
 import funtionalities.PeerMetadata;
 import funtionalities.SymmetricKey;
 import protocols.HELLO;
+import userInterface.GUI;
+import userInterface.UI;
 
 public class PeerApp {
 
@@ -82,10 +84,18 @@ public class PeerApp {
 		//START PASSIVE PERIODIC STUFF -------------------
 		//(new Thread(new PeerMetadata())).start();//will save metadata on nonvolatile memory from time to time
 		//(new Thread(new PeerRenewService())).start();
+		
+		// UI stuff		
+		//UI.showMessageStamps(ProgramDefinitions.myID); // sem parametros mostra as stamps de todos os peers
+		GUI gui = new GUI(ProgramDefinitions.myID);
+		while(gui.isActive()){
+			
+		}
 
 		//QUIT -------------------
 		server.STOP();
 		System.out.println("Closing down.");
-		System.exit(0);
+		//System.exit(0);
+		return;
 	}
 }

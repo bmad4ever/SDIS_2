@@ -6,7 +6,11 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
+import javax.swing.JFrame;
+
+import Utilities.MessageStamp;
 import Utilities.ProgramDefinitions;
 import Utilities.RefValue;
 import funtionalities.PeerMetadata;
@@ -17,7 +21,7 @@ import protocols.PEER_RESTORE_METADATA;
 import protocols.RestoreFile;
 
 public class UI {
-	
+
 	public static RefValue<String> backup(String filePath, int replicationDegree){
 		RefValue<String> backup_answer = new RefValue<String>();
 		BackupFile bf = new BackupFile(ProgramDefinitions.db, filePath, replicationDegree, backup_answer);
@@ -25,10 +29,33 @@ public class UI {
 		ProgramDefinitions.db.save();
 		return backup_answer;
 	}
-	
-	public static void quit(){
-		System.exit(0);
+
+	public static void quit(JFrame mainFrame){
+		mainFrame.dispose();
 	}
+
+
+
+	public static void showMessageStamps(String peerId){
+		if(PeerMetadata.message_stamps.containsKey(peerId)){
+			System.out.println("\n\n");
+			
+			List<MessageStamp> mStamps = PeerMetadata.message_stamps.get(peerId);
+			
+			for(MessageStamp ms : mStamps)
+				System.out.println("-> " + peerId + "\t: " + ms.fileid + "\t: " + ms.msg.toString() + "\t: " + ms.timestamp);
+		}
+	}
+	
+	public static void showMessageStamps(){
+		
+	}
+
+
+
+
+
+
 
 	static BufferedReader br;
 
@@ -67,7 +94,7 @@ public class UI {
 		RestoreFile rf;
 		PEER_BACKUP_METADATA pbm;
 		PEER_RESTORE_METADATA prd;
-		
+
 		switch (choice) {
 		case 1: 
 			RefValue<String> backup_answer = new RefValue<String>();
@@ -129,7 +156,7 @@ public class UI {
 				ProgramDefinitions.db.save();
 			}
 			else System.out.println("Metadata Backup failed");
-			
+
 			break;
 		case 6: return true;
 		case 7: //if(DEBUG) PeerMetadata.printMaxTimeStamps();

@@ -11,11 +11,15 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+
+import Utilities.RefValue;
+
 import javax.swing.JTextField;
 
 public class BackupPanel extends JPanel {
@@ -41,7 +45,7 @@ public class BackupPanel extends JPanel {
 		replicationDegreeLabel.setBounds(125, 162, 200, 27);
 		add(replicationDegreeLabel);
 
-		JSpinner replicationDegreeSpinner = new JSpinner(new SpinnerNumberModel(1, 1, MAX_REPLICATION_DEGREE, 1));
+		final JSpinner replicationDegreeSpinner = new JSpinner(new SpinnerNumberModel(1, 1, MAX_REPLICATION_DEGREE, 1));
 		replicationDegreeSpinner.setBounds(250, 195, 75, 27);
 		add(replicationDegreeSpinner);
 
@@ -66,10 +70,9 @@ public class BackupPanel extends JPanel {
 				fileChooser.setAcceptAllFileFilterUsed(true);
 				fileChooser.showOpenDialog(mainFrame);
 				
-				fileChooser.setSelectedFile(null);
 				File file = fileChooser.getSelectedFile();
 
-				if(file.getAbsolutePath() != null)
+				if(file != null)
 					fileChosenField.setText(file.getAbsolutePath());
 			}
 		});
@@ -78,7 +81,11 @@ public class BackupPanel extends JPanel {
 		backupButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TO DO UI.backup();
+				if(fileChosenField.getText().equals("")) JOptionPane.showMessageDialog(null, "No file to backup!");
+				else{
+					RefValue<String> str = UI.backup(fileChosenField.getText(), (int) replicationDegreeSpinner.getValue());
+					JOptionPane.showMessageDialog(null, str.value + "!");
+				}
 			}
 		});
 

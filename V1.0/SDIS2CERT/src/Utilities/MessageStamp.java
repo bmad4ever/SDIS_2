@@ -12,22 +12,19 @@ public class MessageStamp implements java.io.Serializable, /*Comparator<MessageS
 	
 	public MessageStamp(){}
 	
-	public MessageStamp(MessageHeader msgHeader)
-	{
+	public MessageStamp(MessageHeader msgHeader){
 		msg = msgHeader.getMessageType();
 		fileid = msgHeader.getFileId();
 		timestamp = msgHeader.getTimeStamp();
 	}
 	
-	public MessageStamp(MessageHeader msgHeader,DeleteRequestBody del)
-	{
+	public MessageStamp(MessageHeader msgHeader,DeleteRequestBody del){
 		msg = msgHeader.getMessageType();
 		fileid = del.FileID;
 		timestamp = msgHeader.getTimeStamp();
 	}
 	
-	public void CopyFrom(MessageStamp ms)
-	{
+	public void CopyFrom(MessageStamp ms){
 		msg = ms.msg;
 		fileid = ms.fileid;
 		timestamp = ms.timestamp;

@@ -45,6 +45,13 @@ public class MainPanel extends JPanel {
 		JButton deleteButton = new JButton("Delete File");
 		JButton backupClientDataButton = new JButton("Backup Client Data");
 		JButton recoverClientDataButton = new JButton("Recover Client Data");
+		recoverClientDataButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				mainFrame.setContentPane(new MessageStampsPanel(mainFrame));
+			}
+		});
 		
 		buttonPanel.add(backupButton);
 		buttonPanel.add(recoverButton);
@@ -60,7 +67,7 @@ public class MainPanel extends JPanel {
 		quitButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				UI.quit();
+				UI.quit(mainFrame);
 			}
 		});
 		

@@ -44,12 +44,10 @@ public class PeerMetadata implements Runnable{
 	static private String peerInfoDatabaseName;
 	static private String timestampsDatabaseName;
 
-	static public void setDatabaseNames(String peers, String timestamps)
-	{
+	static public void setDatabaseNames(String peers, String timestamps){
 		peerInfoDatabaseName = peers;
 		timestampsDatabaseName = timestamps;
 	}
-
 
 	//[start] SAVE & LOAD DATA
 
