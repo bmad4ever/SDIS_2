@@ -88,6 +88,8 @@ public class DeleteFilePanel extends JPanel {
 					JOptionPane.showMessageDialog(null, "No file to delete!");
 				}else{
 					UI.delete((String) table.getValueAt(table.getSelectedRow(), 0), (String) table.getValueAt(table.getSelectedRow(), 1));
+					setVisible(false);
+					mainFrame.setContentPane(new MainPanel(mainFrame));
 				}
 			}
 		});

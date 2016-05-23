@@ -89,6 +89,8 @@ public class RecoverPanel extends JPanel {
 				}else{
 					RefValue<String> str = UI.recover((String) table.getValueAt(table.getSelectedRow(), 0));
 					JOptionPane.showMessageDialog(null, str.value + "!");
+					setVisible(false);
+					mainFrame.setContentPane(new MainPanel(mainFrame));
 				}
 			}
 		});
