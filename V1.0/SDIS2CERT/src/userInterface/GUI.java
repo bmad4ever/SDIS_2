@@ -1,38 +1,37 @@
 package userInterface;
 
 import java.awt.Dimension;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.concurrent.Semaphore;
 
 import javax.swing.JFrame;
 
 public class GUI extends JFrame {
 	private static final long serialVersionUID = 8897423394231931753L;
-	
-	private boolean isOpen;
 
 	/**not very pretty but solves the problem fast and efficiently*/
 	static public final Semaphore lock = new Semaphore(1, true); 
 	
 	public GUI(final String windowName) {
-		isOpen = true;
+		final GUI thisFrame = this;
 		
 		setTitle(windowName);
 		setResizable(false);
 		setVisible(true);
 		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				GUI.lock.release();
+				UI.quit(thisFrame);
+			}
+		});
 		
 		setLocation(350, 50);
 		setSize(new Dimension(450, 550));
 		
 		setContentPane(new MainPanel(this));
-	}
-	
-	public void closeWindow(){
-		isOpen = false;
-	}
-	
-	public boolean isOpen(){
-		return isOpen;
 	}
 }

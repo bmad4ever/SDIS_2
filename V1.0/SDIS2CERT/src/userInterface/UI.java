@@ -49,7 +49,6 @@ public class UI {
 	}
 
 	public static void quit(GUI mainFrame){
-		mainFrame.closeWindow();
 		mainFrame.dispose();
 	}
 
