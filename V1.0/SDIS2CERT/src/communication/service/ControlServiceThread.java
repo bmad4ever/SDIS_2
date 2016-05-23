@@ -101,6 +101,7 @@ public class ControlServiceThread extends TCP_Thread{
 		byte[] msgContent = AsymmetricKey.decrypt(AsymmetricKey.prvk, receivedMSG.body);
 		PeerData new_pd = (PeerData) SerialU.deserialize(msgContent);
 
+		System.out.println("Sender ID is:" + receivedMSG.header.getSenderId());
 		PeerData existingData = PeerMetadata.getPeerData(receivedMSG.header.getSenderId());
 
 		//deny - no peer data sent
@@ -113,9 +114,12 @@ public class ControlServiceThread extends TCP_Thread{
 
 		//deny - private keys are disparate on new and old data
 		if (existingData != null){
-			if(Arrays.equals(new_pd.priv_key,existingData.priv_key)){
+			if(Arrays.equals(new_pd.priv_key,existingData.priv_key))
+			{				
 				PeerMetadata.updatePeerData(existingData, new_pd);
-			}else{
+			}
+			else
+			{
 				MessageHeader h = new MessageHeader(
 						MessageHeader.MessageType.deny,"CRED");
 				MessagePacket m = new MessagePacket(h, null);
@@ -125,8 +129,9 @@ public class ControlServiceThread extends TCP_Thread{
 			}
 		}
 		//accept, store data
-		else
+		else{
 			PeerMetadata.addNewPeerData(new_pd);
+		}
 
 		// and send full peer metadata with no private keys.
 		MessageHeader h = new MessageHeader(MessageHeader.MessageType.confirm,"CRED");

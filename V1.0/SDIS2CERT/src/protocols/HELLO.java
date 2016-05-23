@@ -60,7 +60,7 @@ public class HELLO extends TCP_Client{
 		
 		//send our data to control
 		byte[] raw = SerialU.serialize(ProgramDefinitions.mydata);
-		MessageHeader mHeader = new MessageHeader(MessageHeader.MessageType.peer_privkey, null);
+		MessageHeader mHeader = new MessageHeader(MessageHeader.MessageType.peer_privkey, ProgramDefinitions.mydata.peerID);
 		MessagePacket m = new MessagePacket(mHeader, AsymmetricKey.encrypt(AsymmetricKey.pubk, raw));
 		sendMessage(m);
 		

@@ -3,6 +3,7 @@ package main;
 import java.io.File;
 import java.net.InetAddress;
 import java.security.MessageDigest;
+import java.util.Arrays;
 
 import FileSystem.DatabaseManager;
 import Utilities.PeerData;
@@ -37,7 +38,7 @@ public class PeerApp {
 		System.setProperty("Djavax.net.ssl.trustStorePassword","123456");
 
 		SymmetricKey.generate_key(args[0]+args[1]);
-
+		
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-256");
 			md.update(args[0].getBytes("UTF-8"));
@@ -48,7 +49,7 @@ public class PeerApp {
 					String.format("%064x",new java.math.BigInteger(1, md.digest())
 							) );
 		} catch (Exception e) {	e.printStackTrace();}
-
+		
 		ProgramDefinitions.db = new DatabaseManager(ProgramDefinitions.myID + File.separator + ProgramDefinitions.chunkDatabaseFileName);
 
 		PeerMetadata.setDatabaseNames(
