@@ -82,13 +82,11 @@ public class PeerServiceThread extends TCP_Thread{
 		int numOfChunkToRestore = receivedMSG.header.getChunkNum();
 
 		// Verifies if it is a received chunk
-		ProgramDefinitions.db.getDatabase().printChucksStored();
-
-		if(!ProgramDefinitions.db.getDatabase().isChunkStored(getChunkFileId, numOfChunkToRestore)) 
-			{
-				if(DEBUG) System.out.println("chunk not owned ZZZZZZZZZZ");
-				return;			
-			}
+		System.out.println(getChunkFileId +" MMMM "+ numOfChunkToRestore);
+		if(!ProgramDefinitions.db.getDatabase().isChunkStored(getChunkFileId, numOfChunkToRestore)) {
+			if(DEBUG) System.out.println("chunk not owned ZZZZZZZZZZ");
+			return;			
+		}
 
 		byte[] chunkToSendData = ProgramDefinitions.db.getDatabase().getStoredChunkData(getChunkFileId, numOfChunkToRestore);
 		if(chunkToSendData != null){
@@ -128,7 +126,7 @@ public class PeerServiceThread extends TCP_Thread{
 		{
 			return; //putchunk received after a delete of the same file with higher timestamp
 		}
-		
+
 		// writes the file if it is not already stored
 		if(!ProgramDefinitions.db.getDatabase().isChunkStored(chunkFileId, numOfChunkToStore)){
 			//Saves on data and registers storing
@@ -154,17 +152,17 @@ public class PeerServiceThread extends TCP_Thread{
 		byte[] senderKey = ProgramDefinitions.mydata.priv_key;
 		byte[] unencryptBody = SymmetricKey.decryptData(senderKey, message.body);
 		DeleteBody msgBody = (DeleteBody) SerialU.deserialize(unencryptBody);
-			
+
 		MessageStamp stamp = new MessageStamp(message.header,msgBody);
 		if(!PeerMetadata.processStamping(msgBody.getPeerId(), stamp)) 
 		{
 			return; //delete received after a putchunk of the same file with higher timestamp
 		}
-		
+
 		//TODO: Check if peerId matches the peerId of the file
 		deleteFile(msgBody.getFileId());
 	}
-	
+
 	/**
 	 * Deletes a file folder aswell as the chunk files
 	 * associated with it and removes this file entry
@@ -175,5 +173,5 @@ public class PeerServiceThread extends TCP_Thread{
 		DatabaseManager dbm = ProgramDefinitions.db;
 		dbm.getDatabase().deleteFile(fileId);
 	}
-	
+
 }

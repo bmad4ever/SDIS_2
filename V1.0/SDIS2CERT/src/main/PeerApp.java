@@ -14,8 +14,6 @@ import funtionalities.PeriodicUpdates;
 import funtionalities.SymmetricKey;
 import protocols.HELLO;
 import userInterface.GUI;
-import userInterface.UI;
-import protocols.PEER_RESTORE_METADATA;
 
 public class PeerApp {
 
@@ -51,10 +49,7 @@ public class PeerApp {
 							) );
 		} catch (Exception e) {	e.printStackTrace();}
 
-		//System.out.println(ProgramDefinitions.myID); if(true) return;
-
-		String db_path=ProgramDefinitions.myID + File.separator + ProgramDefinitions.chunkDatabaseFileName;
-		ProgramDefinitions.db = new DatabaseManager(db_path);
+		ProgramDefinitions.db = new DatabaseManager(ProgramDefinitions.myID + File.separator + ProgramDefinitions.chunkDatabaseFileName);
 
 		PeerMetadata.setDatabaseNames(
 				ProgramDefinitions.myID + File.separator +ProgramDefinitions.peerInfoDatabaseName , 

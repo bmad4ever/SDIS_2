@@ -26,8 +26,6 @@ import funtionalities.PeerMetadata;
  */
 public class DatabaseManager {
 	private FileInputStream fis;
-	//private FileOutputStream fos;
-	//private ObjectOutputStream oos;
 	private ObjectInputStream ois;
 	private Database database;
 	private String filename;
@@ -39,7 +37,6 @@ public class DatabaseManager {
 			load();
 		}else{
 			database = new Database();
-			//save();
 		}
 	}	
 	
