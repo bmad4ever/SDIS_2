@@ -9,6 +9,7 @@ import communication.SSLServer;
 import communication.TCP_Server;
 import funtionalities.AsymmetricKey;
 import funtionalities.PeerMetadata;
+import funtionalities.PeriodicUpdates;
 //import funtionalities.PeerMetadata;
 import funtionalities.SymmetricKey;
 
@@ -49,10 +50,12 @@ public class ControlApp {
 		} catch (UnknownHostException e1) {e1.printStackTrace();}
 		server.start();
 		
-		//(new Thread(new PeerMetadata())).start();//will save metadata on nonvolatile memory from time to time
+		//(new Thread(new PeriodicUpdates())).start();//will save metadata on nonvolatile memory from time to time and update active peers
 		
 		try {System.in.read();} 
 		catch (IOException e) {e.printStackTrace();}
+		server.STOP();
+		PeriodicUpdates.STOP();
 		System.out.println("Closing down.");
 		System.exit(0);
 	}

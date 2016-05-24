@@ -136,7 +136,7 @@ public class ControlServiceThread extends TCP_Thread{
 		// and send full peer metadata with no private keys.
 		MessageHeader h = new MessageHeader(MessageHeader.MessageType.confirm,"CRED");
 
-		HashSet<PeerData> peerMetadata = PeerMetadata.getMetadata2send2peer();
+		HashSet<PeerData> peerMetadata = PeerMetadata.getActivePeersData4peers();
 		byte[] tmp =  SerialU.serialize(peerMetadata);
 		byte[] peerMbody = SymmetricKey.encryptData(new_pd.priv_key, tmp);
 		MessagePacket m = new MessagePacket(h,peerMbody);

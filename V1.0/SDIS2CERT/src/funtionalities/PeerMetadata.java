@@ -469,6 +469,20 @@ public class PeerMetadata {
 		return active;
 	}
 
+	public static HashSet<PeerData> getActivePeersData4peers(){
+		HashSet<PeerData> active = new HashSet<PeerData>();
+		for(String peer : active_peers.keySet())
+		{
+			if(active_peers.get(peer)!=peer_seems_unactive)
+				{
+					PeerData pd =getPeerData(peer);
+					active.add(new PeerData(null,pd.addr.ip,pd.addr.port,pd.peerID));
+				}
+		}
+		return active;
+	}
+	
+	
 	public static void newPeerService(String peerid)
 	{
 		if(DEBUG) System.out.println(peerid + " renewed service");
