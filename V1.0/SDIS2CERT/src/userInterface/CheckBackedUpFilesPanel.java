@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -20,7 +19,7 @@ import FileSystem.PeerFile;
 import Utilities.ProgramDefinitions;
 
 public class CheckBackedUpFilesPanel extends JPanel {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 4901875545277882952L;
 
 	public CheckBackedUpFilesPanel(final GUI mainFrame) {
 		setSize(new Dimension(450, 550));

@@ -3,7 +3,6 @@ package main;
 import java.io.File;
 import java.net.InetAddress;
 import java.security.MessageDigest;
-import java.util.Arrays;
 
 import FileSystem.DatabaseManager;
 import Utilities.PeerData;

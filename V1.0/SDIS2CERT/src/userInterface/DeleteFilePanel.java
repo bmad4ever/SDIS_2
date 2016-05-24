@@ -18,10 +18,10 @@ import javax.swing.border.EmptyBorder;
 
 import FileSystem.PeerFile;
 import Utilities.ProgramDefinitions;
-import Utilities.RefValue;
 
 public class DeleteFilePanel extends JPanel {
-	
+	private static final long serialVersionUID = -8905523729136975968L;
+
 	public DeleteFilePanel(final GUI mainFrame) {
 		setSize(new Dimension(450, 550));
 

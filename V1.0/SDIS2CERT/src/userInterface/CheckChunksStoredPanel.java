@@ -19,7 +19,7 @@ import FileSystem.PeerFile;
 import Utilities.ProgramDefinitions;
 
 public class CheckChunksStoredPanel extends JPanel {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -4110994411724922773L;
 
 	public CheckChunksStoredPanel(final GUI mainFrame) {
 

@@ -12,7 +12,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.SwingConstants;
 
 public class MainPanel extends JPanel {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 5576038026081466844L;
 
 	public MainPanel(final GUI mainFrame) {
 
@@ -58,11 +58,20 @@ public class MainPanel extends JPanel {
 		});
 		
 		JButton backupClientDataButton = new JButton("Backup Client Data");
+		backupClientDataButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				mainFrame.setContentPane(new BackupClientDataPanel(mainFrame));
+			}
+		});
+		
 		JButton recoverClientDataButton = new JButton("Recover Client Data");
 		recoverClientDataButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				setVisible(false);
+				mainFrame.setContentPane(new RecoverClientDataPanel(mainFrame));
 			}
 		});
 		
