@@ -296,7 +296,7 @@ public class PeerMetadata {
 	}
 
 	/**returns false if message shouldn't be processed (ex.: delete a file after a putchunk with higher timestamp*/
-	public static boolean processStamping(String peerid, MessageStamp stamp)
+	public synchronized static boolean processStamping(String peerid, MessageStamp stamp)
 	{
 		//MessageStamp stamp_copy = new MessageStamp(); //avoid possible future problem on list (due to references)
 		//stamp_copy.CopyFrom(stamp);
