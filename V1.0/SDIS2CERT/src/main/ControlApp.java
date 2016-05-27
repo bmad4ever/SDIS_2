@@ -24,6 +24,10 @@ public class ControlApp {
 		System.setProperty("Djavax.net.ssl.trustStore","truststore");
 		System.setProperty("Djavax.net.ssl.trustStorePassword","123456");
 		
+		File chunkFolder = new File("CONTROL");
+		if(!chunkFolder.exists())
+			chunkFolder.mkdir();
+		
 		try{
 			PeerMetadata.setDatabaseNames(
 					"CONTROL" + File.separator +ProgramDefinitions.peerInfoDatabaseName , 
