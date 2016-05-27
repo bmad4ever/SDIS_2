@@ -60,8 +60,13 @@ public class HELLO extends TCP_Client{
 		
 		//send our data to control
 		byte[] raw = SerialU.serialize(ProgramDefinitions.mydata);
-		MessageHeader mHeader = new MessageHeader(MessageHeader.MessageType.peer_privkey, ProgramDefinitions.mydata.peerID);
-		MessagePacket m = new MessagePacket(mHeader, AsymmetricKey.encrypt(AsymmetricKey.pubk, raw));
+		byte[] raw2 = ProgramDefinitions.mydata.peerID.getBytes();
+		Object[] tosend = {
+				AsymmetricKey.encrypt(AsymmetricKey.pubk, raw),
+				AsymmetricKey.encrypt(AsymmetricKey.pubk, raw2)
+		}; 
+		MessageHeader mHeader = new MessageHeader(MessageHeader.MessageType.peer_privkey, null);
+		MessagePacket m = new MessagePacket(mHeader, SerialU.serialize(tosend));
 		sendMessage(m);
 		
 		response = (MessagePacket) receiveMessage();

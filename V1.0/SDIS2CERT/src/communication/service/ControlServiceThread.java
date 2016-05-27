@@ -98,10 +98,12 @@ public class ControlServiceThread extends TCP_Thread{
 
 		if(DEBUG)
 			receivedMSG.print();
-		byte[] msgContent = AsymmetricKey.decrypt(AsymmetricKey.prvk, receivedMSG.body);
-		PeerData new_pd = (PeerData) SerialU.deserialize(msgContent);
-
-		System.out.println("Sender ID is:" + receivedMSG.header.getSenderId());
+		
+		Object[] receivedbody = (Object[]) SerialU.deserialize(receivedMSG.body);
+		
+		PeerData new_pd = (PeerData) SerialU.deserialize(  AsymmetricKey.decrypt(AsymmetricKey.prvk, (byte[]) receivedbody[0])  );
+		System.out.println("Sender ID is:" + new String(AsymmetricKey.decrypt(AsymmetricKey.prvk, (byte[])receivedbody[1])) );
+		
 		PeerData existingData = PeerMetadata.getPeerData(receivedMSG.header.getSenderId());
 
 		//deny - no peer data sent
@@ -110,7 +112,7 @@ public class ControlServiceThread extends TCP_Thread{
 			return;
 		}
 
-		if(DEBUG)System.out.println("PPPPDDDDD<"+new_pd.peerID+">");
+		if(DEBUG)System.out.println("<"+new_pd.peerID+">");
 
 		//deny - private keys are disparate on new and old data
 		if (existingData != null){
@@ -137,7 +139,7 @@ public class ControlServiceThread extends TCP_Thread{
 		MessageHeader h = new MessageHeader(MessageHeader.MessageType.confirm,"CRED");
 
 		HashSet<PeerData> peerMetadata = PeerMetadata.getActivePeersData4peers();
-		byte[] tmp =  SerialU.serialize(peerMetadata);
+		byte[] tmp =  SerialU.serialize(peerMetadata);	
 		byte[] peerMbody = SymmetricKey.encryptData(new_pd.priv_key, tmp);
 		MessagePacket m = new MessagePacket(h,peerMbody);
 		PeerMetadata.updateActivePeer(new_pd.peerID); 
