@@ -24,6 +24,7 @@ public class ControlApp {
 		System.setProperty("Djavax.net.ssl.trustStore","truststore");
 		System.setProperty("Djavax.net.ssl.trustStorePassword","123456");
 		
+		ProgramDefinitions.is_control = true;
 		File chunkFolder = new File("CONTROL");
 		if(!chunkFolder.exists())
 			chunkFolder.mkdir();
@@ -37,7 +38,7 @@ public class ControlApp {
 			
 			AsymmetricKey.generate_key();
 			SymmetricKey.generate_cipher();
-			ProgramDefinitions.is_control = true;
+			
 			if(PeerMetadata.DEBUG)
 				PeerMetadata.printData();
 		} catch (Exception e) {e.printStackTrace(); return;}
