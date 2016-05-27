@@ -1,6 +1,7 @@
 package Utilities;
 
 import communication.messages.DeleteBody;
+import communication.messages.DeleteRequestBody;
 //import communication.messages.DeleteRequestBody;
 import communication.messages.MessageHeader;
 
@@ -28,6 +29,12 @@ public class MessageStamp implements java.io.Serializable, /*Comparator<MessageS
 	public MessageStamp(MessageHeader msgHeader, DeleteBody del){
 		msg = msgHeader.getMessageType();
 		fileid = del.getFileId();
+		timestamp = msgHeader.getTimeStamp();
+	}
+	
+	public MessageStamp(MessageHeader msgHeader, DeleteRequestBody del){
+		msg = msgHeader.getMessageType();
+		fileid = del.FileID;
 		timestamp = msgHeader.getTimeStamp();
 	}
 	

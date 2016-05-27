@@ -44,6 +44,7 @@ public class REVIVE extends TCP_Client{
 		
 		// Wait for message...
 		MessagePacket response = (MessagePacket)receiveMessage();
+		System.out.println("DELETE LIST RECEIVED!!!");
 		if(response != null) {
 			if(response.header.getMessageType() == MessageHeader.MessageType.superdelete){
 				this.taskCompleted.value = true;
