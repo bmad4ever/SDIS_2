@@ -150,8 +150,7 @@ public class PeerServiceThread extends TCP_Thread{
 		DeleteBody msgBody = (DeleteBody) SerialU.deserialize(unencryptBody);
 
 		MessageStamp stamp = new MessageStamp(message.header,msgBody);
-		if(!PeerMetadata.processStamping(msgBody.getPeerId(), stamp)) 
-		{
+		if(!PeerMetadata.processStamping(msgBody.getPeerId(), stamp)) {
 			return; //delete received after a putchunk of the same file with higher timestamp
 		}
 

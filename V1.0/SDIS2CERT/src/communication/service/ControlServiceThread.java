@@ -2,10 +2,15 @@ package communication.service;
 
 import java.io.File;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 import Utilities.BinaryFile;
+import Utilities.MessageStamp;
 import Utilities.PeerData;
 import Utilities.ProgramDefinitions;
 import Utilities.RefValue;
@@ -23,9 +28,9 @@ import protocols.DELETE;
 /**
  * Performs the server-side actions in a Protocol.
  * Received messages are handled by state_machine(message)
- *
  */
 public class ControlServiceThread extends TCP_Thread{
+	private static final int SOCKET_TIMEOUT = 4000;
 
 	public ControlServiceThread(Socket clientSocket){
 		socket = clientSocket;
@@ -57,7 +62,10 @@ public class ControlServiceThread extends TCP_Thread{
 		sendMessage(m);
 	}
 
-
+	/**
+	 * State Machine to decide how to process a message
+	 * @param receivedMSG the message to process
+	 */
 	public void state_machine(MessagePacket receivedMSG){
 		switch (receivedMSG.header.getMessageType()) {
 		case hello:
@@ -84,6 +92,10 @@ public class ControlServiceThread extends TCP_Thread{
 		case getpeeraddr:
 			process_Who(receivedMSG);
 			break;
+		case revive:
+			System.out.println("peer revived");
+			processRevive(receivedMSG);
+			break;
 		default:
 			break;
 		}
@@ -91,7 +103,6 @@ public class ControlServiceThread extends TCP_Thread{
 	}
 
 	public void process_hello(MessagePacket receivedMSG){
-
 		//deny por agora
 		sendDeny();
 		return;
@@ -262,6 +273,17 @@ public class ControlServiceThread extends TCP_Thread{
 		MessagePacket m = new MessagePacket(h, data);
 		sendMessage(m);
 	
+	}
+	
+	public void processRevive(MessagePacket receivedMSG){
+		String senderId = receivedMSG.header.getSenderId();
+		byte[] senderKey = PeerMetadata.getPeerData(senderId).priv_key;
+		byte[] body = SymmetricKey.decryptData(senderKey, receivedMSG.body);
+		Hashtable<String, Long> receivedPeers = (Hashtable<String, Long>)SerialU.deserialize(body);
+		for (Entry<String,Long> e : receivedPeers.entrySet() ) {
+			System.out.println(e.getKey() + ":" + e.getValue());
+		}
+		sendConfirm();
 	}
 	
 }

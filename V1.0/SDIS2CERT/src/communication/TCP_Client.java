@@ -27,11 +27,6 @@ public class TCP_Client extends TCP_Thread{
 		} catch (UnknownHostException e) {e.printStackTrace();}
 	}
 	
-	/*@Override
-	public void run() {
-		baserun();
-	}*/
-	
 	public void baserun() {
 		try {
 			socket = new Socket(address, port);
