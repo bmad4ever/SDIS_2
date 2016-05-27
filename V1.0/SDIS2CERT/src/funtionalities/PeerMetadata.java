@@ -161,7 +161,7 @@ public class PeerMetadata {
 			Hashtable<String, Long> recovered_timestamp = (Hashtable<String, Long>) alldata[0];
 
 			if (ProgramDefinitions.is_control) {
-				Hashtable<String, List<MessageStamp>> msg_stamps = (Hashtable<String, List<MessageStamp>>) alldata[0];
+				Hashtable<String, List<MessageStamp>> msg_stamps = (Hashtable<String, List<MessageStamp>>) alldata[1];
 				message_stamps = msg_stamps;
 			}
 			else {
