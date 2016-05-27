@@ -286,20 +286,9 @@ public class ControlServiceThread extends TCP_Thread{
 		Hashtable<String, Long> receivedPeers = (Hashtable<String, Long>)SerialU.deserialize(body);
 		List<MessageStamp> deleteList = new ArrayList<MessageStamp>();
 		for (Entry<String,Long> e : receivedPeers.entrySet() ) {
-			System.out.println("KEY: " + e.getKey());
-			System.out.println("VALUE: " + e.getValue());
-			for (Entry<String, List<MessageStamp>> entry : PeerMetadata.message_stamps.entrySet()) {			
-			    String key = entry.getKey();
-			    
-			    List<MessageStamp> value = entry.getValue();
-			    for(MessageStamp ms : value){
-			    	System.out.println(ms.fileid + " | " + ms.msg.toString() + " | " + ms.timestamp);
-			    }
-			}
 			List<MessageStamp> stamps = PeerMetadata.message_stamps.get(e.getKey());
 			if(stamps == null){
-				sendDeny();
-				return;
+				continue;
 			}
 			for (int i = stamps.size()-1; i >= 0; i--) {
 				MessageStamp messageStamp = stamps.get(i);
