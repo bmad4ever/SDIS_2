@@ -81,6 +81,9 @@ public class ControlServiceThread extends TCP_Thread{
 		case peer_restore_metadata:
 			process_peer_metadata_recover(receivedMSG);
 			break;
+		case getpeeraddr:
+			process_Who(receivedMSG);
+			break;
 		default:
 			break;
 		}
@@ -240,4 +243,25 @@ public class ControlServiceThread extends TCP_Thread{
 		sendMessage(m);
 	}
 
+	public void process_Who(MessagePacket receivedMSG){
+		if(PeerMetadata.getPeerData(receivedMSG.header.getSenderId()) == null)
+		{
+			sendDeny();
+			return; //not a known peer
+		}
+		
+		PeerMetadata.renewPeerService(receivedMSG.header.getSenderId());
+		
+		HashSet<PeerData> peerMetadata = PeerMetadata.getActivePeersData4peers();
+		byte[] tmp =  SerialU.serialize(peerMetadata);	
+		byte[] data = SymmetricKey.encryptData(PeerMetadata.getPeerData(receivedMSG.header.getSenderId()).priv_key, tmp);
+		
+		
+		MessageHeader h = new MessageHeader(
+				MessageHeader.MessageType.peeraddr,"CRED");
+		MessagePacket m = new MessagePacket(h, data);
+		sendMessage(m);
+	
+	}
+	
 }
