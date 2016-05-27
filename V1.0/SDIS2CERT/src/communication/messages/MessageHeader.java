@@ -8,12 +8,13 @@ public class MessageHeader implements Comparable<MessageHeader>,java.io.Serializ
 	//dev note, confirm could be used in confirmation to all protocols... not onna change current code 4 now tho
 	public enum MessageType {
 		hello,cred_pubkey,peer_privkey,/*hello, tell control that you exist*/
-		getpeeraddr,peeraddr,		/*ask control peer addr*/
-
+		getpeeraddr,peeraddr,		/*WHO - ask control peer addr*/
+		
 		putchunk, stored,			/*backup*/
 		getchunk, chunk,			/*restore*/
 		requestdelete, delete, 		/*deleted*/
-		removed, 					/*space reclaim*/
+		revive, superdelete,
+		//removed, 					/*space reclaim*/
 
 		peer_backup_metadata, //stored_peerbackup, usar confirm instead
 		peer_restore_metadata, peer_medatada,  /*peer metadata backup*/

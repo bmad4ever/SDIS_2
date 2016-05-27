@@ -11,6 +11,10 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.SwingConstants;
 
+import Utilities.ProgramDefinitions;
+import Utilities.RefValue;
+import protocols.REVIVE;
+
 public class MainPanel extends JPanel {
 	private static final long serialVersionUID = 5576038026081466844L;
 
@@ -102,6 +106,14 @@ public class MainPanel extends JPanel {
 			}
 		});
 		
+		JButton reviveButton = new JButton("Revive");
+		reviveButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				UI.revive();
+			}
+		});
+		
 		buttonPanel.add(backupButton);
 		buttonPanel.add(recoverButton);
 		buttonPanel.add(deleteButton);
@@ -110,6 +122,7 @@ public class MainPanel extends JPanel {
 		buttonPanel.add(timeStampsButton);
 		buttonPanel.add(backedUpFilesButton);
 		buttonPanel.add(checkChunksStoredButton);
+		buttonPanel.add(reviveButton);
 		
 		// quit
 		JPanel quitPanel = new JPanel(new GridLayout(0, 1));

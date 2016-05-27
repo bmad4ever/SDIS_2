@@ -10,6 +10,7 @@ import protocols.BackupFile;
 import protocols.PEER_BACKUP_METADATA;
 import protocols.REQUESTDEL;
 import protocols.PEER_RESTORE_METADATA;
+import protocols.REVIVE;
 import protocols.RestoreFile;
 
 public class UI {
@@ -84,6 +85,12 @@ public class UI {
 		}
 		else answer.value = "Metadata Backup failed";
 		return answer;
+	}
+	
+	public static void revive(){
+		RefValue<Boolean> ref = new RefValue<Boolean>();
+		REVIVE revive = new REVIVE(ProgramDefinitions.CONTROL_PORT, ProgramDefinitions.CONTROL_ADDRESS, ref);
+		revive.run();
 	}
 
 	public static void quit(GUI mainFrame){
