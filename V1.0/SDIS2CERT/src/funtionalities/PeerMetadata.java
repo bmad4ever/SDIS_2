@@ -19,7 +19,7 @@ public class PeerMetadata {
 	 * list os messagestamps is currently only saved by Control
 	 * */
 	
-	static final public boolean DEBUG=true;
+	static final public boolean DEBUG=false;
 
 	/**<p>records types and timestamps of received messages for each peer </p>
 	 * <p>PEERS will only store the 10 most recent putchunks and deletes</p>

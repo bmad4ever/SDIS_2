@@ -3,10 +3,12 @@ package communication.service;
 import java.io.File;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 
 import Utilities.BinaryFile;
@@ -18,6 +20,7 @@ import communication.TCP_Thread;
 import communication.messages.DeleteBody;
 import communication.messages.DeleteRequestBody;
 import communication.messages.MessageHeader;
+import communication.messages.MessageHeader.MessageType;
 import communication.messages.MessagePacket;
 import funtionalities.AsymmetricKey;
 import funtionalities.PeerMetadata;
@@ -93,7 +96,6 @@ public class ControlServiceThread extends TCP_Thread{
 			process_Who(receivedMSG);
 			break;
 		case revive:
-			System.out.println("peer revived");
 			processRevive(receivedMSG);
 			break;
 		default:
@@ -177,6 +179,7 @@ public class ControlServiceThread extends TCP_Thread{
 			MessagePacket m = new MessagePacket(respheader, null);
 			sendMessage(m);
 		}else {
+			PeerMetadata.processStamping(receivedMSG.header.getSenderId(), new MessageStamp(receivedMSG.header,msgBody));
 			respheader = new MessageHeader(MessageHeader.MessageType.confirm,"CRED");
 			MessagePacket m = new MessagePacket(respheader, null);
 			sendMessage(m);
@@ -276,14 +279,43 @@ public class ControlServiceThread extends TCP_Thread{
 	}
 	
 	public void processRevive(MessagePacket receivedMSG){
+		System.out.println("REVIVE!!");
 		String senderId = receivedMSG.header.getSenderId();
 		byte[] senderKey = PeerMetadata.getPeerData(senderId).priv_key;
 		byte[] body = SymmetricKey.decryptData(senderKey, receivedMSG.body);
 		Hashtable<String, Long> receivedPeers = (Hashtable<String, Long>)SerialU.deserialize(body);
+		List<MessageStamp> deleteList = new ArrayList<MessageStamp>();
 		for (Entry<String,Long> e : receivedPeers.entrySet() ) {
-			System.out.println(e.getKey() + ":" + e.getValue());
+			System.out.println("KEY: " + e.getKey());
+			System.out.println("VALUE: " + e.getValue());
+			for (Entry<String, List<MessageStamp>> entry : PeerMetadata.message_stamps.entrySet()) {			
+			    String key = entry.getKey();
+			    
+			    List<MessageStamp> value = entry.getValue();
+			    for(MessageStamp ms : value){
+			    	System.out.println(ms.fileid + " | " + ms.msg.toString() + " | " + ms.timestamp);
+			    }
+			}
+			List<MessageStamp> stamps = PeerMetadata.message_stamps.get(e.getKey());
+			if(stamps == null){
+				sendDeny();
+				return;
+			}
+			for (int i = stamps.size()-1; i >= 0; i--) {
+				MessageStamp messageStamp = stamps.get(i);
+				if(messageStamp.timestamp <= e.getValue()){
+					break;
+				}else{
+					deleteList.add(messageStamp);
+				}
+			}
 		}
-		sendConfirm();
+		
+		MessageHeader sendHeader = new MessageHeader(MessageType.superdelete,senderId);
+		byte[] sendBody = SerialU.serialize(deleteList);
+		byte[] encpSendBody = SymmetricKey.encryptData(PeerMetadata.getPeerData(senderId).priv_key, sendBody);
+		MessagePacket messageToSend = new MessagePacket(sendHeader, encpSendBody);
+		sendMessage(messageToSend);
 	}
 	
 }

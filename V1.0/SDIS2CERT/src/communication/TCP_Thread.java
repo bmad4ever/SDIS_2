@@ -18,7 +18,7 @@ public class TCP_Thread extends Thread {
 
 	protected boolean failed_init = false;
 
-	protected final boolean DEBUG = true;
+	protected final boolean DEBUG = false;
 
 	/**returns true if message was sent successfully*/
 	public boolean sendMessage(Object obj){

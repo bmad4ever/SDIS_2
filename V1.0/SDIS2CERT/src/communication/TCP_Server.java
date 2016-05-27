@@ -14,7 +14,7 @@ import communication.service.PeerServiceThread;
  */
 public class TCP_Server extends Thread{
 
-	static final boolean DEBUG = true;
+	static final boolean DEBUG = false;
 
 	private ServerSocket peerServerSocket;
 	private Socket peerSocket;
