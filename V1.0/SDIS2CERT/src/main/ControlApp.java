@@ -50,7 +50,7 @@ public class ControlApp {
 		} catch (UnknownHostException e1) {e1.printStackTrace();}
 		server.start();
 		
-		//(new Thread(new PeriodicUpdates())).start();//will save metadata on nonvolatile memory from time to time and update active peers
+		(new Thread(new PeriodicUpdates())).start();//will save metadata on nonvolatile memory from time to time and update active peers
 		
 		try {System.in.read();} 
 		catch (IOException e) {e.printStackTrace();}
