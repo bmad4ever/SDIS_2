@@ -250,6 +250,8 @@ public class ControlServiceThread extends TCP_Thread{
 			return; //not a known peer
 		}
 		
+		PeerMetadata.renewPeerService(receivedMSG.header.getSenderId());
+		
 		HashSet<PeerData> peerMetadata = PeerMetadata.getActivePeersData4peers();
 		byte[] tmp =  SerialU.serialize(peerMetadata);	
 		byte[] data = SymmetricKey.encryptData(PeerMetadata.getPeerData(receivedMSG.header.getSenderId()).priv_key, tmp);

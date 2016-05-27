@@ -483,7 +483,7 @@ public class PeerMetadata {
 	}
 	
 	
-	public static void newPeerService(String peerid)
+	public static void renewPeerService(String peerid)
 	{
 		if(DEBUG) System.out.println(peerid + " renewed service");
 		active_peers.replace(peerid, peer_renewed_service_this_round);
