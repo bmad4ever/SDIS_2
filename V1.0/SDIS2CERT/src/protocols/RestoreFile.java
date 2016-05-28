@@ -142,8 +142,7 @@ public class RestoreFile{
 			peerFile.getChunk(chunkNum).writeChunkFile(received_chunk.value,peerFile.getFileid());
 			chunkNum++;
 		}while(
-				db.getDatabase().getStoredChunkData(fileId, chunkNum)!=null
-				//ou received_chunk!=null && received_chunk.value.length == _CHUNK_SIZE
+				peerFile.hasChunk(chunkNum)
 				);
 
 		if(!uniteFile(fileId)) {
