@@ -140,6 +140,7 @@ public class Database implements Serializable {
 				files[i].delete();
 			}
 			folder.delete();
+			storedFiles.remove(fileId);
 			return true;
 		}
 		return false;

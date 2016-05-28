@@ -15,6 +15,10 @@ import protocols.RestoreFile;
 
 public class UI {
 
+	//dev note: most classes are not running on a new thread (apparently no need to do so)
+	//using run instead of starting a thread. the extends thread only causes overhead
+	//please remove later if continued ...
+	
 	public static RefValue<String> backup(String filePath, int replicationDegree){
 		RefValue<String> backup_answer = new RefValue<String>();
 		BackupFile bf = new BackupFile(ProgramDefinitions.db, filePath, replicationDegree, backup_answer);
@@ -34,13 +38,13 @@ public class UI {
 		HashSet<String> set = ProgramDefinitions.db.getDatabase().getFileMetadata(fileName).getPeersWithChunks();
 		List<String> PeerIDs = new ArrayList<String>(set);
 		REQUESTDEL requestDelete = new REQUESTDEL(ProgramDefinitions.CONTROL_PORT, ProgramDefinitions.CONTROL_ADDRESS,
-				fileId, PeerIDs, null);
-		requestDelete.start();
-		try {
+				fileId,fileName, PeerIDs, null);
+		requestDelete.run();
+		/*try {
 			requestDelete.join();
 		} catch (InterruptedException e1) {
 			e1.printStackTrace();
-		}
+		}*/
 		return;
 	}
 
@@ -56,9 +60,9 @@ public class UI {
 				completed
 				);
 		pbm.run();
-		try{
+		/*try{
 			pbm.join();
-		} catch (Exception e){e.printStackTrace();}
+		} catch (Exception e){e.printStackTrace();}*/
 		if(completed.value) answer.value = "Metadata Backup was successful";
 		else answer.value = "Metadata Backup failed";
 		return answer;
@@ -76,9 +80,9 @@ public class UI {
 				ProgramDefinitions.db				
 				);
 		prd.run();
-		try{
+		/*try{
 			prd.join();
-		} catch (Exception e){e.printStackTrace();}
+		} catch (Exception e){e.printStackTrace();}*/
 		if(completed.value) {
 			answer.value = "Metadata Backup was successfull";
 			ProgramDefinitions.db.save();

@@ -13,12 +13,14 @@ import funtionalities.SymmetricKey;
 
 public class REQUESTDEL extends TCP_Client{
 	String fileId;
+	String fileName;
 	List<String> peerIds;
 
-	public REQUESTDEL (int p, String a, String fId, List<String> pIds, RefValue<Boolean> task) {
+	public REQUESTDEL (int p, String a, String fId, String fName, List<String> pIds, RefValue<Boolean> task) {
 		super(p, a, task);
 		fileId = fId;
 		peerIds = pIds;
+		fileName = fName;
 	}
 	
 	@Override
@@ -33,7 +35,10 @@ public class REQUESTDEL extends TCP_Client{
 		
 		MessagePacket response = (MessagePacket) receiveMessage();
 		if(response.header.getMessageType() == MessageHeader.MessageType.confirm)
-			System.out.println("DELETE request was successfull");
+			{
+				ProgramDefinitions.db.getDatabase().myOriginalFilesMetadata.remove(fileName);
+				if(DEBUG) System.out.println("DELETE request was successfull");
+			}
 	}
 	
 }

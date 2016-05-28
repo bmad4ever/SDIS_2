@@ -16,9 +16,9 @@ public class DELETE extends TCP_Client {
 	@Override
 	public void run(){
 		super.baserun();
-		sendMessage(message);
 		if(failed_init)
 			return;
+		sendMessage(message);
 	}
 	
 }

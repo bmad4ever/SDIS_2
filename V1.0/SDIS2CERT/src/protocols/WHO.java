@@ -43,9 +43,8 @@ public class WHO  extends TCP_Client{
 			byte[] tmp = SymmetricKey.decryptData(ProgramDefinitions.mydata.priv_key, response.body);
 			HashSet<PeerData> tmpPD = (HashSet<PeerData>) SerialU.deserialize(tmp);
 			PeerMetadata.setPeerMetadataList(tmpPD);
-			
-			
-			System.out.println("WHO request was successfull");
+					
+			if(DEBUG) System.out.println("WHO request was successfull");
 		}
 		
 		if(DEBUG)

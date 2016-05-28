@@ -50,11 +50,11 @@ public class Test_Delete_Control {
 		List<String> PeerIDs = new ArrayList<String>();
 		PeerIDs.add("Peer1");	PeerIDs.add("Peer2");	PeerIDs.add("Peer3");
 
-		REQUESTDEL deleteclient = new REQUESTDEL(ProgramDefinitions.CONTROL_PORT, args[3], "FileID", PeerIDs,null);
+		/*REQUESTDEL deleteclient = new REQUESTDEL(ProgramDefinitions.CONTROL_PORT, args[3], "FileID", PeerIDs,null);
 		deleteclient.start();
 		try {
 			deleteclient.join();
-		} catch (InterruptedException e1) {e1.printStackTrace();}
+		} catch (InterruptedException e1) {e1.printStackTrace();}*/
 
 		System.out.println("Closing down.");
 		System.exit(0);
