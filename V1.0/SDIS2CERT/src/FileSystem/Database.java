@@ -22,10 +22,10 @@ public class Database implements Serializable {
 		myOriginalFilesMetadata = new HashMap<String,PeerFile>();
 	}
 
-	public PeerFile addOriginalFile(String originalFileName,int degree) {
+	public PeerFile addOriginalFile(String originalFileName,String modDate,int degree) {
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-256");
-			md.update(originalFileName.getBytes());
+			md.update((modDate+originalFileName).getBytes());
 			byte[] mdBytes = md.digest();
 
 			StringBuffer hexString = new StringBuffer();

@@ -154,6 +154,7 @@ public class BackupFile{
 		}
 		
 		String fileName = fileTemp.getName();
+		String modDate = Long.toString(fileTemp.lastModified());
 		
 		ArrayList<byte[]> data = splitFileAndEncryptData(filePath);
 		if(data == null) {
@@ -161,7 +162,7 @@ public class BackupFile{
 			return false;
 		}
 
-		peerFile = db.getDatabase().addOriginalFile(fileName,replicationDegree);
+		peerFile = db.getDatabase().addOriginalFile(fileName,modDate,replicationDegree);
 		if(peerFile==null) peerFile = db.getDatabase().getFileMetadata(fileName);
 		String fileId = db.getDatabase().getFileId(fileName);
 
